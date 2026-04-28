@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 본인인증</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .intro {
+      padding: 24px 20px 24px;
+    }
+    .intro h1 {
+      font: 700 22px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+      margin: 0 0 8px;
+    }
+    .intro p {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .form {
+      padding: 0 20px;
+    }
+    .field { margin-bottom: 16px; }
+    .field-label {
+      display: block;
+      font: 500 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 8px;
+    }
+
+    .input-group {
+      display: flex;
+      gap: 8px;
+    }
+    .input {
+      flex: 1;
+      min-width: 0;
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+    }
+    .input:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(27, 97, 201, 0.12);
+    }
+
+    .carrier-select {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+    .carrier-btn {
+      height: 44px;
+      min-width: 0;
+      padding: 0 4px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font: var(--font-caption-strong);
+      font-size: 13px;
+      letter-spacing: var(--tracking-tight);
+      white-space: nowrap;
+    }
+    .carrier-btn.is-selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+    }
+
+    /* Phone field */
+    .phone-row {
+      display: flex;
+      gap: 8px;
+    }
+    .phone-row .input { flex: 1; }
+    .btn-send {
+      flex: 0 0 auto;
+      padding: 0 14px;
+      background: var(--color-text);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      font: var(--font-button);
+      font-size: 14px;
+      letter-spacing: var(--tracking-tight);
+      height: 46px;
+      white-space: nowrap;
+    }
+    .btn-send:disabled,
+    .btn-send.is-disabled {
+      background: var(--color-border-strong);
+      opacity: 0.7;
+    }
+
+    /* Verification code */
+    .code-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .code-row .input {
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: 0.3em;
+      text-align: center;
+    }
+    .code-timer {
+      font: 600 14px/1 var(--font-family);
+      color: var(--color-error);
+      letter-spacing: var(--tracking-tight);
+      flex: 0 0 auto;
+      padding: 0 12px;
+    }
+
+    .resend-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 8px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .resend-row .link {
+      color: var(--color-primary);
+      font-weight: 500;
+    }
+
+    /* Status banner */
+    .status-banner {
+      margin: 8px 20px 0;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font: var(--font-caption);
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-sent {
+      background: #eef3fb;
+      color: var(--color-text);
+    }
+    .status-sent svg { color: var(--color-primary); flex: 0 0 16px; }
+
+    /* Info section */
+    .info-section {
+      margin: 24px 20px 16px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .info-section h3 {
+      font: 600 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 10px;
+    }
+    .info-section ul {
+      margin: 0;
+      padding-left: 18px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      line-height: 1.7;
+      letter-spacing: var(--tracking-tight);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">본인 인증</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h1>안전한 거래를 위해<br>휴대폰 본인인증이 필요해요</h1>
+      <p>결제·환불·카카오톡 알림 발송에 사용되며, 광고·마케팅 목적으로는 사용하지 않습니다.</p>
+    </div>
+
+    <!-- Form -->
+    <div class="form">
+      <div class="field">
+        <label class="field-label">이름</label>
+        <input class="input" placeholder="주민등록상 실명" value="이하은">
+      </div>
+
+      <div class="field">
+        <label class="field-label">생년월일 · 성별</label>
+        <div class="input-group">
+          <input class="input" placeholder="YYMMDD" value="080412" inputmode="numeric" maxlength="6">
+          <input class="input" style="flex:0 0 80px;text-align:center;" placeholder="성별" value="3" inputmode="numeric" maxlength="1">
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">통신사</label>
+        <div class="carrier-select">
+          <button class="carrier-btn is-selected">SKT</button>
+          <button class="carrier-btn">KT</button>
+          <button class="carrier-btn">LGU+</button>
+          <button class="carrier-btn">SKT 알뜰</button>
+          <button class="carrier-btn">KT 알뜰</button>
+          <button class="carrier-btn">LG 알뜰</button>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">휴대폰 번호</label>
+        <div class="phone-row">
+          <input class="input" placeholder="010-0000-0000" value="010-1234-5678" inputmode="tel">
+          <button class="btn-send">인증번호 발송</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status: sent -->
+    <div class="status-banner status-sent">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      인증번호가 발송되었습니다.
+    </div>
+
+    <div class="form" style="margin-top:16px;">
+      <div class="field">
+        <label class="field-label">인증번호 입력 (6자리)</label>
+        <div class="code-row">
+          <input class="input" placeholder="------" value="482913" inputmode="numeric" maxlength="6">
+          <span class="code-timer">02:47</span>
+        </div>
+        <div class="resend-row">
+          <span>SMS를 받지 못하셨나요?</span>
+          <a class="link" href="#">재발송</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="info-section">
+      <h3>개인정보 활용 안내</h3>
+      <ul>
+        <li>입력한 정보는 본인인증 전문 기관(나이스평가정보)으로 암호화 전송됩니다.</li>
+        <li>인증 완료 후 14일이 지나면 원본 데이터는 자동 폐기됩니다.</li>
+        <li>상담 예약 시 멘토에게는 이름·학년만 공유됩니다.</li>
+      </ul>
+    </div>
+
+    <div style="height:8px;"></div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <button class="btn btn-primary btn-block" data-next="../student/home.html">인증 완료</button>
+    </div>
+
+  </main>
+</body>
+</html>

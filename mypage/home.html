@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 마이페이지</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .profile-header {
+      padding: 20px 20px 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .profile-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1b61c9, #254fad);
+      color: #ffffff;
+      font: 700 22px/1 var(--font-family);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 56px;
+      letter-spacing: -0.5px;
+    }
+    .profile-info { flex: 1; }
+    .profile-name {
+      font: 700 18px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+      margin: 0 0 4px;
+    }
+    .profile-email {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .profile-edit {
+      font: var(--font-caption-strong);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Quick stats */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 8px;
+      padding: 20px;
+    }
+    .stat-tile {
+      padding: 16px 12px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-align: center;
+    }
+    .stat-num {
+      display: block;
+      font: 700 20px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.3px;
+      margin-bottom: 4px;
+    }
+    .stat-lbl {
+      font: 11px/1.3 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Menu tabs */
+    .tabs-wrap {
+      padding: 0 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tabs-scroll {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .tabs-scroll::-webkit-scrollbar { display: none; }
+    .mytab {
+      padding: 12px 0;
+      white-space: nowrap;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-weak);
+      position: relative;
+      flex: 0 0 auto;
+    }
+    .mytab.is-active {
+      color: var(--color-text);
+    }
+    .mytab.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    /* Section */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 8px;
+    }
+    .section-header h2 {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .section-header .link {
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Upcoming card */
+    .upcoming {
+      margin: 0 20px 12px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+    .upcoming-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+    .upcoming-title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .upcoming-when {
+      font: var(--font-caption-strong);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .countdown {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Menu groups */
+    .menu-group {
+      margin: 8px 20px 0;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .menu-group-label {
+      padding: 14px 16px 8px;
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .menu-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      color: var(--color-text);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+    }
+    .menu-row + .menu-row {
+      border-top: 1px solid var(--color-border);
+    }
+    .menu-row .ico {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-subtle);
+      color: var(--color-text-secondary);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 28px;
+    }
+    .menu-row .name { flex: 1; }
+    .menu-row .side-num {
+      font: 600 14px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: -0.1px;
+    }
+    .menu-row .chevron { color: var(--color-text-weak); }
+
+    .menu-badge {
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--color-error);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* Logout */
+    .logout-row {
+      padding: 24px 20px;
+      text-align: center;
+    }
+    .logout-row a {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar">
+      <div class="wordmark">마이페이지</div>
+      <div class="app-bar-actions">
+        <button class="icon-btn" aria-label="설정">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Profile header -->
+    <section class="profile-header">
+      <span class="profile-avatar">이</span>
+      <div class="profile-info">
+        <p class="profile-name">이하은 <span style="font-weight:400;font-size:13px;color:var(--color-text-weak);margin-left:4px;">고2</span></p>
+        <p class="profile-email">hkim****@gmail.com · 카카오 로그인</p>
+      </div>
+      <a class="profile-edit" href="#">편집</a>
+    </section>
+
+    <!-- Stats -->
+    <div class="stat-grid">
+      <div class="stat-tile">
+        <span class="stat-num">3</span>
+        <span class="stat-lbl">예정 상담</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-num">12</span>
+        <span class="stat-lbl">완료 상담</span>
+      </div>
+      <div class="stat-tile">
+        <span class="stat-num">8</span>
+        <span class="stat-lbl">찜한 멘토</span>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs-wrap">
+      <div class="tabs-scroll">
+        <span class="mytab is-active">개요</span>
+        <span class="mytab">예정</span>
+        <span class="mytab">지난</span>
+        <span class="mytab">찜</span>
+        <span class="mytab">결제내역</span>
+        <span class="mytab">쿠폰</span>
+        <span class="mytab">자녀</span>
+        <span class="mytab">문의</span>
+      </div>
+    </div>
+
+    <!-- Upcoming -->
+    <div class="section-header">
+      <h2>다음 상담</h2>
+      <a class="link" href="#">전체 ›</a>
+    </div>
+
+    <article class="upcoming">
+      <div class="upcoming-head">
+        <div>
+          <p class="upcoming-title">경영학과 진학 Q&amp;A 상담</p>
+          <p class="upcoming-when">4월 27일 (일) 오후 3:00 · 김서연 멘토</p>
+        </div>
+        <span class="countdown">4일 남음</span>
+      </div>
+      <div style="display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--color-border);">
+        <button class="btn btn-primary" style="flex:1;height:40px;font-size:13px;">Zoom 링크 열기</button>
+        <button class="btn btn-secondary" style="flex:1;height:40px;font-size:13px;">일정 변경</button>
+      </div>
+      <!-- No-show report (ADR-001 +15분 활성) -->
+      <div style="margin-top:10px;padding:10px 12px;border-radius:var(--radius-md);background:var(--color-surface-subtle);font:11px/1.5 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);display:flex;gap:8px;align-items:center;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="flex:0 0 14px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>멘토가 시작 후 <strong style="color:var(--color-text);font-weight:600;">+15분</strong>까지 미입장 시 노쇼 신고 버튼이 활성화됩니다. (자동 판정과 동시 진행)</span>
+      </div>
+    </article>
+
+    <!-- Menu - 거래 -->
+    <p class="menu-group-label" style="padding-left:28px;padding-top:8px;">거래</p>
+    <div class="menu-group">
+      <a class="menu-row" href="./payments.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </span>
+        <span class="name">결제·환불 내역</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="./coupons.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12V8H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h14v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+        </span>
+        <span class="name">쿠폰함</span>
+        <span class="side-num">3</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="./favorites.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </span>
+        <span class="name">찜한 멘토</span>
+        <span class="side-num">8</span>
+        <span class="chevron">›</span>
+      </a>
+    </div>
+
+    <!-- Menu - 계정 -->
+    <p class="menu-group-label" style="padding-left:28px;padding-top:20px;">계정</p>
+    <div class="menu-group">
+      <a class="menu-row" href="./children.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <span class="name">자녀 프로필 관리</span>
+        <span class="side-num">2</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="#">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>
+        </span>
+        <span class="name">알림 설정</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="#">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v6M12 17v6"/></svg>
+        </span>
+        <span class="name">계정 보안·약관 동의</span>
+        <span class="chevron">›</span>
+      </a>
+    </div>
+
+    <!-- Menu - 지원 -->
+    <p class="menu-group-label" style="padding-left:28px;padding-top:20px;">지원</p>
+    <div class="menu-group">
+      <a class="menu-row" href="../support/faq.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+        </span>
+        <span class="name">자주 묻는 질문</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="../support/inquiry.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </span>
+        <span class="name">1:1 문의</span>
+        <span class="menu-badge">1</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="#">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 4H5a2 2 0 0 0-2 2v14l4-4h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2z"/></svg>
+        </span>
+        <span class="name">공지사항</span>
+        <span class="chevron">›</span>
+      </a>
+      <a class="menu-row" href="../support/legal.html">
+        <span class="ico">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </span>
+        <span class="name">약관 · 정책</span>
+        <span class="chevron">›</span>
+      </a>
+    </div>
+
+    <div class="logout-row">
+      <a href="#">로그아웃</a>
+    </div>
+
+    <!-- Tab bar -->
+    <nav class="tab-bar">
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>홈</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>탐색</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        <span>내 예약</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
+        <span>후기</span>
+      </button>
+      <button class="tab is-active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+        <span>마이</span>
+      </button>
+    </nav>
+
+  </main>
+</body>
+</html>

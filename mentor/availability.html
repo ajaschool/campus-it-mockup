@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 상담 가능 시간</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Tabs */
+    .sub-tabs {
+      display: flex;
+      gap: 8px;
+      padding: 8px 20px 0;
+    }
+    .sub-tab {
+      flex: 1;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text-weak);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .sub-tab.is-active {
+      background: var(--color-text);
+      border-color: var(--color-text);
+      color: #ffffff;
+    }
+
+    .block {
+      margin: 16px 20px 0;
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .block-title {
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+    .block-sub {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 14px;
+    }
+
+    /* Weekly schedule */
+    .week-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .day-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 14px 0;
+    }
+    .day-row + .day-row {
+      border-top: 1px solid var(--color-border);
+    }
+    .day-name {
+      flex: 0 0 40px;
+      font: 600 14px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      padding-top: 10px;
+    }
+    .day-name.is-off { color: var(--color-text-weak); }
+    .day-slots {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .time-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      background: #eef3fb;
+      color: var(--color-primary);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .time-chip .del {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      opacity: 0.6;
+      margin-left: 2px;
+    }
+    .day-empty {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      padding-top: 10px;
+    }
+    .day-add {
+      font: var(--font-caption-strong);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+      flex: 0 0 auto;
+      padding-top: 10px;
+    }
+
+    /* Expanded time editor */
+    .expander {
+      padding: 16px;
+      margin: 8px 0 4px;
+      border: 1px solid var(--color-primary);
+      background: #eef3fb;
+      border-radius: var(--radius-md);
+    }
+    .expander-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .expander-head h4 {
+      font: 600 14px/1.2 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .expander-head .delete {
+      color: var(--color-error);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .time-range {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .time-select {
+      flex: 1;
+      position: relative;
+    }
+    .time-select select {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      appearance: none;
+      padding-right: 32px;
+    }
+    .time-select::after {
+      content: "";
+      position: absolute;
+      right: 14px; top: 50%;
+      width: 6px; height: 6px;
+      border-right: 1.5px solid var(--color-text-weak);
+      border-bottom: 1.5px solid var(--color-text-weak);
+      transform: translateY(-75%) rotate(45deg);
+      pointer-events: none;
+    }
+    .time-range .sep {
+      color: var(--color-text-weak);
+      font-weight: 500;
+    }
+    .slot-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+    .slot-preview span {
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-success-bg);
+      color: var(--color-success);
+      font: 500 11px/1 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Segmented */
+    .segmented { display: flex; gap: 6px; }
+    .segmented button {
+      flex: 1;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .segmented button.is-selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+    }
+
+    /* Stepper */
+    .stepper {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      justify-content: flex-start;
+    }
+    .stepper-btn {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      font: 600 18px/1 var(--font-family);
+      color: var(--color-text);
+    }
+    .stepper-value {
+      min-width: 60px;
+      text-align: center;
+      font: 600 18px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+    }
+
+    /* Summary card */
+    .summary-card {
+      margin: 16px 20px 0;
+      padding: 16px 18px;
+      border-radius: var(--radius-lg);
+      background: #eef3fb;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .summary-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 40px;
+    }
+    .summary-card .text {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+    }
+    .summary-card .text strong {
+      font-weight: 600;
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">
+        상담 가능 시간
+        <span class="app-bar-title-sub">4 / 4 단계</span>
+      </h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Progress -->
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div>
+    </div>
+
+    <!-- Sub tabs -->
+    <div class="sub-tabs">
+      <button class="sub-tab is-active">주간 반복 설정</button>
+      <button class="sub-tab">특정 날짜 개별</button>
+    </div>
+
+    <!-- Weekly schedule -->
+    <section class="block">
+      <h2 class="block-title">요일별 가능 시간</h2>
+      <p class="block-sub">매주 반복되는 기본 시간대입니다.</p>
+
+      <div class="week-list">
+        <div class="day-row">
+          <span class="day-name">월</span>
+          <div class="day-slots">
+            <span class="time-chip">
+              19:00 — 22:00
+              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+            </span>
+          </div>
+          <button class="day-add">+ 추가</button>
+        </div>
+
+        <div class="day-row">
+          <span class="day-name is-off">화</span>
+          <div class="day-slots">
+            <span class="day-empty">휴무</span>
+          </div>
+          <button class="day-add">+ 추가</button>
+        </div>
+
+        <div class="day-row" style="flex-direction:column;align-items:stretch;">
+          <div style="display:flex;gap:14px;align-items:flex-start;">
+            <span class="day-name">수</span>
+            <div class="day-slots" style="flex:1;">
+              <span class="time-chip" style="background:var(--color-primary);color:#ffffff;">
+                19:00 — 22:00
+                <span class="del" style="color:#ffffff;opacity:0.9;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+              </span>
+            </div>
+            <button class="day-add">+ 추가</button>
+          </div>
+
+          <!-- Expanded editor (for current edit) -->
+          <div class="expander">
+            <div class="expander-head">
+              <h4>수요일 · 시간대 1</h4>
+              <button class="delete">삭제</button>
+            </div>
+            <div class="time-range">
+              <div class="time-select">
+                <select>
+                  <option>18:00</option>
+                  <option>18:30</option>
+                  <option selected>19:00</option>
+                  <option>19:30</option>
+                </select>
+              </div>
+              <span class="sep">~</span>
+              <div class="time-select">
+                <select>
+                  <option>21:00</option>
+                  <option>21:30</option>
+                  <option selected>22:00</option>
+                  <option>22:30</option>
+                </select>
+              </div>
+            </div>
+            <div class="slot-preview">
+              <span>19:00</span>
+              <span>19:30</span>
+              <span>20:00</span>
+              <span>20:30</span>
+              <span>21:00</span>
+              <span>21:30</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="day-row">
+          <span class="day-name is-off">목</span>
+          <div class="day-slots"><span class="day-empty">휴무</span></div>
+          <button class="day-add">+ 추가</button>
+        </div>
+
+        <div class="day-row">
+          <span class="day-name">금</span>
+          <div class="day-slots">
+            <span class="time-chip">
+              19:00 — 22:00
+              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+            </span>
+          </div>
+          <button class="day-add">+ 추가</button>
+        </div>
+
+        <div class="day-row">
+          <span class="day-name">토</span>
+          <div class="day-slots">
+            <span class="time-chip">
+              10:00 — 12:00
+              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+            </span>
+            <span class="time-chip">
+              14:00 — 18:00
+              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+            </span>
+          </div>
+          <button class="day-add">+ 추가</button>
+        </div>
+
+        <div class="day-row">
+          <span class="day-name is-off">일</span>
+          <div class="day-slots"><span class="day-empty">휴무</span></div>
+          <button class="day-add">+ 추가</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 예약 리드타임 -->
+    <section class="block">
+      <h2 class="block-title">예약 리드타임</h2>
+      <p class="block-sub">최소 며칠 전까지 신청을 받을지 설정하세요.</p>
+      <div class="segmented">
+        <button>1일 전</button>
+        <button class="is-selected">2일 전</button>
+        <button>3일 전</button>
+        <button>7일 전</button>
+      </div>
+    </section>
+
+    <!-- 하루 최대 건수 -->
+    <section class="block">
+      <h2 class="block-title">하루 최대 상담 건수</h2>
+      <p class="block-sub">상담에 지치지 않도록 하루 한도를 설정합니다.</p>
+      <div class="stepper">
+        <button class="stepper-btn">−</button>
+        <span class="stepper-value">3건</span>
+        <button class="stepper-btn">+</button>
+      </div>
+    </section>
+
+    <!-- Summary -->
+    <div class="summary-card">
+      <div class="summary-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <p class="text">
+        주간 <strong>15시간</strong> 오픈 · 이번 주 예약 가능 슬롯 <strong>28개</strong>
+      </p>
+    </div>
+
+    <div style="height:16px;"></div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <button class="btn btn-secondary">뒤로</button>
+      <button class="btn btn-primary" style="flex:1;" data-next="./dashboard.html">저장하고 완료</button>
+    </div>
+
+  </main>
+</body>
+</html>

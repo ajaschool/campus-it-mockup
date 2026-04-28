@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 일정 선택</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Product summary card (collapsed) */
+    .product-summary {
+      margin: 4px 20px 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .product-summary-thumb {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f2d8c1, #c89a78);
+      flex: 0 0 44px;
+    }
+    .product-summary-body { flex: 1; min-width: 0; }
+    .product-summary-mentor {
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .product-summary-title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .product-summary-price {
+      font: 500 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .product-summary-price strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+
+    /* Section */
+    .sched-section {
+      padding: 8px 20px 20px;
+    }
+    .sched-section h2 {
+      font: 600 16px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 12px;
+    }
+
+    /* Date picker row */
+    .date-row {
+      display: flex;
+      gap: 8px;
+      padding-bottom: 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .date-row::-webkit-scrollbar { display: none; }
+    .date-tile {
+      flex: 0 0 auto;
+      min-width: 58px;
+      padding: 10px 0 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: var(--color-text-weak);
+    }
+    .date-tile .dow {
+      font: 500 11px/1 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+    }
+    .date-tile .day {
+      font: 600 18px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+    }
+    .date-tile .avail-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--color-success);
+    }
+    .date-tile.is-unavail {
+      opacity: 0.45;
+    }
+    .date-tile.is-unavail .day { color: var(--color-text-weak); }
+    .date-tile.is-unavail .avail-dot { background: var(--color-border-strong); }
+    .date-tile.is-selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+    }
+    .date-tile.is-selected .day { color: #ffffff; }
+    .date-tile.is-selected .avail-dot { background: #ffffff; }
+
+    /* Time grid */
+    .time-group { margin-top: 18px; }
+    .time-group-label {
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-weak);
+      margin-bottom: 10px;
+    }
+    .time-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .time-slot {
+      height: 44px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+    }
+    .time-slot.is-disabled {
+      color: var(--color-text-weak);
+      background: var(--color-surface-subtle);
+      text-decoration: line-through;
+      text-decoration-color: var(--color-border-strong);
+    }
+    .time-slot.is-selected {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    /* Info card */
+    .info-card {
+      margin: 8px 20px 4px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: #eef3fb;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .info-card svg { color: var(--color-primary); flex: 0 0 20px; margin-top: 1px; }
+    .info-card p {
+      font: var(--font-caption);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">
+        일정 선택
+        <span class="app-bar-title-sub">1 / 3 단계</span>
+      </h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Progress -->
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:33%;"></div></div>
+    </div>
+
+    <!-- Product summary -->
+    <section class="product-summary">
+      <div class="product-summary-thumb"></div>
+      <div class="product-summary-body">
+        <p class="product-summary-mentor">김서연 · 서울대 경영학과</p>
+        <p class="product-summary-title">경영학과 진학 Q&amp;A 상담</p>
+        <p class="product-summary-price">30분 · <strong>₩29,900</strong></p>
+      </div>
+    </section>
+
+    <!-- Date picker -->
+    <section class="sched-section">
+      <h2>희망 날짜 선택</h2>
+      <div class="date-row">
+        <button class="date-tile is-unavail">
+          <span class="dow">오늘</span>
+          <span class="day">23</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile">
+          <span class="dow">목</span>
+          <span class="day">24</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile">
+          <span class="dow">금</span>
+          <span class="day">25</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile is-unavail">
+          <span class="dow">토</span>
+          <span class="day">26</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile is-selected">
+          <span class="dow">일</span>
+          <span class="day">27</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile">
+          <span class="dow">월</span>
+          <span class="day">28</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile">
+          <span class="dow">화</span>
+          <span class="day">29</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile">
+          <span class="dow">수</span>
+          <span class="day">30</span>
+          <span class="avail-dot"></span>
+        </button>
+        <button class="date-tile is-unavail">
+          <span class="dow">목</span>
+          <span class="day">01</span>
+          <span class="avail-dot"></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Time slots -->
+    <section class="sched-section">
+      <h2>시간 선택</h2>
+
+      <div class="time-group">
+        <p class="time-group-label">오전</p>
+        <div class="time-grid">
+          <button class="time-slot">09:00</button>
+          <button class="time-slot is-disabled">09:30</button>
+          <button class="time-slot">10:00</button>
+          <button class="time-slot">10:30</button>
+          <button class="time-slot is-disabled">11:00</button>
+          <button class="time-slot">11:30</button>
+        </div>
+      </div>
+
+      <div class="time-group">
+        <p class="time-group-label">오후</p>
+        <div class="time-grid">
+          <button class="time-slot">13:00</button>
+          <button class="time-slot">13:30</button>
+          <button class="time-slot">14:00</button>
+          <button class="time-slot">14:30</button>
+          <button class="time-slot is-selected">15:00</button>
+          <button class="time-slot">15:30</button>
+          <button class="time-slot is-disabled">16:00</button>
+          <button class="time-slot is-disabled">16:30</button>
+          <button class="time-slot">17:00</button>
+        </div>
+      </div>
+
+      <div class="time-group">
+        <p class="time-group-label">저녁</p>
+        <div class="time-grid">
+          <button class="time-slot">19:00</button>
+          <button class="time-slot">19:30</button>
+          <button class="time-slot">20:00</button>
+          <button class="time-slot">20:30</button>
+          <button class="time-slot">21:00</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Info -->
+    <div class="info-card">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12" y2="8"/>
+      </svg>
+      <p>멘토가 신청 확인 후 최종 확정됩니다. 확정·변경 시 <strong>카카오톡</strong>으로 알려드려요.</p>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <div class="bottom-cta-summary">
+        <span class="bottom-cta-price">₩29,900</span>
+        <span class="bottom-cta-price-sub">4월 27일 (일) 오후 3:00 · 30분</span>
+      </div>
+      <button class="btn btn-primary" data-next="./student-info.html">다음</button>
+    </div>
+
+  </main>
+</body>
+</html>

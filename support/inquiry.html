@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 1:1 문의</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .sub-tabs {
+      display: flex;
+      gap: 16px;
+      padding: 8px 20px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .sub-tab {
+      padding: 12px 0;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      position: relative;
+    }
+    .sub-tab.is-active {
+      color: var(--color-text);
+    }
+    .sub-tab.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    /* Form */
+    .form {
+      padding: 20px;
+    }
+    .field { margin-bottom: 16px; }
+    .field-label {
+      display: block;
+      font: 500 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 8px;
+    }
+    .select, .input, .textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      font-family: var(--font-family);
+    }
+    .textarea { min-height: 140px; line-height: 1.5; resize: vertical; }
+    .select-wrap { position: relative; }
+    .select { appearance: none; padding-right: 36px; }
+    .select-wrap::after {
+      content: "";
+      position: absolute;
+      right: 16px; top: 50%;
+      width: 8px; height: 8px;
+      border-right: 1.5px solid var(--color-text-weak);
+      border-bottom: 1.5px solid var(--color-text-weak);
+      transform: translateY(-75%) rotate(45deg);
+      pointer-events: none;
+    }
+    .char-counter {
+      display: block;
+      text-align: right;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      margin-top: 4px;
+    }
+
+    .related-booking {
+      padding: 12px 14px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .related-booking .thumb {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #f2d8c1, #c89a78);
+      flex: 0 0 36px;
+    }
+    .related-booking .info { flex: 1; }
+    .related-booking .info p { margin: 0; }
+    .related-booking .title {
+      font: 500 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 2px;
+    }
+    .related-booking .sub {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .related-booking .change {
+      font: var(--font-caption-strong);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Attach */
+    .attach-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .attach-tile {
+      width: 64px; height: 64px;
+      border: 1.5px dashed var(--color-border-strong);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-weak);
+      background: var(--color-surface-subtle);
+    }
+    .attach-item {
+      width: 64px; height: 64px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg,#d1dde9,#8aa3c1);
+      position: relative;
+    }
+    .attach-item .del {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.7);
+      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    /* History list */
+    .inquiry-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 16px 20px;
+    }
+    .inquiry-card {
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+    .inquiry-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .inquiry-cat {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: #eef3fb;
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .inquiry-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-ans { background: var(--color-success-bg); color: var(--color-success); }
+    .status-wait { background: var(--color-amber-bg); color: #7a4a00; }
+    .inquiry-title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .inquiry-date {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .info-text {
+      padding: 16px 20px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+    }
+    .info-text strong { color: var(--color-text); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">1:1 문의</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Tabs -->
+    <div class="sub-tabs">
+      <span class="sub-tab is-active">문의 작성</span>
+      <span class="sub-tab">내 문의 · 3</span>
+    </div>
+
+    <!-- Form -->
+    <div class="form">
+      <div class="field">
+        <label class="field-label">문의 유형</label>
+        <div class="select-wrap">
+          <select class="select">
+            <option>예약·일정 변경</option>
+            <option>결제·환불 문의</option>
+            <option>상담 품질 클레임</option>
+            <option>멘토 신고</option>
+            <option>계정·로그인</option>
+            <option>기타</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">관련 예약 <span style="font-weight:400;color:var(--color-text-weak);margin-left:4px;">(선택)</span></label>
+        <div class="related-booking">
+          <div class="thumb"></div>
+          <div class="info">
+            <p class="title">경영학과 진학 Q&amp;A 상담</p>
+            <p class="sub">#AJ-2026-0427-015 · 김서연 멘토 · 4/27 15:00</p>
+          </div>
+          <a class="change" href="#">변경</a>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">제목</label>
+        <input class="input" placeholder="무엇을 도와드릴까요?">
+      </div>
+
+      <div class="field">
+        <label class="field-label">내용</label>
+        <textarea class="textarea" placeholder="구체적으로 작성해 주시면 더 빠르게 도와드릴 수 있어요. 예약번호·결제번호·발생 시각 등을 포함해 주세요."></textarea>
+        <span class="char-counter">0 / 1000</span>
+      </div>
+
+      <div class="field">
+        <label class="field-label">첨부 파일 <span style="font-weight:400;color:var(--color-text-weak);margin-left:4px;">(최대 5개, 10MB/개)</span></label>
+        <div class="attach-row">
+          <div class="attach-item">
+            <button class="del">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <button class="attach-tile">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <p class="info-text">
+      <strong>답변 소요 시간</strong>은 평일 기준 24시간 이내입니다. 긴급한 결제·환불 문제는 1588-1234로도 문의 가능해요.
+    </p>
+
+    <!-- Past inquiries preview -->
+    <h3 style="padding:16px 20px 8px;font:600 14px/1 var(--font-family);color:var(--color-text);letter-spacing:var(--tracking-tight);margin:0;">최근 내 문의</h3>
+
+    <div class="inquiry-list">
+      <article class="inquiry-card">
+        <div class="inquiry-head">
+          <span class="inquiry-cat">결제·환불</span>
+          <span class="inquiry-status status-ans">답변 완료</span>
+        </div>
+        <p class="inquiry-title">3월 20일 상담 부분 환불 관련 문의</p>
+        <p class="inquiry-date">2026.03.22 · 1시간 후 답변</p>
+      </article>
+
+      <article class="inquiry-card">
+        <div class="inquiry-head">
+          <span class="inquiry-cat">예약·일정</span>
+          <span class="inquiry-status status-wait">답변 대기</span>
+        </div>
+        <p class="inquiry-title">멘토와 일정 조율이 안 돼요</p>
+        <p class="inquiry-date">2026.04.22 · 18시간 전</p>
+      </article>
+    </div>
+
+    <div style="height:16px;"></div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <button class="btn btn-primary btn-block" data-next="./faq.html">문의 보내기</button>
+    </div>
+
+  </main>
+</body>
+</html>

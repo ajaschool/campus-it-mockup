@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 자녀 프로필</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .intro {
+      padding: 16px 20px 8px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+    }
+    .intro strong { color: var(--color-text); font-weight: 500; }
+
+    .child-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 20px;
+    }
+
+    .child-card {
+      padding: 18px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+    .child-card.is-active {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(27, 97, 201, 0.12);
+    }
+    .child-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    .child-avatar {
+      width: 52px; height: 52px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 52px;
+      font: 700 18px/1 var(--font-family);
+      color: #ffffff;
+      letter-spacing: -0.3px;
+    }
+    .child-info { flex: 1; }
+    .child-name {
+      font: 600 16px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .child-name .active-pill {
+      margin-left: 6px;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: #eef3fb;
+      color: var(--color-primary);
+      font-size: 10px;
+      font-weight: 600;
+      vertical-align: middle;
+      letter-spacing: 0.3px;
+    }
+    .child-meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .child-action {
+      color: var(--color-text-weak);
+    }
+
+    /* Info fields */
+    .child-fields {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--color-border);
+    }
+    .child-field {
+      padding: 10px 12px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+    }
+    .child-field .label {
+      display: block;
+      font: 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+    .child-field .value {
+      font: 500 13px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .child-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 12px;
+      margin-top: 14px;
+      border-top: 1px solid var(--color-border);
+    }
+    .child-stat {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .child-stat strong { color: var(--color-text); font-weight: 600; }
+
+    /* Add card */
+    .add-card {
+      padding: 32px 20px;
+      border: 1.5px dashed var(--color-border-strong);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      text-align: center;
+      color: var(--color-text-weak);
+    }
+    .add-card .plus {
+      display: inline-flex;
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--color-surface-subtle);
+      align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+    .add-card .title {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .add-card .desc {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    /* Info banner */
+    .info-banner {
+      margin: 16px 20px 0;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--color-amber-bg);
+      color: #7a4a00;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font: var(--font-caption);
+      line-height: 1.6;
+      letter-spacing: var(--tracking-tight);
+    }
+    .info-banner svg { flex: 0 0 18px; margin-top: 1px; color: var(--color-amber); }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">자녀 프로필</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Intro -->
+    <p class="intro">
+      <strong>2명</strong>의 자녀가 등록되어 있어요. 예약 시 어느 자녀를 위한 상담인지 선택할 수 있습니다.
+    </p>
+
+    <!-- Children list -->
+    <div class="child-list">
+
+      <article class="child-card is-active">
+        <div class="child-head">
+          <span class="child-avatar" style="background:linear-gradient(135deg,#1b61c9,#254fad);">이</span>
+          <div class="child-info">
+            <p class="child-name">이하은 <span class="active-pill">기본</span></p>
+            <p class="child-meta">고2 · 이화여고 · 2008년생</p>
+          </div>
+          <button class="child-action">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+
+        <div class="child-fields">
+          <div class="child-field">
+            <span class="label">관심 계열</span>
+            <span class="value">인문/경영</span>
+          </div>
+          <div class="child-field">
+            <span class="label">성적대</span>
+            <span class="value">1등급 후반</span>
+          </div>
+          <div class="child-field">
+            <span class="label">희망 대학</span>
+            <span class="value">서울대 · 연세대</span>
+          </div>
+          <div class="child-field">
+            <span class="label">입시 유형</span>
+            <span class="value">학생부종합</span>
+          </div>
+        </div>
+
+        <div class="child-bottom">
+          <span class="child-stat">
+            <strong>5회</strong> 상담 · <strong>₩149,500</strong> 결제
+          </span>
+          <button class="btn btn-secondary" style="height:34px;padding:0 14px;font-size:12px;">상세 편집</button>
+        </div>
+      </article>
+
+      <article class="child-card">
+        <div class="child-head">
+          <span class="child-avatar" style="background:linear-gradient(135deg,#006400,#10b981);">이</span>
+          <div class="child-info">
+            <p class="child-name">이준호</p>
+            <p class="child-meta">중3 · 대원중 · 2011년생</p>
+          </div>
+          <button class="child-action">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+          </button>
+        </div>
+
+        <div class="child-fields">
+          <div class="child-field">
+            <span class="label">관심 계열</span>
+            <span class="value">이공계</span>
+          </div>
+          <div class="child-field">
+            <span class="label">성적대</span>
+            <span class="value">미입력</span>
+          </div>
+          <div class="child-field">
+            <span class="label">희망 대학</span>
+            <span class="value">미입력</span>
+          </div>
+          <div class="child-field">
+            <span class="label">입시 유형</span>
+            <span class="value">고민중</span>
+          </div>
+        </div>
+
+        <div class="child-bottom">
+          <span class="child-stat">
+            <strong>0회</strong> 상담 · 첫 상담 추천
+          </span>
+          <button class="btn btn-secondary" style="height:34px;padding:0 14px;font-size:12px;">상세 편집</button>
+        </div>
+      </article>
+
+      <!-- Add new child -->
+      <button class="add-card" data-next="../auth/phone.html">
+        <span class="plus">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </span>
+        <p class="title">자녀 추가하기</p>
+        <p class="desc">여러 자녀를 등록해 한 계정에서 관리하세요.</p>
+      </button>
+
+    </div>
+
+    <!-- Privacy banner -->
+    <div class="info-banner">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span>자녀 정보는 상담 맥락 공유 목적으로만 사용되며, 멘토에게는 이름·학년·관심 계열만 공유됩니다.</span>
+    </div>
+
+    <div style="height:24px;"></div>
+
+  </main>
+</body>
+</html>

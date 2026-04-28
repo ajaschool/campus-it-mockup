@@ -1,0 +1,57 @@
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# 환경변수·시크릿
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+infra/.env
+
+# Claude Code (사용자별 로컬만 ignore, 에이전트는 커밋)
+.claude/settings.local.json
+.claude/agent-memory/
+.claude/commands/
+.claude/skills/
+.agents/
+skills-lock.json
+
+# ai-agent-team 로컬 복사본 (글로벌 ~/ai-agent-team 사용)
+agent-team/
+
+# 작업 보고서 (로컬 보관)
+reports/
+
+# 백업·압축본
+*.zip
+*.bak
+*.tmp
+*.log
+
+# Node.js (frontend/ 생긴 뒤 적용)
+node_modules/
+.next/
+out/
+.vercel/
+*.tsbuildinfo
+.npm/
+.pnpm-store/
+
+# Java · Gradle · Maven (backend/ 생긴 뒤 적용)
+target/
+build/
+.gradle/
+*.class
+hs_err_pid*
+
+# 테스트·커버리지
+coverage/
+.nyc_output/

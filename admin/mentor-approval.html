@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 관리자 — 멘토 승인 검수</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <style>
+    body { background: var(--color-surface-subtle); }
+    .desktop-canvas {
+      width: 1280px;
+      min-height: 900px;
+      margin: 24px auto;
+      background: var(--color-surface);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas: "logo topbar" "sidebar main";
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .logo-area {
+      grid-area: logo;
+      padding: 0 20px;
+      display: flex; align-items: center;
+      border-bottom: 1px solid var(--color-border);
+      border-right: 1px solid var(--color-border);
+    }
+    .logo-text { font: 700 17px/1 var(--font-family); color: var(--color-text); }
+    .logo-text .accent { color: var(--color-primary); }
+    .badge-admin {
+      margin-left: 8px; padding: 2px 8px;
+      background: var(--color-text); color: #fff;
+      font: 600 10px/1.4 var(--font-family);
+      border-radius: var(--radius-sm);
+      text-transform: uppercase; letter-spacing: 0.4px;
+    }
+    .topbar {
+      grid-area: topbar;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 24px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .breadcrumb { font: var(--font-caption-strong); color: var(--color-text-weak); letter-spacing: var(--tracking-tight); }
+    .breadcrumb strong { color: var(--color-text); font-weight: 600; }
+    .breadcrumb .sep { margin: 0 8px; opacity: 0.5; }
+
+    /* Sidebar */
+    .sidebar { grid-area: sidebar; padding: 20px 12px; border-right: 1px solid var(--color-border); }
+    .nav-label { padding: 0 12px; font: 600 11px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px; margin-top: 20px; }
+    .nav-label:first-child { margin-top: 0; }
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: var(--radius-md);
+      color: var(--color-text-secondary);
+      font: 500 14px/1 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 2px;
+    }
+    .nav-item.is-active { background: #eef3fb; color: var(--color-primary); font-weight: 600; }
+    .nav-item .nav-badge { margin-left: auto; padding: 2px 7px; border-radius: var(--radius-full); background: var(--color-amber); color: #3a2500; font-size: 10px; font-weight: 700; }
+
+    /* Main split: list + detail */
+    .main-area { grid-area: main; display: grid; grid-template-columns: 320px 1fr; background: var(--color-surface-subtle); overflow: hidden; }
+
+    /* Left list */
+    .queue-list { border-right: 1px solid var(--color-border); background: var(--color-surface); overflow-y: auto; }
+    .queue-head {
+      padding: 20px 20px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .queue-head h2 {
+      font: 700 18px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+      margin: 0 0 4px;
+    }
+    .queue-head .count { font: var(--font-caption); color: var(--color-text-weak); }
+
+    .queue-filter {
+      padding: 10px 20px;
+      display: flex; gap: 8px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .q-chip {
+      padding: 4px 10px; border-radius: var(--radius-full);
+      background: var(--color-surface-subtle);
+      color: var(--color-text-secondary);
+      font: 500 11px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+    }
+    .q-chip.is-selected { background: var(--color-text); color: #fff; }
+
+    .queue-item {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+      display: flex; gap: 12px; align-items: flex-start;
+      cursor: pointer;
+    }
+    .queue-item.is-active { background: #eef3fb; border-left: 3px solid var(--color-primary); padding-left: 17px; }
+    .queue-item:hover { background: var(--color-surface-subtle); }
+    .q-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg, #cdd8ec, #8aa3c1);
+      color: #fff; font: 600 14px/1 var(--font-family);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 40px;
+    }
+    .q-body { flex: 1; min-width: 0; }
+    .q-name { font: 600 14px/1.2 var(--font-family); color: var(--color-text); margin: 0 0 2px; letter-spacing: var(--tracking-tight); }
+    .q-school { font: var(--font-caption); color: var(--color-text-weak); margin: 0 0 6px; letter-spacing: var(--tracking-tight); }
+    .q-meta { display: flex; gap: 8px; align-items: center; }
+    .q-date { font: 11px/1 var(--font-family); color: var(--color-text-weak); }
+    .q-status {
+      font-size: 10px; font-weight: 600;
+      padding: 2px 6px; border-radius: var(--radius-sm);
+      background: var(--color-amber-bg); color: #7a4a00;
+    }
+
+    /* Detail panel */
+    .detail-panel { overflow-y: auto; }
+    .detail-head {
+      padding: 24px 32px 20px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-surface);
+    }
+    .detail-title { font: 700 24px/1.2 var(--font-family); color: var(--color-text); letter-spacing: -0.3px; margin: 0 0 8px; }
+    .detail-sub { font: var(--font-body); color: var(--color-text-weak); letter-spacing: var(--tracking-tight); margin: 0; }
+    .detail-sub strong { color: var(--color-text); font-weight: 500; }
+
+    .detail-body { padding: 24px 32px; }
+
+    .info-grid {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .info-tile {
+      padding: 14px 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .info-tile .label { font: 11px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; display: block; }
+    .info-tile .value { font: 600 14px/1.3 var(--font-family); color: var(--color-text); letter-spacing: var(--tracking-tight); }
+
+    /* Documents */
+    .section-title { font: 600 13px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.4px; margin: 0 0 12px; }
+
+    .docs-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+    .doc-card {
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .doc-preview {
+      aspect-ratio: 4 / 3;
+      background: #e7ebf0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M0 0h60v60H0z' fill='%23f1f4f8'/%3E%3Cpath d='M0 0l60 60M60 0L0 60' stroke='%23d8dde3' stroke-width='0.5'/%3E%3C/svg%3E") center;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--color-text-weak);
+      font-weight: 500;
+    }
+    .doc-meta { display: flex; justify-content: space-between; align-items: center; }
+    .doc-name { font: 500 13px/1.3 var(--font-family); color: var(--color-text); letter-spacing: var(--tracking-tight); }
+    .doc-size { font: 11px/1 var(--font-family); color: var(--color-text-weak); }
+    .doc-open { font: var(--font-caption-strong); color: var(--color-primary); letter-spacing: var(--tracking-tight); }
+
+    /* Checklist */
+    .checklist {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 4px 16px;
+      margin-bottom: 24px;
+    }
+    .check-row {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 0;
+    }
+    .check-row + .check-row { border-top: 1px solid var(--color-border); }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--color-border-strong);
+      flex: 0 0 22px; position: relative;
+    }
+    .check-row.is-checked .check-box { background: var(--color-success); border-color: var(--color-success); }
+    .check-row.is-checked .check-box::after {
+      content: "";
+      position: absolute; left: 6px; top: 2px;
+      width: 6px; height: 11px;
+      border-right: 2.5px solid #fff;
+      border-bottom: 2.5px solid #fff;
+      transform: rotate(45deg);
+    }
+    .check-name { font: var(--font-body); color: var(--color-text); letter-spacing: var(--tracking-tight); flex: 1; }
+    .check-name .sub { display: block; font-size: 12px; color: var(--color-text-weak); margin-top: 2px; font-weight: 400; }
+
+    /* Decision bar */
+    .decision-bar {
+      padding: 18px 32px;
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    .decision-bar .note {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .btn-approve { height: 44px; padding: 0 24px; background: var(--color-success); color: #fff; border-radius: var(--radius-md); font: var(--font-button); font-weight: 600; letter-spacing: var(--tracking-tight); }
+    .btn-reject { height: 44px; padding: 0 20px; background: var(--color-surface); color: var(--color-error); border: 1px solid var(--color-border); border-radius: var(--radius-md); font: var(--font-button); font-weight: 600; letter-spacing: var(--tracking-tight); }
+    .btn-resubmit { height: 44px; padding: 0 20px; background: var(--color-surface); color: var(--color-text); border: 1px solid var(--color-border); border-radius: var(--radius-md); font: var(--font-button); font-weight: 600; letter-spacing: var(--tracking-tight); }
+
+    .profile-block {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .profile-block h3 { font: 600 14px/1.2 var(--font-family); color: var(--color-text); letter-spacing: var(--tracking-tight); margin: 0 0 12px; }
+    .profile-block p { font: var(--font-body); color: var(--color-text-secondary); line-height: 1.6; letter-spacing: var(--tracking-tight); margin: 0; }
+    .profile-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+    .profile-tag {
+      font-size: 12px; font-weight: 500;
+      padding: 4px 10px; border-radius: var(--radius-full);
+      background: var(--color-surface-subtle); color: var(--color-text-secondary);
+    }
+  </style>
+</head>
+<body>
+  <main class="desktop-canvas">
+
+    <!-- Logo -->
+    <div class="logo-area">
+      <span class="logo-text">아자스쿨 <span class="accent">멘토링</span></span>
+      <span class="badge-admin">Admin</span>
+    </div>
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <div class="breadcrumb">
+        <strong>운영</strong><span class="sep">/</span>멘토 관리<span class="sep">/</span><strong>승인 검수</strong>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <p class="nav-label">현황</p>
+      <div class="nav-item">대시보드</div>
+
+      <p class="nav-label">운영</p>
+      <div class="nav-item is-active">
+        멘토 관리
+        <span class="nav-badge">3</span>
+      </div>
+      <div class="nav-item">예약 관리</div>
+      <div class="nav-item">결제·환불</div>
+      <div class="nav-item">후기·클레임</div>
+      <div class="nav-item">정산</div>
+
+      <p class="nav-label">설정</p>
+      <div class="nav-item">대학·단과대 구조</div>
+      <div class="nav-item">인기 멘토 영역</div>
+      <div class="nav-item">알림 발송 기록</div>
+    </aside>
+
+    <!-- Main: list + detail -->
+    <div class="main-area">
+
+      <!-- Queue list -->
+      <aside class="queue-list">
+        <div class="queue-head">
+          <h2>승인 대기</h2>
+          <span class="count">3명 · 평균 대기 18시간</span>
+        </div>
+        <div class="queue-filter">
+          <span class="q-chip is-selected">전체 3</span>
+          <span class="q-chip">서울대 1</span>
+          <span class="q-chip">연세대 1</span>
+          <span class="q-chip">고려대 1</span>
+        </div>
+
+        <div class="queue-item is-active">
+          <span class="q-avatar">정</span>
+          <div class="q-body">
+            <p class="q-name">정수민</p>
+            <p class="q-school">서울대 화학생명공학과 · 3학년</p>
+            <div class="q-meta">
+              <span class="q-date">4/22 18:23 신청</span>
+              <span class="q-status">검수 대기</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <span class="q-avatar">한</span>
+          <div class="q-body">
+            <p class="q-name">한지민</p>
+            <p class="q-school">연세대 경제학과 · 4학년</p>
+            <div class="q-meta">
+              <span class="q-date">4/22 14:02 신청</span>
+              <span class="q-status">검수 대기</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="queue-item">
+          <span class="q-avatar">강</span>
+          <div class="q-body">
+            <p class="q-name">강도윤</p>
+            <p class="q-school">고려대 정치외교학과 · 2학년</p>
+            <div class="q-meta">
+              <span class="q-date">4/21 09:45 신청</span>
+              <span class="q-status">검수 대기</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Detail -->
+      <div class="detail-panel">
+        <div class="detail-head">
+          <h1 class="detail-title">정수민</h1>
+          <p class="detail-sub">
+            <strong>서울대학교 화학생명공학과 · 3학년</strong>
+            · 휴대폰 본인인증 <span style="color:var(--color-success);">✓ 완료</span>
+            · 신청 4/22 18:23
+          </p>
+        </div>
+
+        <div class="detail-body">
+
+          <!-- Basic info grid -->
+          <div class="info-grid">
+            <div class="info-tile">
+              <span class="label">입시 전형</span>
+              <span class="value">학생부종합전형</span>
+            </div>
+            <div class="info-tile">
+              <span class="label">입시 연도</span>
+              <span class="value">2022학년도</span>
+            </div>
+            <div class="info-tile">
+              <span class="label">이메일 인증</span>
+              <span class="value" style="color:var(--color-success);">✓ @snu.ac.kr 인증</span>
+            </div>
+            <div class="info-tile">
+              <span class="label">연락처</span>
+              <span class="value">010-1234-5678</span>
+            </div>
+            <div class="info-tile">
+              <span class="label">생년월일</span>
+              <span class="value">2003-08-15</span>
+            </div>
+            <div class="info-tile">
+              <span class="label">닉네임</span>
+              <span class="value">수민쌤</span>
+            </div>
+          </div>
+
+          <!-- Documents -->
+          <h3 class="section-title">증빙 서류 · 2</h3>
+          <div class="docs-list">
+            <div class="doc-card">
+              <div class="doc-preview">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M10 13h4M10 17h4"/></svg>
+              </div>
+              <div class="doc-meta">
+                <div>
+                  <p class="doc-name">재학증명_정수민.pdf</p>
+                  <p class="doc-size">1.2MB · 4/22 업로드</p>
+                </div>
+                <a class="doc-open" href="#">원본 보기 ›</a>
+              </div>
+            </div>
+            <div class="doc-card">
+              <div class="doc-preview">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div class="doc-meta">
+                <div>
+                  <p class="doc-name">학생증.jpg</p>
+                  <p class="doc-size">2.4MB · 4/22 업로드</p>
+                </div>
+                <a class="doc-open" href="#">원본 보기 ›</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Profile content -->
+          <h3 class="section-title">멘토 프로필 (공개 예정)</h3>
+          <div class="profile-block">
+            <h3>한 줄 소개</h3>
+            <p>"화학생명공학부 진학을 고민하는 이과 학생들에게 실제 입시·학과 생활을 구체적으로 전해드려요."</p>
+            <div class="profile-tags">
+              <span class="profile-tag">진학/입시</span>
+              <span class="profile-tag">전공 탐색</span>
+              <span class="profile-tag">이과</span>
+              <span class="profile-tag">학생부종합</span>
+            </div>
+          </div>
+
+          <!-- Checklist -->
+          <h3 class="section-title">검수 체크리스트</h3>
+          <div class="checklist">
+            <label class="check-row is-checked">
+              <span class="check-box"></span>
+              <span class="check-name">재학 증빙 서류 일치<span class="sub">학교·학과·학년 정보와 문서 일치 확인</span></span>
+            </label>
+            <label class="check-row is-checked">
+              <span class="check-box"></span>
+              <span class="check-name">본인인증 완료<span class="sub">휴대폰 + 학교 이메일 인증 완료</span></span>
+            </label>
+            <label class="check-row is-checked">
+              <span class="check-box"></span>
+              <span class="check-name">프로필 부적절 표현 없음<span class="sub">허위·과장·광고성 문구 확인</span></span>
+            </label>
+            <label class="check-row">
+              <span class="check-box"></span>
+              <span class="check-name">입시 경험 표현 자연스러움<span class="sub">"학생부종합 합격" 등 과장 없는지 최종 확인</span></span>
+            </label>
+          </div>
+
+        </div>
+
+        <!-- Decision -->
+        <div class="decision-bar">
+          <span class="note">운영 메모 · 서울대 자연과학계열 첫 승인 대상. 화학생명공학 멘토 풀 확장에 기여.</span>
+          <button class="btn-resubmit">재제출 요청</button>
+          <button class="btn-reject">반려</button>
+          <button class="btn-approve">승인 확정</button>
+        </div>
+
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

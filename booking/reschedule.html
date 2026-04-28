@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 일정 변경 제안</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .alert {
+      margin: 12px 20px 20px;
+      padding: 16px 18px;
+      background: var(--color-amber-bg);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    .alert .icon {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-amber);
+      color: #3a2500;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 36px;
+    }
+    .alert h2 {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .alert p {
+      font: var(--font-caption);
+      color: #7a4a00;
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .mentor-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .mentor-row .thumb {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #f2d8c1, #c89a78);
+      flex: 0 0 44px;
+    }
+    .mentor-row .name {
+      font: 600 15px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .mentor-row .school {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    /* Schedule comparison */
+    .compare-wrap {
+      padding: 20px;
+    }
+    .compare-label {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 10px;
+    }
+    .schedule-box {
+      padding: 16px 18px;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+    }
+    .schedule-box .when {
+      font: 700 18px/1.3 var(--font-family);
+      letter-spacing: -0.2px;
+      margin: 0 0 6px;
+    }
+    .schedule-box .extra {
+      font: var(--font-caption);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    .schedule-original {
+      background: var(--color-surface-subtle);
+    }
+    .schedule-original .when { color: var(--color-text-weak); text-decoration: line-through; }
+    .schedule-original .extra { color: var(--color-text-weak); }
+
+    .schedule-proposed {
+      background: #eef3fb;
+      border: 2px solid var(--color-primary);
+    }
+    .schedule-proposed .when { color: var(--color-primary); }
+    .schedule-proposed .extra { color: var(--color-primary); }
+
+    .arrow {
+      text-align: center;
+      padding: 2px 0 6px;
+    }
+
+    /* Mentor message */
+    .mentor-message {
+      margin: 0 20px 16px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .mentor-message .label {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .mentor-message p {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    /* Alternative times */
+    .alt-section {
+      padding: 0 20px 20px;
+    }
+    .alt-section h3 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 12px;
+    }
+    .alt-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .alt-slot {
+      padding: 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      text-align: center;
+      font: 500 13px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .alt-slot:hover { border-color: var(--color-primary); }
+
+    .deadline {
+      margin: 0 20px 16px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-error-bg);
+      color: var(--color-error);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">일정 변경 요청</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Alert -->
+    <div class="alert">
+      <span class="icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+      </span>
+      <div>
+        <h2>멘토가 일정 변경을 제안했습니다</h2>
+        <p>기존 일정으로는 상담이 어렵다고 하세요. 아래 제안을 확인하고 수락하거나 다른 시간을 골라주세요.</p>
+      </div>
+    </div>
+
+    <!-- Mentor -->
+    <div class="mentor-row">
+      <div class="thumb"></div>
+      <div>
+        <p class="name">김서연</p>
+        <p class="school">서울대 경영학과 · 3학년</p>
+      </div>
+    </div>
+
+    <!-- Schedule comparison -->
+    <div class="compare-wrap">
+      <p class="compare-label">기존 예약</p>
+      <div class="schedule-box schedule-original">
+        <p class="when">4월 27일 (일) 오후 3:00</p>
+        <p class="extra">경영학과 진학 Q&amp;A 상담 · 30분</p>
+      </div>
+
+      <div class="arrow">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-text-weak);"><polyline points="7 13 12 18 17 13"/><polyline points="7 6 12 11 17 6"/></svg>
+      </div>
+
+      <p class="compare-label">멘토 제안</p>
+      <div class="schedule-box schedule-proposed">
+        <p class="when">4월 28일 (월) 오후 7:00</p>
+        <p class="extra">같은 상담 상품 · 30분</p>
+      </div>
+    </div>
+
+    <!-- Mentor message -->
+    <div class="mentor-message">
+      <p class="label">멘토 메시지</p>
+      <p>일요일에 학교 일정이 갑자기 잡혀서요. 월요일 저녁이 가능하시면 더 차분하게 상담 드릴 수 있을 것 같아요. 괜찮으시면 수락 부탁드립니다!</p>
+    </div>
+
+    <!-- Alternative -->
+    <section class="alt-section">
+      <h3>다른 가능 시간대</h3>
+      <div class="alt-list">
+        <button class="alt-slot">4/29 (화) 19:00</button>
+        <button class="alt-slot">4/29 (화) 20:00</button>
+        <button class="alt-slot">5/1 (목) 19:00</button>
+        <button class="alt-slot">5/1 (목) 20:00</button>
+      </div>
+    </section>
+
+    <!-- Deadline -->
+    <p class="deadline">24시간 내 응답이 없으면 예약이 자동 취소됩니다. (전액 환불)</p>
+
+    <!-- CTAs -->
+    <div class="bottom-cta" style="flex-direction:column;gap:8px;align-items:stretch;">
+      <button class="btn btn-primary btn-block" style="height:52px;" data-next="../mypage/home.html">제안 수락 · 4/28 (월) 19:00</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+        <button class="btn btn-secondary">다른 시간 선택</button>
+        <button class="btn btn-secondary" style="color:var(--color-error);">예약 취소</button>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

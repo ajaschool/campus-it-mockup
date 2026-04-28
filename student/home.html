@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 홈</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../system/tokens.css">
+
+  <style>
+    /* ======== Home-specific ======== */
+    .app-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 20px 8px;
+      background: var(--color-surface);
+    }
+    .wordmark {
+      font: 700 18px/1 var(--font-family);
+      letter-spacing: -0.2px;
+      color: var(--color-text);
+    }
+    .wordmark .accent { color: var(--color-primary); }
+    .app-bar-actions { display: flex; gap: 14px; align-items: center; }
+    .icon-btn {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+      color: var(--color-text);
+    }
+    .icon-btn .dot {
+      position: absolute; top: 8px; right: 8px;
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--color-error);
+    }
+    .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #cdd8ec, #e5ebf7);
+      display: inline-block;
+    }
+
+    /* Search bar */
+    .search-wrap { padding: 4px 20px 12px; }
+    .search {
+      display: flex; align-items: center; gap: 10px;
+      height: 44px;
+      padding: 0 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      color: var(--color-text-weak);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Hero CTA */
+    .hero {
+      margin: 8px 20px 16px;
+      padding: 28px 24px;
+      border-radius: var(--radius-xl);
+      background:
+        radial-gradient(120% 80% at 100% 0%, #3a7ad4 0%, transparent 55%),
+        linear-gradient(135deg, #1b61c9 0%, #144699 100%);
+      color: #ffffff;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero h1 {
+      margin: 0 0 8px;
+      font: 700 24px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-normal);
+    }
+    .hero p {
+      margin: 0 0 20px;
+      font: var(--font-body);
+      opacity: 0.85;
+      letter-spacing: var(--tracking-tight);
+    }
+    .hero-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .hero-chip {
+      display: inline-flex; align-items: center;
+      height: 28px; padding: 0 12px;
+      border-radius: var(--radius-full);
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(8px);
+      color: #ffffff;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Popular mentors — horizontal */
+    .popular-scroll {
+      display: flex;
+      gap: 12px;
+      padding: 0 20px 4px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .popular-scroll::-webkit-scrollbar { display: none; }
+    .mentor-card {
+      flex: 0 0 200px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .mentor-photo {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #d7dee8;
+      overflow: hidden;
+    }
+    .mentor-photo img { width: 100%; height: 100%; object-fit: cover; }
+    .mentor-badges {
+      position: absolute; inset: 8px 8px auto 8px;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .mentor-info { padding: 12px 14px 14px; }
+    .mentor-name {
+      font: 600 16px/1.2 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+      color: var(--color-text);
+    }
+    .mentor-school {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 10px;
+    }
+    .mentor-tags { display: flex; gap: 4px; margin-bottom: 10px; }
+    .mentor-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-subtle);
+      color: var(--color-text-secondary);
+    }
+    .mentor-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .rating { color: var(--color-text); }
+    .rating-count { color: var(--color-text-weak); font-weight: 400; }
+    .price {
+      font: 600 14px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .price-unit { color: var(--color-text-weak); font-weight: 400; margin-left: 2px; }
+
+    /* University grid */
+    .univ-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      padding: 0 20px;
+    }
+    .univ-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 18px 16px;
+    }
+    .univ-logo {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      display: flex; align-items: center; justify-content: center;
+      font: 700 16px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: -0.4px;
+      margin-bottom: 12px;
+    }
+    .univ-name {
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .univ-count {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+    }
+
+    /* Category grid (6 categories) */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      padding: 0 20px;
+    }
+    .cat-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .cat-icon {
+      width: 36px; height: 36px; border-radius: var(--radius-md);
+      background: #eef3fb;
+      color: var(--color-primary);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cat-label {
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      line-height: 1.3;
+    }
+
+    /* Review mentor list */
+    .review-list {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 0 20px;
+    }
+    .review-mentor {
+      display: flex;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+    }
+    .review-avatar {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-md);
+      background: #d7dee8;
+      flex: 0 0 56px;
+      overflow: hidden;
+    }
+    .review-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .review-content { flex: 1; min-width: 0; }
+    .review-header {
+      display: flex; align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+    .review-header .name { font: 600 15px/1.2 var(--font-family); letter-spacing: var(--tracking-tight); }
+    .review-header .school { font: var(--font-caption); color: var(--color-text-weak); }
+    .review-quote {
+      font: var(--font-caption);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.45;
+      margin: 0 0 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .review-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Bottom tab bar */
+    .tab-bar {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      margin-top: 8px;
+    }
+    .tab {
+      flex: 1;
+      display: flex; flex-direction: column; align-items: center; gap: 2px;
+      padding: 6px 0;
+      color: var(--color-text-weak);
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: var(--tracking-tight);
+    }
+    .tab.is-active { color: var(--color-primary); }
+    .tab svg { stroke-width: 1.6; }
+
+    /* Content spacing tweaks */
+    .section + .section { padding-top: 8px; }
+    .spacer-8 { height: 8px; }
+  </style>
+</head>
+
+<body>
+  <main class="mobile-canvas">
+
+    <!-- ============ App Bar ============ -->
+    <header class="app-bar">
+      <div class="wordmark">아자스쿨<span class="accent"> 멘토링</span></div>
+      <div class="app-bar-actions">
+        <button class="icon-btn" aria-label="알림">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10 21a2 2 0 0 0 4 0"/>
+          </svg>
+          <span class="dot"></span>
+        </button>
+        <span class="avatar" role="img" aria-label="프로필"></span>
+      </div>
+    </header>
+
+    <!-- ============ Search ============ -->
+    <div class="search-wrap">
+      <div class="search" data-next="./search.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/>
+          <path d="m20 20-3.5-3.5"/>
+        </svg>
+        <span>멘토 · 학교 · 고민 검색</span>
+      </div>
+    </div>
+
+    <!-- ============ Hero CTA ============ -->
+    <section class="hero">
+      <h1>지금 이 고민,<br>어떻게 풀까요?</h1>
+      <p>대학생 선배에게 30분 상담받기</p>
+      <div class="hero-chips">
+        <span class="hero-chip">진학 / 입시</span>
+        <span class="hero-chip">공부법 · 내신</span>
+        <span class="hero-chip">전공 선택</span>
+      </div>
+    </section>
+
+    <!-- ============ Popular Mentors ============ -->
+    <section class="section" style="padding-left:0; padding-right:0;">
+      <div class="section-title-row" style="padding: 0 20px;">
+        <h2 class="section-title">지금 많이 찾는 멘토</h2>
+        <a class="link" href="#">더보기 →</a>
+      </div>
+      <div class="popular-scroll">
+        <!-- Mentor card 1 -->
+        <article class="mentor-card">
+          <div class="mentor-photo">
+            <div class="mentor-badges">
+              <span class="badge badge-verified">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                인증
+              </span>
+              <span class="badge badge-hot">HOT</span>
+            </div>
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#f2d8c1,#c89a78);"></div>
+          </div>
+          <div class="mentor-info">
+            <p class="mentor-name">김서연</p>
+            <p class="mentor-school">서울대 경영학과 3학년</p>
+            <div class="mentor-tags">
+              <span class="mentor-tag">진학/입시</span>
+              <span class="mentor-tag">전공탐색</span>
+            </div>
+            <div class="mentor-meta">
+              <span class="rating">★ 4.9 <span class="rating-count">(217)</span></span>
+              <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Mentor card 2 -->
+        <article class="mentor-card">
+          <div class="mentor-photo">
+            <div class="mentor-badges">
+              <span class="badge badge-verified">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                인증
+              </span>
+              <span class="badge badge-hot">HOT</span>
+            </div>
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#d1dde9,#8aa3c1);"></div>
+          </div>
+          <div class="mentor-info">
+            <p class="mentor-name">박준호</p>
+            <p class="mentor-school">연세대 의예과 2학년</p>
+            <div class="mentor-tags">
+              <span class="mentor-tag">의대 입시</span>
+              <span class="mentor-tag">내신</span>
+            </div>
+            <div class="mentor-meta">
+              <span class="rating">★ 4.8 <span class="rating-count">(184)</span></span>
+              <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Mentor card 3 -->
+        <article class="mentor-card">
+          <div class="mentor-photo">
+            <div class="mentor-badges">
+              <span class="badge badge-verified">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                인증
+              </span>
+            </div>
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,#e5d8ea,#a28aba);"></div>
+          </div>
+          <div class="mentor-info">
+            <p class="mentor-name">이수아</p>
+            <p class="mentor-school">고려대 컴퓨터공학과 4학년</p>
+            <div class="mentor-tags">
+              <span class="mentor-tag">전공탐색</span>
+              <span class="mentor-tag">학생부</span>
+            </div>
+            <div class="mentor-meta">
+              <span class="rating">★ 5.0 <span class="rating-count">(96)</span></span>
+              <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ============ University ============ -->
+    <section class="section">
+      <h2 class="section-title">대학으로 멘토 찾기</h2>
+      <div class="univ-grid">
+        <div class="univ-card">
+          <div class="univ-logo">SNU</div>
+          <p class="univ-name">서울대학교</p>
+          <p class="univ-count">멘토 24명</p>
+        </div>
+        <div class="univ-card">
+          <div class="univ-logo">YSU</div>
+          <p class="univ-name">연세대학교</p>
+          <p class="univ-count">멘토 19명</p>
+        </div>
+        <div class="univ-card">
+          <div class="univ-logo">KU</div>
+          <p class="univ-name">고려대학교</p>
+          <p class="univ-count">멘토 17명</p>
+        </div>
+        <div class="univ-card" style="display:flex;align-items:center;justify-content:center;color:var(--color-text-weak);font-weight:500;">
+          <span>+ 전체 보기</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Category ============ -->
+    <section class="section">
+      <h2 class="section-title">어떤 고민이세요?</h2>
+      <div class="cat-grid">
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 4 2 10l10 6 10-6Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg></div>
+          <p class="cat-label">진학 / 입시 상담</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg></div>
+          <p class="cat-label">공부법 / 내신 관리</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.2 7.8 13.41 13.41 7.8 16.2 10.59 10.59 16.2 7.8"/></svg></div>
+          <p class="cat-label">전공 / 계열 탐색</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><path d="M9 13h6M9 17h6"/></svg></div>
+          <p class="cat-label">학생부 / 활동</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <p class="cat-label">학교생활 Q&amp;A</p>
+        </div>
+        <div class="cat-card">
+          <div class="cat-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <p class="cat-label">학부모 상담</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ Review mentors ============ -->
+    <section class="section">
+      <h2 class="section-title">후기가 좋은 멘토</h2>
+      <div class="review-list">
+        <article class="review-mentor">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#d8e8d1,#8bb27a);"></div>
+          <div class="review-content">
+            <div class="review-header">
+              <span class="name">정민서</span>
+              <span class="school">서강대 심리학과</span>
+            </div>
+            <p class="review-quote">"문과 계열 고민을 정말 구체적으로 들어주시고 학생부 방향까지 짚어주셨어요."</p>
+            <div class="review-meta">
+              <span class="rating" style="font-size:12px;">★ 4.9 <span class="rating-count">(142)</span></span>
+              <span class="price" style="font-size:13px;">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-mentor">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#e9d8d1,#c0927a);"></div>
+          <div class="review-content">
+            <div class="review-header">
+              <span class="name">최지훈</span>
+              <span class="school">한양대 기계공학과</span>
+            </div>
+            <p class="review-quote">"공대 진학 고민하는 학생 입장에서 실제 커리큘럼 현실을 알려주셔서 좋았어요."</p>
+            <div class="review-meta">
+              <span class="rating" style="font-size:12px;">★ 4.8 <span class="rating-count">(98)</span></span>
+              <span class="price" style="font-size:13px;">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+
+        <article class="review-mentor">
+          <div class="review-avatar" style="background:linear-gradient(135deg,#d1d8e9,#7a8dc0);"></div>
+          <div class="review-content">
+            <div class="review-header">
+              <span class="name">한예림</span>
+              <span class="school">이화여대 국어국문학과</span>
+            </div>
+            <p class="review-quote">"자기소개서 방향 잡는 법을 단계별로 설명해주셔서 아이가 바로 정리했어요. - 학부모"</p>
+            <div class="review-meta">
+              <span class="rating" style="font-size:12px;">★ 5.0 <span class="rating-count">(73)</span></span>
+              <span class="price" style="font-size:13px;">₩29,900<span class="price-unit">/30분</span></span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <div class="spacer-8"></div>
+
+    <!-- ============ Tab Bar ============ -->
+    <nav class="tab-bar">
+      <button class="tab is-active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+        <span>홈</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>
+        </svg>
+        <span>탐색</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/>
+        </svg>
+        <span>내 예약</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/>
+        </svg>
+        <span>후기</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/>
+        </svg>
+        <span>마이</span>
+      </button>
+    </nav>
+
+  </main>
+</body>
+</html>

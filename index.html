@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AjaMentor — 목업 인덱스 v1.2 · 5-Theme · 37 화면</title>
+  <link rel="stylesheet" href="./system/tokens.css">
+  <style>
+    body { background: var(--color-surface-subtle); padding-top: 80px; }
+
+    /* ============ Theme Switcher (fixed top) ============ */
+    .theme-dock {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      background: var(--color-surface);
+      border-bottom: 1px solid var(--color-border);
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      backdrop-filter: blur(12px);
+    }
+    .theme-dock-brand {
+      font: 700 15px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-normal);
+      padding-right: 16px;
+      border-right: 1px solid var(--color-border);
+    }
+    .theme-dock-brand .mark {
+      display: inline-block;
+      width: 22px; height: 22px;
+      border-radius: var(--radius-sm);
+      background: var(--color-primary);
+      color: var(--color-text-on-primary);
+      text-align: center;
+      line-height: 22px;
+      font-weight: 900;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .theme-dock-label {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .theme-options {
+      display: flex;
+      gap: 8px;
+      flex: 1;
+    }
+    .theme-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px 6px 8px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      font: 500 13px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+    .theme-btn:hover {
+      border-color: var(--color-text);
+      transform: translateY(-1px);
+    }
+    .theme-btn.is-active {
+      background: var(--color-text);
+      border-color: var(--color-text);
+      color: var(--color-surface);
+    }
+    .theme-btn.is-active .swatch-ring { border-color: var(--color-surface); }
+    .swatch {
+      display: inline-block;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      position: relative;
+    }
+    .swatch-ring {
+      position: absolute; inset: -2px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      pointer-events: none;
+    }
+
+    .theme-url-hint {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      white-space: nowrap;
+    }
+    .theme-url-hint code {
+      background: var(--color-surface-subtle);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 11px;
+    }
+
+    /* ============ Site layout ============ */
+    .site { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
+
+    .hero { margin-bottom: 40px; }
+    .badge-kit {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px;
+      background: var(--color-primary-bg); color: var(--color-primary);
+      border-radius: var(--radius-full);
+      font: 600 12px/1 var(--font-family);
+      letter-spacing: 0.3px; text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .site-title {
+      font: 800 40px/1.15 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-normal);
+      margin: 0 0 12px;
+    }
+    .site-title .ver {
+      font-size: 18px; font-weight: 600;
+      color: var(--color-primary);
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .site-sub {
+      font: var(--font-body-lg);
+      color: var(--color-text-weak);
+      line-height: 1.6;
+      margin: 0; max-width: 740px;
+    }
+
+    .meta-row {
+      display: flex; gap: 24px;
+      margin: 24px 0 16px;
+      padding: 20px 24px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .meta { flex: 1; }
+    .meta .label { display: block; font: var(--font-caption); color: var(--color-text-weak); margin-bottom: 6px; }
+    .meta .value { font: 600 15px/1.3 var(--font-family); color: var(--color-text); }
+    .meta .value .color-dot {
+      display: inline-block; width: 12px; height: 12px;
+      border-radius: 3px; margin-right: 8px;
+      vertical-align: middle;
+      background: var(--color-primary);
+    }
+
+    /* Priority legend */
+    .legend {
+      margin-top: 16px;
+      padding: 16px 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .legend-label {
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 8px; font: var(--font-caption); color: var(--color-text-secondary); }
+    .legend-item strong { color: var(--color-text); font-weight: 600; }
+
+    .pri-tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font: 700 10px/1.4 var(--font-family);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .pri-mvp { background: var(--color-success); color: #ffffff; }
+    .pri-rec { background: var(--color-amber); color: var(--color-text-on-primary); }
+    .pri-later { background: var(--color-surface); color: var(--color-text-weak); border: 1px solid var(--color-border-strong); }
+
+    /* Coverage matrix */
+    .coverage {
+      margin-top: 32px;
+      padding: 24px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .coverage h3 { font: 600 15px/1 var(--font-family); color: var(--color-text); margin: 0 0 16px; }
+    .coverage-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .cov-item { padding: 14px; background: var(--color-surface-subtle); border-radius: var(--radius-md); }
+    .cov-num { font: 800 22px/1 var(--font-family); letter-spacing: var(--tracking-normal); }
+    .cov-num.mvp { color: var(--color-success); }
+    .cov-num.rec { color: var(--color-amber); }
+    .cov-num.later { color: var(--color-text-weak); }
+    .cov-label { font: 12px/1.3 var(--font-family); color: var(--color-text-weak); margin-top: 4px; }
+    .cov-label strong { color: var(--color-text); font-weight: 600; }
+
+    /* Groups */
+    .group { margin-top: 48px; }
+    .group-head { display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap; }
+    .group-head h2 { font: 700 22px/1.3 var(--font-family); color: var(--color-text); margin: 0; letter-spacing: var(--tracking-normal); }
+    .group-head .count {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+    }
+    .group-head .breakdown {
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-text-weak);
+    }
+    .group-sub {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      margin: 0 0 20px;
+    }
+
+    .flow-steps {
+      display: flex; gap: 6px; align-items: center;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .flow-steps .step { font-weight: 500; color: var(--color-text-secondary); }
+    .flow-steps .step.emphasis { color: var(--color-primary); font-weight: 600; }
+    .flow-steps .arrow { color: var(--color-border-strong); }
+
+    /* Cards */
+    .cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .cards.desktop { grid-template-columns: 1fr 1fr; }
+    .card {
+      display: flex;
+      flex-direction: column;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      transition: transform 120ms ease, border-color 120ms ease, box-shadow 120ms ease;
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--color-text);
+      box-shadow: var(--shadow-card);
+    }
+
+    .card .pri-ribbon {
+      position: absolute;
+      top: 10px; right: 10px;
+      z-index: 2;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font: 700 10px/1.4 var(--font-family);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .card .pri-ribbon.pri-mvp { background: var(--color-success); color: #fff; }
+    .card .pri-ribbon.pri-rec { background: var(--color-amber); color: var(--color-text-on-primary); }
+    .card .pri-ribbon.pri-later { background: var(--color-surface); color: var(--color-text-weak); border: 1px solid var(--color-border-strong); }
+
+    .preview-wrap {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: var(--color-surface-subtle);
+      overflow: hidden;
+    }
+    .preview-wrap iframe {
+      position: absolute;
+      top: 0; left: 50%;
+      transform: translateX(-50%) scale(0.42);
+      transform-origin: top center;
+      width: 390px;
+      height: calc(100% / 0.42);
+      border: none;
+      pointer-events: none;
+    }
+    .preview-wrap.desktop { aspect-ratio: 16 / 10; }
+    .preview-wrap.desktop iframe {
+      width: 1280px;
+      transform: translateX(-50%) scale(0.28);
+      height: calc(100% / 0.28);
+    }
+
+    .card-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-top: 1px solid var(--color-border);
+    }
+    .card-num {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-title {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .card-desc {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      line-height: 1.5;
+    }
+    .card-tags {
+      display: flex;
+      gap: 4px;
+      margin-top: 6px;
+      flex-wrap: wrap;
+    }
+    .card-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      background: var(--color-surface-subtle);
+      color: var(--color-text-secondary);
+      border: 1px solid var(--color-border);
+    }
+    .card-tag.tag-auth { background: var(--color-primary-bg); color: var(--color-primary); border-color: transparent; }
+    .card-tag.tag-mentor { background: var(--color-amber-bg); color: var(--color-amber); border-color: transparent; filter: brightness(0.92); }
+
+    footer {
+      margin-top: 64px;
+      padding-top: 32px;
+      border-top: 1px solid var(--color-border);
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      line-height: 1.7;
+    }
+    footer a { color: var(--color-primary); font-weight: 500; }
+    footer code {
+      background: var(--color-surface);
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-family: "JetBrains Mono", ui-monospace, monospace;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body data-shell="off">
+
+  <!-- Theme Dock -->
+  <div class="theme-dock">
+    <div class="theme-dock-brand">
+      <span class="mark">A</span>AjaMentor
+    </div>
+    <span class="theme-dock-label">Theme</span>
+    <div class="theme-options" id="themeOptions">
+      <button class="theme-btn" data-theme-key="mentoring">
+        <span class="swatch" style="background:#ff6b00;"></span>
+        Mentoring DS
+      </button>
+      <button class="theme-btn" data-theme-key="academic">
+        <span class="swatch" style="background:#2e4057;"></span>
+        Academic
+      </button>
+      <button class="theme-btn" data-theme-key="editorial">
+        <span class="swatch" style="background:#5b3a8c;"></span>
+        Editorial
+      </button>
+      <button class="theme-btn" data-theme-key="seoul-grad">
+        <span class="swatch" style="background:#0b4d3a;"></span>
+        Seoul Grad
+      </button>
+      <button class="theme-btn" data-theme-key="warmth">
+        <span class="swatch" style="background:#8b4513;"></span>
+        Warmth
+      </button>
+    </div>
+    <span class="theme-url-hint">URL: <code>?theme=mentoring</code></span>
+  </div>
+
+  <div class="site">
+
+    <!-- Hero -->
+    <header class="hero">
+      <span class="badge-kit" id="heroBadge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <span id="heroBadgeText">Mentoring DS · Intercom-inspired</span>
+      </span>
+      <h1 class="site-title">AjaMentor 목업 <span class="ver">v1.2</span></h1>
+      <p class="site-sub">
+        PRD v1.2 (ADR-001/002 반영) 전 구간 37개 화면 · 5개 테마 실시간 전환 가능.
+        상단 Theme Dock에서 팔레트를 선택하면 모든 iframe이 해당 테마로 다시 로드됩니다.
+      </p>
+
+      <div class="meta-row" id="metaRow">
+        <div class="meta"><span class="label">현재 테마</span><span class="value" id="metaTheme">Mentoring DS</span></div>
+        <div class="meta"><span class="label">Primary</span><span class="value"><span class="color-dot"></span><span id="metaPrimary">#FF6B00</span></span></div>
+        <div class="meta"><span class="label">Surface</span><span class="value" id="metaSurface">#FAF9F6 Warm Cream</span></div>
+        <div class="meta"><span class="label">Font</span><span class="value" id="metaFont">Pretendard</span></div>
+        <div class="meta"><span class="label">Radius</span><span class="value" id="metaRadius">4px · Sharp</span></div>
+      </div>
+
+      <div class="legend">
+        <span class="legend-label">우선순위</span>
+        <span class="legend-item"><span class="pri-tag pri-mvp">MVP</span><strong>런칭 필수</strong></span>
+        <span class="legend-item"><span class="pri-tag pri-rec">권장</span><strong>수동 대체 가능</strong></span>
+        <span class="legend-item"><span class="pri-tag pri-later">후속</span><strong>Post-MVP</strong></span>
+      </div>
+    </header>
+
+    <!-- Coverage -->
+    <div class="coverage">
+      <h3>우선순위 분포 · 37개 화면 (v1.2 · §20-5 · ADR-001/002 반영)</h3>
+      <div class="coverage-grid">
+        <div class="cov-item"><div class="cov-num mvp">26</div><div class="cov-label"><strong>MVP 필수</strong> · 런칭 블로커</div></div>
+        <div class="cov-item"><div class="cov-num rec">9</div><div class="cov-label"><strong>권장</strong> · P1 · 운영 효율</div></div>
+        <div class="cov-item"><div class="cov-num later">2</div><div class="cov-label"><strong>후속</strong> · P2 · Post-MVP</div></div>
+        <div class="cov-item"><div class="cov-num" style="color:var(--color-primary);">37</div><div class="cov-label"><strong>총합</strong> · PRD v1.2</div></div>
+      </div>
+    </div>
+
+    <!-- Auth -->
+    <section class="group" id="group-auth">
+      <div class="group-head">
+        <h2>인증 · 온보딩</h2>
+        <span class="count">6 화면</span>
+        <span class="breakdown">MVP 6 · 권장 0 · 후속 0</span>
+      </div>
+      <p class="group-sub">로그인 → 역할 선택 → 역할별 약관 동의 → 본인인증. 약관은 역할에 따라 화면을 분리(멘티·학부모·멘토). 약관 개정 시 재동의는 별도 화면 없이 동일 화면을 재사용.</p>
+      <div class="flow-steps">
+        <span class="step emphasis">1. 소셜 로그인</span><span class="arrow">→</span>
+        <span class="step emphasis">2. 역할 선택 (즉시 진행)</span><span class="arrow">→</span>
+        <span class="step emphasis">3. 약관 동의 (역할별 화면)</span><span class="arrow">→</span>
+        <span class="step emphasis">4. 본인인증</span><span class="arrow">→</span>
+        <span class="step">5. 정보 입력</span><span class="arrow">→</span>
+        <span class="step">(멘토) 증빙·검수</span>
+      </div>
+      <div class="cards">
+        <a class="card" href="./auth/login.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/login.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A1 · 1단계</span><span class="card-title">로그인 · 소셜 선택</span><span class="card-desc">카카오·네이버·이메일 · 멘토 분기</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/role.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/role.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A2 · 2단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">UPD</span></span><span class="card-title">역할 선택</span><span class="card-desc">카드 클릭 즉시 라우팅 · 다음 버튼 제거</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/terms-mentee.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-mentee.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3a · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (멘티)</span><span class="card-desc">T01-T04 필수 · T10-T12 선택 · 만 14세</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/terms-parent.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-parent.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3b · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (학부모)</span><span class="card-desc">T01-T04 필수 · T09는 자녀 등록 시점</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/terms-mentor.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-mentor.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3c · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (멘토)</span><span class="card-desc">T01-T08 필수 · 운영·정산·과세 포함</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/phone.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/phone.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A4 · 4단계</span><span class="card-title">휴대폰 본인인증</span><span class="card-desc">통신사 · 인증번호 · 생년 교차 확인</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- Student -->
+    <section class="group">
+      <div class="group-head">
+        <h2>학생·학부모 예약 플로우</h2>
+        <span class="count">8 화면</span>
+        <span class="breakdown">MVP 8 · 권장 0 · 후속 0</span>
+      </div>
+      <p class="group-sub">탐색 → 멘토 → 예약 → 결제 → 완료 → 후기. 전 화면 MVP.</p>
+      <div class="cards">
+        <a class="card" href="./student/home.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/home.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S1</span><span class="card-title">메인 홈</span><span class="card-desc">인기 멘토 · 대학별 · 카테고리</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/search.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/search.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S2</span><span class="card-title">멘토 찾기</span><span class="card-desc">필터 · 리스트 · FAB</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/mentor-detail.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/mentor-detail.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S3</span><span class="card-title">멘토 상세</span><span class="card-desc">프로필 · 상품 3 · 후기</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/schedule.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/schedule.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S4</span><span class="card-title">일정 선택 (1/3)</span><span class="card-desc">날짜 · 시간 슬롯</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/student-info.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/student-info.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S5</span><span class="card-title">학생 정보 (2/3)</span><span class="card-desc">기본 · 사전 질문</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/checkout.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/checkout.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S6</span><span class="card-title">결제 (3/3)</span><span class="card-desc">결제자 · T13·T14 약관 · 수단 4</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/booking-confirmed.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/booking-confirmed.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S7</span><span class="card-title">신청 완료 · 내 예약</span><span class="card-desc">카톡 채널 · 예약 리스트</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./student/review-write.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./student/review-write.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">S8</span><span class="card-title">후기 작성</span><span class="card-desc">별점 · 세부 · 태그 · 익명</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- MyPage -->
+    <section class="group">
+      <div class="group-head">
+        <h2>마이페이지</h2>
+        <span class="count">5 화면</span>
+        <span class="breakdown">MVP 2 · 권장 1 · 후속 2</span>
+      </div>
+      <p class="group-sub">마이홈·결제내역은 법적/계정 필수. 쿠폰함은 ADR-002로 IN-수동(권장) 승격 — 발급은 운영팀 SQL/엑셀 + 1:1 답변. 찜·자녀는 부가 기능.</p>
+      <div class="cards">
+        <a class="card" href="./mypage/home.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mypage/home.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">M1</span><span class="card-title">마이페이지 홈</span><span class="card-desc">프로필 · 통계 · 메뉴 허브</span><div class="card-tags"><span class="card-tag">MyPage</span></div></div></a>
+        <a class="card" href="./mypage/payments.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mypage/payments.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">M2</span><span class="card-title">결제·환불 내역</span><span class="card-desc">기간 필터 · 영수증 · 법적</span><div class="card-tags"><span class="card-tag">MyPage</span></div></div></a>
+        <a class="card" href="./mypage/favorites.html"><span class="pri-ribbon pri-later">후속</span><div class="preview-wrap"><iframe data-src="./mypage/favorites.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">M3</span><span class="card-title">찜한 멘토</span><span class="card-desc">리스트 · 최근 본 · 리텐션</span><div class="card-tags"><span class="card-tag">MyPage</span></div></div></a>
+        <a class="card" href="./mypage/children.html"><span class="pri-ribbon pri-later">후속</span><div class="preview-wrap"><iframe data-src="./mypage/children.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">M4</span><span class="card-title">자녀 프로필</span><span class="card-desc">여러 자녀 · MVP는 단일</span><div class="card-tags"><span class="card-tag">MyPage</span></div></div></a>
+        <a class="card" href="./mypage/coupons.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./mypage/coupons.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">M5 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">UPD</span></span><span class="card-title">쿠폰함</span><span class="card-desc">사용 UI 활성 · 발급은 운영팀 1:1 답변 · ADR-002</span><div class="card-tags"><span class="card-tag">MyPage</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- Booking Lifecycle -->
+    <section class="group">
+      <div class="group-head">
+        <h2>예약 생애주기</h2>
+        <span class="count">4 화면</span>
+        <span class="breakdown">MVP 2 · 권장 2 · 후속 0</span>
+      </div>
+      <p class="group-sub">학생 취소는 환불 필수. 멘토 취소는 §20-5 패널티 연동으로 MVP 승격. 신청상세·변경제안은 대시보드 액션으로 대체 가능.</p>
+      <div class="cards">
+        <a class="card" href="./booking/mentor-detail.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./booking/mentor-detail.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">B1</span><span class="card-title">신청 상세 (멘토측)</span><span class="card-desc">학생 정보 · 수락/거절/변경</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./booking/reschedule.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./booking/reschedule.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">B2</span><span class="card-title">일정 변경 제안</span><span class="card-desc">비교 · 멘토 메시지 · 대체 시간</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./booking/cancel.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./booking/cancel.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">B3</span><span class="card-title">학생 취소</span><span class="card-desc">환불 미리보기 · 정책 매트릭스</span><div class="card-tags"><span class="card-tag">Student</span></div></div></a>
+        <a class="card" href="./booking/mentor-cancel.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./booking/mentor-cancel.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">B4 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">멘토 취소 · §20-5</span><span class="card-desc">사유 5종 · 시점 가중치 · 곱증가 패널티 · 긴급 면제</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- Mentor -->
+    <section class="group">
+      <div class="group-head">
+        <h2>멘토 플로우</h2>
+        <span class="count">6 화면</span>
+        <span class="breakdown">MVP 5 · 권장 1 · 후속 0</span>
+      </div>
+      <p class="group-sub">온보딩 4단계 + 대시보드. 정산 상세는 권장.</p>
+      <div class="cards">
+        <a class="card" href="./mentor/signup.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mentor/signup.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T1</span><span class="card-title">멘토 가입 (1/4)</span><span class="card-desc">본인인증 · 학교·학과 · 증빙</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./mentor/profile.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mentor/profile.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T2</span><span class="card-title">멘토 프로필 (2/4)</span><span class="card-desc">사진 · 소개 · 키워드 · 경력</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./mentor/product.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mentor/product.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T3</span><span class="card-title">상품 등록 (3/4)</span><span class="card-desc">제목 · 30분 · ₩29,900</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./mentor/availability.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mentor/availability.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T4</span><span class="card-title">가능 시간 (4/4)</span><span class="card-desc">주간 반복 · 리드타임</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./mentor/dashboard.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./mentor/dashboard.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T5</span><span class="card-title">멘토 홈 대시보드</span><span class="card-desc">KPI · 신청 · 정산 요약</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+        <a class="card" href="./mentor/settlement.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./mentor/settlement.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">T6</span><span class="card-title">정산 상세</span><span class="card-desc">월간 · 브레이크다운 · 내역</span><div class="card-tags"><span class="card-tag tag-mentor">Mentor</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- Support -->
+    <section class="group">
+      <div class="group-head">
+        <h2>고객지원 · 법적</h2>
+        <span class="count">3 화면</span>
+        <span class="breakdown">MVP 1 · 권장 2 · 후속 0</span>
+      </div>
+      <p class="group-sub">약관·정책은 법적 필수. FAQ·1:1 문의는 카톡 채널로 대체 가능.</p>
+      <div class="cards">
+        <a class="card" href="./support/faq.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./support/faq.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">H1</span><span class="card-title">자주 묻는 질문</span><span class="card-desc">카테고리 · 아코디언</span><div class="card-tags"><span class="card-tag">Support</span></div></div></a>
+        <a class="card" href="./support/inquiry.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap"><iframe data-src="./support/inquiry.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">H2</span><span class="card-title">1:1 문의</span><span class="card-desc">폼 · 첨부 · 내역</span><div class="card-tags"><span class="card-tag">Support</span></div></div></a>
+        <a class="card" href="./support/legal.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./support/legal.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">H3</span><span class="card-title">약관 · 정책</span><span class="card-desc">탭 · 목차 · 사업자 고지</span><div class="card-tags"><span class="card-tag">Support</span></div></div></a>
+      </div>
+    </section>
+
+    <!-- Admin -->
+    <section class="group">
+      <div class="group-head">
+        <h2>운영자 (Desktop)</h2>
+        <span class="count">5 화면</span>
+        <span class="breakdown">MVP 2 · 권장 3 · 후속 0</span>
+      </div>
+      <p class="group-sub">대시보드와 멘토 승인만 있으면 최소 운영 가능. 나머지는 초기 스프레드시트 대체 가능.</p>
+      <div class="cards desktop">
+        <a class="card" href="./admin/dashboard.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap desktop"><iframe data-src="./admin/dashboard.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">D1 · 1280px</span><span class="card-title">운영 대시보드</span><span class="card-desc">KPI · 긴급 · 승인 · 매출</span><div class="card-tags"><span class="card-tag">Admin</span></div></div></a>
+        <a class="card" href="./admin/mentor-approval.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap desktop"><iframe data-src="./admin/mentor-approval.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">D2 · 1280px</span><span class="card-title">멘토 승인 검수</span><span class="card-desc">큐 · 증빙 뷰어 · 체크리스트</span><div class="card-tags"><span class="card-tag">Admin</span></div></div></a>
+        <a class="card" href="./admin/claim-detail.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap desktop"><iframe data-src="./admin/claim-detail.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">D3 · 1280px</span><span class="card-title">클레임 처리</span><span class="card-desc">타임라인 · 진술 · 결정</span><div class="card-tags"><span class="card-tag">Admin</span></div></div></a>
+        <a class="card" href="./admin/settlement.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap desktop"><iframe data-src="./admin/settlement.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">D4 · 1280px</span><span class="card-title">정산 관리</span><span class="card-desc">월 요약 · 멘토별 · 일괄</span><div class="card-tags"><span class="card-tag">Admin</span></div></div></a>
+        <a class="card" href="./admin/notification-log.html"><span class="pri-ribbon pri-rec">권장</span><div class="preview-wrap desktop"><iframe data-src="./admin/notification-log.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">D5 · 1280px</span><span class="card-title">알림 발송 기록</span><span class="card-desc">성공률 · 필터 · 재발송</span><div class="card-tags"><span class="card-tag">Admin</span></div></div></a>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong style="color:var(--color-text);">Source of Truth.</strong> 디자인 토큰 <code>system/tokens.css</code> · 테마 스위처 <code>system/theme-switcher.js</code> · Figma 가이드 <code>system/figma-setup.md</code>.</p>
+      <p><strong style="color:var(--color-text);">5-Theme System.</strong> Mentoring DS (Intercom 기반) · Academic · Editorial · Seoul Grad · Warmth. URL에 <code>?theme=key</code> 추가하거나 상단 Dock에서 전환.</p>
+      <p style="margin-top: 24px;">AjaMentor · MVP v1.2 · §20-5 · ADR-001/002 반영 · 37개 화면 · 26 MVP · 9 권장 · 2 후속</p>
+    </footer>
+  </div>
+
+  <!-- Theme switcher script (runs on this page too) -->
+  <script src="./system/theme-switcher.js"></script>
+  <script src="./system/nav.js" defer></script>
+
+  <script>
+    /* =====================================================
+       Theme controller for index.html
+       - Reads current theme (via theme-switcher.js)
+       - Updates Dock active state, meta panel, iframe srcs
+       ===================================================== */
+    (function () {
+      var THEME_META = {
+        'mentoring':   { name: 'Mentoring DS',      primary: '#FF6B00', surface: '#FAF9F6 Warm Cream',    font: 'Pretendard',   radius: '4px · Sharp',     badge: 'Mentoring DS · Intercom-inspired' },
+        'academic':    { name: 'Academic Classic',  primary: '#2E4057', surface: '#FAF6F0 Warm Paper',    font: 'Inter',        radius: '6px · Classic',   badge: 'Academic Classic · Oxford Navy' },
+        'editorial':   { name: 'Campus Editorial',  primary: '#5B3A8C', surface: '#F4F1EC Eggshell',      font: 'Inter',        radius: '10px · Editorial',badge: 'Campus Editorial · Ivy Purple' },
+        'seoul-grad':  { name: 'Seoul Grad',        primary: '#0B4D3A', surface: '#F2EFE8 Hanji Cream',   font: 'Inter',        radius: '8px · Traditional',badge: 'Seoul Grad · Deep Forest' },
+        'warmth':      { name: 'Mentor Warmth',     primary: '#8B4513', surface: '#FFF8F0 Cream',         font: 'Inter',        radius: '12px · Rounded',  badge: 'Mentor Warmth · Chestnut' }
+      };
+
+      function currentTheme() {
+        return (window.ajaMentorTheme && window.ajaMentorTheme.get()) || 'mentoring';
+      }
+
+      function injectIframeSrcs(theme) {
+        var iframes = document.querySelectorAll('iframe[data-src]');
+        iframes.forEach(function (f) {
+          var src = f.getAttribute('data-src');
+          var join = src.indexOf('?') === -1 ? '?' : '&';
+          f.src = src + join + 'theme=' + encodeURIComponent(theme);
+        });
+      }
+
+      function updateDockActive(theme) {
+        var buttons = document.querySelectorAll('.theme-btn[data-theme-key]');
+        buttons.forEach(function (b) {
+          b.classList.toggle('is-active', b.getAttribute('data-theme-key') === theme);
+        });
+      }
+
+      function updateMetaPanel(theme) {
+        var meta = THEME_META[theme] || THEME_META.mentoring;
+        var set = function (id, val) { var el = document.getElementById(id); if (el) el.textContent = val; };
+        set('metaTheme', meta.name);
+        set('metaPrimary', meta.primary);
+        set('metaSurface', meta.surface);
+        set('metaFont', meta.font);
+        set('metaRadius', meta.radius);
+        set('heroBadgeText', meta.badge);
+      }
+
+      function applyTheme(theme) {
+        if (window.ajaMentorTheme) window.ajaMentorTheme.set(theme);
+        else document.documentElement.setAttribute('data-theme', theme);
+        updateDockActive(theme);
+        updateMetaPanel(theme);
+        injectIframeSrcs(theme);
+      }
+
+      document.addEventListener('DOMContentLoaded', function () {
+        var initial = currentTheme();
+        updateDockActive(initial);
+        updateMetaPanel(initial);
+        injectIframeSrcs(initial);
+
+        document.querySelectorAll('.theme-btn[data-theme-key]').forEach(function (b) {
+          b.addEventListener('click', function () {
+            applyTheme(b.getAttribute('data-theme-key'));
+          });
+        });
+      });
+    })();
+  </script>
+</body>
+</html>

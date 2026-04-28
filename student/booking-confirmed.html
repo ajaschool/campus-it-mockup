@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 신청 완료</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .success-wrap {
+      padding: 32px 20px 24px;
+      text-align: center;
+    }
+    .check-circle {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--color-success-bg);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .check-circle svg { color: var(--color-success); }
+    .success-title {
+      font: 700 24px/1.25 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+      margin: 0 0 10px;
+    }
+    .success-sub {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .receipt {
+      margin: 4px 20px 16px;
+      padding: 20px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-lg);
+    }
+    .receipt .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+    }
+    .receipt .label { color: var(--color-text-weak); }
+    .receipt .value { font-weight: 500; color: var(--color-text); }
+    .receipt .info-row + .info-row { border-top: 1px solid var(--color-border); }
+
+    .kakao-banner {
+      margin: 0 20px 20px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      background: #FEF3C7;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .kakao-icon {
+      width: 40px; height: 40px;
+      border-radius: var(--radius-md);
+      background: #FEE500;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 40px;
+      font-weight: 700;
+      color: #391F1E;
+    }
+    .kakao-banner .text {
+      flex: 1;
+      font: var(--font-caption);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+    }
+    .kakao-banner .text strong {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .kakao-banner .btn-sm {
+      height: 36px;
+      padding: 0 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-text);
+      color: #ffffff;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      flex: 0 0 auto;
+    }
+
+    .cta-two {
+      display: flex;
+      gap: 10px;
+      padding: 0 20px 20px;
+    }
+    .cta-two .btn { flex: 1; }
+
+    /* Divider with label */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 20px 16px;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+    .divider span {
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* My bookings tabs */
+    .tabs {
+      display: flex;
+      gap: 16px;
+      padding: 0 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tab-item {
+      padding: 12px 0;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text-weak);
+      position: relative;
+    }
+    .tab-item.is-active {
+      color: var(--color-text);
+    }
+    .tab-item.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    /* Booking card */
+    .booking-list {
+      display: flex; flex-direction: column; gap: 12px;
+      padding: 16px 20px 8px;
+    }
+    .booking-card {
+      padding: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .booking-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    .booking-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-confirmed { background: var(--color-success-bg); color: var(--color-success); }
+    .status-pending { background: var(--color-amber-bg); color: #7a4a00; }
+    .status-done { background: var(--color-surface-subtle); color: var(--color-text-weak); }
+    .booking-time {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .booking-mentor {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .booking-mentor-thumb {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      flex: 0 0 36px;
+    }
+    .booking-mentor-name {
+      font: 600 14px/1.2 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 2px;
+    }
+    .booking-mentor-school {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .booking-product {
+      font: var(--font-body);
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 12px;
+    }
+    .booking-actions {
+      display: flex;
+      gap: 8px;
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+    }
+    .booking-actions .btn {
+      flex: 1;
+      height: 40px;
+      font: var(--font-caption-strong);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="닫기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <h1 class="app-bar-title">신청 완료</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Success -->
+    <section class="success-wrap">
+      <div class="check-circle">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2 class="success-title">신청이 접수되었습니다</h2>
+      <p class="success-sub">
+        김서연 멘토님 확인 후 24시간 내에<br>
+        최종 확정 알림이 카카오톡으로 발송됩니다.
+      </p>
+    </section>
+
+    <!-- Receipt -->
+    <div class="receipt">
+      <div class="info-row"><span class="label">예약 번호</span><span class="value">#AJ-2026-0427-015</span></div>
+      <div class="info-row"><span class="label">멘토</span><span class="value">김서연 · 서울대 경영</span></div>
+      <div class="info-row"><span class="label">일시</span><span class="value">4월 27일 (일) 오후 3:00 · 30분</span></div>
+      <div class="info-row"><span class="label">결제 금액</span><span class="value">₩29,900 <span style="color:var(--color-text-weak);font-weight:400;">· 카카오페이</span></span></div>
+    </div>
+
+    <!-- Kakao channel -->
+    <div class="kakao-banner">
+      <span class="kakao-icon">K</span>
+      <div class="text">
+        <strong>카카오톡 알림 받기</strong>
+        '아자스쿨' 채널을 추가하면 확정·리마인드 알림을 놓치지 않아요.
+      </div>
+      <button class="btn-sm">채널 추가</button>
+    </div>
+
+    <!-- CTAs -->
+    <div class="cta-two">
+      <button class="btn btn-secondary">홈으로</button>
+      <button class="btn btn-primary">내 예약 보기</button>
+    </div>
+
+    <!-- Divider -->
+    <div class="divider"><span>내 예약 미리보기</span></div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <span class="tab-item">전체</span>
+      <span class="tab-item">대기중</span>
+      <span class="tab-item is-active">확정</span>
+      <span class="tab-item">완료</span>
+      <span class="tab-item">취소</span>
+    </div>
+
+    <!-- Booking list -->
+    <section class="booking-list">
+
+      <article class="booking-card">
+        <div class="booking-head">
+          <span class="booking-status status-confirmed">예약 확정</span>
+          <span class="booking-time">4월 27일 (일) 오후 3:00</span>
+        </div>
+        <div class="booking-mentor">
+          <div class="booking-mentor-thumb" style="background:linear-gradient(135deg,#f2d8c1,#c89a78);"></div>
+          <div>
+            <p class="booking-mentor-name">김서연</p>
+            <p class="booking-mentor-school">서울대 경영학과</p>
+          </div>
+        </div>
+        <p class="booking-product">경영학과 진학 Q&amp;A 상담 · 30분</p>
+        <div class="booking-actions">
+          <button class="btn btn-primary">Zoom 링크 열기</button>
+          <button class="btn btn-secondary">일정 변경 요청</button>
+        </div>
+      </article>
+
+      <article class="booking-card">
+        <div class="booking-head">
+          <span class="booking-status status-pending">멘토 확인 대기</span>
+          <span class="booking-time">4월 30일 (수) 오전 10:00</span>
+        </div>
+        <div class="booking-mentor">
+          <div class="booking-mentor-thumb" style="background:linear-gradient(135deg,#d1dde9,#8aa3c1);"></div>
+          <div>
+            <p class="booking-mentor-name">박준호</p>
+            <p class="booking-mentor-school">연세대 의예과</p>
+          </div>
+        </div>
+        <p class="booking-product">의대 입시 준비 Q&amp;A · 30분</p>
+      </article>
+
+    </section>
+
+  </main>
+</body>
+</html>

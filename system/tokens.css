@@ -1,0 +1,418 @@
+/**
+ * AjaMentor Design Tokens · 5-Theme System
+ *
+ * Themes:
+ *  [data-theme="mentoring"]   — Mentoring DS (Intercom-inspired · Fin Orange)   ← default
+ *  [data-theme="academic"]    — Academic Classic (Oxford Navy)
+ *  [data-theme="editorial"]   — Campus Editorial (Ivy Purple)
+ *  [data-theme="seoul-grad"]  — Seoul Grad (Deep Forest)
+ *  [data-theme="warmth"]      — Mentor Warmth (Chestnut)
+ *
+ * Switch via URL: ?theme=academic  (handled by theme-switcher.js)
+ * Switch via DOM: document.documentElement.setAttribute('data-theme', 'editorial')
+ */
+
+/* ========================================================
+   Font imports — all themes
+   ======================================================== */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Instrument+Serif&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+
+/* ========================================================
+   Shared tokens — structural, same across all themes
+   ======================================================== */
+:root {
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+
+  --font-display-hero: 700 48px/1.15 var(--font-family);
+  --font-display-bold: 900 48px/1.15 var(--font-family);
+  --font-section: 500 40px/1.25 var(--font-family);
+  --font-subheading: 500 32px/1.2 var(--font-family);
+  --font-card-title: 500 24px/1.25 var(--font-family);
+  --font-feature: 400 20px/1.35 var(--font-family);
+  --font-body-lg: 400 18px/1.35 var(--font-family);
+  --font-body: 500 16px/1.3 var(--font-family);
+  --font-button: 500 16px/1.25 var(--font-family);
+  --font-caption: 400 14px/1.3 var(--font-family);
+  --font-caption-strong: 500 14px/1.3 var(--font-family);
+}
+
+/* ========================================================
+   THEME 1 — Mentoring DS (Intercom-inspired, DEFAULT)
+   Warm cream canvas · Fin Orange · Sharp 4px radii · Pretendard
+   ======================================================== */
+:root,
+[data-theme="mentoring"] {
+  --color-primary: #ff6b00;
+  --color-primary-hover: #e55f00;
+  --color-primary-pressed: #cc5400;
+  --color-primary-bg: #fff1e5;
+
+  --color-text: #111111;
+  --color-text-weak: #626260;
+  --color-text-secondary: #313130;
+  --color-text-on-primary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-subtle: #faf9f6;
+  --color-surface-sunk: #ede9e1;
+
+  --color-success: #2c6415;
+  --color-success-bg: #e8f3df;
+  --color-error: #c41c1c;
+  --color-error-bg: #fce4e4;
+  --color-amber: #ff6b00;
+  --color-amber-bg: #fff1e5;
+
+  --color-border: #dedbd6;
+  --color-border-strong: #d3cec6;
+
+  --shadow-button: none;
+  --shadow-soft: none;
+  --shadow-card: none;
+
+  --font-family: "Pretendard", "Inter", -apple-system, system-ui, sans-serif;
+  --tracking-tight: -0.1px;
+  --tracking-normal: -0.2px;
+  --tracking-loose: 0px;
+
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+}
+
+/* ========================================================
+   THEME 2 — Academic Classic (Oxford Navy + Terracotta)
+   ======================================================== */
+[data-theme="academic"] {
+  --color-primary: #2e4057;
+  --color-primary-hover: #243345;
+  --color-primary-pressed: #1b2633;
+  --color-primary-bg: #e5eaf0;
+
+  --color-text: #1a1a1a;
+  --color-text-weak: rgba(26,26,26,0.62);
+  --color-text-secondary: #3a3a3a;
+  --color-text-on-primary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-subtle: #faf6f0;
+  --color-surface-sunk: #efeade;
+
+  --color-success: #2c6415;
+  --color-success-bg: #e8f3df;
+  --color-error: #8b0000;
+  --color-error-bg: #f7e0e0;
+  --color-amber: #c14b3b;
+  --color-amber-bg: #f7e4df;
+
+  --color-border: #d8d3ca;
+  --color-border-strong: #c9c3b7;
+
+  --shadow-button: 0 1px 2px rgba(46,64,87,0.08);
+  --shadow-soft: rgba(46,64,87,0.06) 0 4px 16px;
+  --shadow-card: rgba(46,64,87,0.05) 0 2px 8px;
+
+  --font-family: "Inter", "Pretendard", -apple-system, system-ui, sans-serif;
+  --tracking-tight: 0px;
+  --tracking-normal: 0px;
+  --tracking-loose: 0.1px;
+
+  --radius-sm: 2px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --radius-full: 9999px;
+}
+
+/* ========================================================
+   THEME 3 — Campus Editorial (Ivy Purple + Clay Pink)
+   ======================================================== */
+[data-theme="editorial"] {
+  --color-primary: #5b3a8c;
+  --color-primary-hover: #4b2f75;
+  --color-primary-pressed: #3c255e;
+  --color-primary-bg: #ede7f5;
+
+  --color-text: #2a1d3d;
+  --color-text-weak: rgba(42,29,61,0.65);
+  --color-text-secondary: #44344d;
+  --color-text-on-primary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f4f1ec;
+  --color-surface-sunk: #ebe7de;
+
+  --color-success: #2f6b3a;
+  --color-success-bg: #e5f1e7;
+  --color-error: #a81e3e;
+  --color-error-bg: #f7dde5;
+  --color-amber: #e8a87c;
+  --color-amber-bg: #faeade;
+
+  --color-border: #d7d2c9;
+  --color-border-strong: #c7c1b4;
+
+  --shadow-button: 0 1px 3px rgba(91,58,140,0.1);
+  --shadow-soft: rgba(91,58,140,0.08) 0 8px 24px;
+  --shadow-card: rgba(91,58,140,0.06) 0 4px 12px;
+
+  --font-family: "Inter", "Pretendard", -apple-system, system-ui, sans-serif;
+  --tracking-tight: 0px;
+  --tracking-normal: 0px;
+  --tracking-loose: 0.08px;
+
+  --radius-sm: 2px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+  --radius-2xl: 28px;
+  --radius-full: 9999px;
+}
+
+/* ========================================================
+   THEME 4 — Seoul Grad (Deep Forest + Aged Gold)
+   ======================================================== */
+[data-theme="seoul-grad"] {
+  --color-primary: #0b4d3a;
+  --color-primary-hover: #083d2e;
+  --color-primary-pressed: #062d22;
+  --color-primary-bg: #e2ece7;
+
+  --color-text: #1c1c1c;
+  --color-text-weak: rgba(28,28,28,0.65);
+  --color-text-secondary: #333333;
+  --color-text-on-primary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f2efe8;
+  --color-surface-sunk: #e8e4d8;
+
+  --color-success: #0b4d3a;
+  --color-success-bg: #e2ece7;
+  --color-error: #8b0000;
+  --color-error-bg: #f7e0e0;
+  --color-amber: #d9a227;
+  --color-amber-bg: #faf0d4;
+
+  --color-border: #d4cdc0;
+  --color-border-strong: #c3bbab;
+
+  --shadow-button: 0 1px 2px rgba(11,77,58,0.1);
+  --shadow-soft: rgba(11,77,58,0.06) 0 4px 12px;
+  --shadow-card: rgba(11,77,58,0.05) 0 2px 8px;
+
+  --font-family: "Inter", "Pretendard", -apple-system, system-ui, sans-serif;
+  --tracking-tight: 0px;
+  --tracking-normal: 0px;
+  --tracking-loose: 0.08px;
+
+  --radius-sm: 2px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-full: 9999px;
+}
+
+/* ========================================================
+   THEME 5 — Mentor Warmth (Chestnut + Coral)
+   ======================================================== */
+[data-theme="warmth"] {
+  --color-primary: #8b4513;
+  --color-primary-hover: #743a10;
+  --color-primary-pressed: #5e2f0d;
+  --color-primary-bg: #f3e8dc;
+
+  --color-text: #2b1810;
+  --color-text-weak: rgba(43,24,16,0.65);
+  --color-text-secondary: #42281c;
+  --color-text-on-primary: #ffffff;
+
+  --color-surface: #ffffff;
+  --color-surface-subtle: #fff8f0;
+  --color-surface-sunk: #f5ebd8;
+
+  --color-success: #556b2f;
+  --color-success-bg: #ecf0df;
+  --color-error: #8b0000;
+  --color-error-bg: #f7e0e0;
+  --color-amber: #e76f51;
+  --color-amber-bg: #fbe3db;
+
+  --color-border: #e8dfcf;
+  --color-border-strong: #d7ccb6;
+
+  --shadow-button: 0 1px 3px rgba(139,69,19,0.1);
+  --shadow-soft: rgba(139,69,19,0.08) 0 8px 24px;
+  --shadow-card: rgba(139,69,19,0.06) 0 4px 12px;
+
+  --font-family: "Inter", "Pretendard", -apple-system, system-ui, sans-serif;
+  --tracking-tight: 0px;
+  --tracking-normal: 0px;
+  --tracking-loose: 0.1px;
+
+  --radius-sm: 2px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-full: 9999px;
+}
+
+/* ========================================================
+   Reset + Base
+   ======================================================== */
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--color-surface-subtle);
+  color: var(--color-text);
+  font: var(--font-body-lg);
+  letter-spacing: var(--tracking-loose);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background 180ms ease, color 180ms ease;
+}
+
+img { max-width: 100%; display: block; }
+
+button {
+  font: inherit;
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  color: inherit;
+}
+
+a { color: var(--color-primary); text-decoration: none; }
+
+/* ========================================================
+   Shared utility: Mobile canvas, Button, Chip, Badge, Card
+   ======================================================== */
+.mobile-canvas {
+  width: 390px;
+  min-height: 844px;
+  margin: 32px auto;
+  background: var(--color-surface);
+  box-shadow: var(--shadow-soft);
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--color-border);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 var(--space-6);
+  border-radius: var(--radius-md);
+  font: var(--font-button);
+  letter-spacing: var(--tracking-tight);
+  transition: background 120ms ease, transform 80ms ease;
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  box-shadow: var(--shadow-button);
+}
+.btn-primary:hover { background: var(--color-primary-hover); }
+.btn-primary:active { background: var(--color-primary-pressed); transform: translateY(0.5px); }
+.btn-secondary {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+}
+.btn-secondary:hover { background: var(--color-surface-subtle); }
+.btn-ghost {
+  background: transparent;
+  color: var(--color-primary);
+  padding: 0 var(--space-3);
+  height: 36px;
+}
+.btn-block { width: 100%; }
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 32px;
+  padding: 0 var(--space-3);
+  border-radius: var(--radius-full);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: var(--font-caption-strong);
+  letter-spacing: var(--tracking-tight);
+}
+.chip.is-selected {
+  background: var(--color-primary);
+  color: var(--color-text-on-primary);
+  border-color: var(--color-primary);
+}
+.chip.is-subtle {
+  background: var(--color-surface-subtle);
+  border-color: transparent;
+  color: var(--color-text-weak);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  font: var(--font-caption-strong);
+  font-size: 11px;
+  letter-spacing: var(--tracking-tight);
+  text-transform: uppercase;
+}
+.badge-verified { background: var(--color-success-bg); color: var(--color-success); }
+.badge-hot { background: var(--color-amber); color: var(--color-text-on-primary); }
+.badge-status-pending { background: var(--color-amber-bg); color: var(--color-amber); }
+
+.card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+}
+
+.section { padding: var(--space-6) var(--space-5); }
+.section-title {
+  font: var(--font-card-title);
+  letter-spacing: var(--tracking-normal);
+  margin: 0 0 var(--space-4);
+  color: var(--color-text);
+}
+.section-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+}
+.section-title-row .section-title { margin: 0; }
+.section-title-row .link {
+  font: var(--font-caption-strong);
+  color: var(--color-text-weak);
+  letter-spacing: var(--tracking-tight);
+}

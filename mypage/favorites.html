@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 찜한 멘토</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Sub tabs */
+    .sub-tabs {
+      display: flex;
+      gap: 16px;
+      padding: 8px 20px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .sub-tab {
+      padding: 12px 0;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      position: relative;
+    }
+    .sub-tab.is-active {
+      color: var(--color-text);
+    }
+    .sub-tab.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    .count-line {
+      padding: 12px 20px 8px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .count-line strong { color: var(--color-text); font-weight: 600; }
+
+    .fav-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 20px;
+    }
+
+    .fav-card {
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      background: var(--color-surface);
+      display: flex;
+      gap: 14px;
+      position: relative;
+    }
+    .fav-photo {
+      width: 72px; height: 72px;
+      border-radius: var(--radius-md);
+      flex: 0 0 72px;
+      position: relative;
+      overflow: hidden;
+    }
+    .verified-dot {
+      position: absolute;
+      top: 4px; right: 4px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: var(--color-success);
+      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .fav-body { flex: 1; min-width: 0; padding-right: 32px; }
+    .fav-name {
+      font: 600 15px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .fav-school {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 8px;
+    }
+    .fav-tags {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 8px;
+    }
+    .fav-tag {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      background: var(--color-surface-subtle);
+      color: var(--color-text-secondary);
+    }
+    .fav-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .fav-remove {
+      position: absolute;
+      top: 14px; right: 14px;
+      color: var(--color-error);
+    }
+
+    .empty-state {
+      padding: 80px 20px;
+      text-align: center;
+      color: var(--color-text-weak);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">찜한 멘토</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Sub tabs -->
+    <div class="sub-tabs">
+      <span class="sub-tab is-active">찜 · 8</span>
+      <span class="sub-tab">최근 본 멘토 · 14</span>
+    </div>
+
+    <div class="count-line">
+      <strong>8명</strong>의 멘토를 찜하셨어요. 예약 가능 시간이 바뀌면 카톡으로 알려드려요.
+    </div>
+
+    <!-- Favorites list -->
+    <div class="fav-list">
+
+      <article class="fav-card">
+        <div class="fav-photo" style="background:linear-gradient(135deg,#f2d8c1,#c89a78);">
+          <span class="verified-dot">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+        </div>
+        <div class="fav-body">
+          <p class="fav-name">김서연</p>
+          <p class="fav-school">서울대 경영학과 · 3학년</p>
+          <div class="fav-tags">
+            <span class="fav-tag">진학/입시</span>
+            <span class="fav-tag">전공탐색</span>
+          </div>
+          <div class="fav-meta">
+            <span class="rating">★ 4.9 <span class="rating-count">(217)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+        <button class="fav-remove" aria-label="찜 해제">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-photo" style="background:linear-gradient(135deg,#d1dde9,#8aa3c1);">
+          <span class="verified-dot">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+        </div>
+        <div class="fav-body">
+          <p class="fav-name">박준호</p>
+          <p class="fav-school">연세대 의예과 · 2학년</p>
+          <div class="fav-tags">
+            <span class="fav-tag">의대 입시</span>
+            <span class="fav-tag">내신</span>
+          </div>
+          <div class="fav-meta">
+            <span class="rating">★ 4.8 <span class="rating-count">(184)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+        <button class="fav-remove" aria-label="찜 해제">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-photo" style="background:linear-gradient(135deg,#e5d8ea,#a28aba);">
+          <span class="verified-dot">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+        </div>
+        <div class="fav-body">
+          <p class="fav-name">이수아</p>
+          <p class="fav-school">고려대 컴퓨터공학과 · 4학년</p>
+          <div class="fav-tags">
+            <span class="fav-tag">전공탐색</span>
+            <span class="fav-tag">학생부</span>
+          </div>
+          <div class="fav-meta">
+            <span class="rating">★ 5.0 <span class="rating-count">(96)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+        <button class="fav-remove" aria-label="찜 해제">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-photo" style="background:linear-gradient(135deg,#d8e8d1,#8bb27a);">
+          <span class="verified-dot">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+        </div>
+        <div class="fav-body">
+          <p class="fav-name">정민서</p>
+          <p class="fav-school">서강대 심리학과 · 3학년</p>
+          <div class="fav-tags">
+            <span class="fav-tag">학생부</span>
+          </div>
+          <div class="fav-meta">
+            <span class="rating">★ 4.9 <span class="rating-count">(142)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+        <button class="fav-remove" aria-label="찜 해제">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </article>
+
+      <article class="fav-card">
+        <div class="fav-photo" style="background:linear-gradient(135deg,#d1d8e9,#7a8dc0);">
+          <span class="verified-dot">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+        </div>
+        <div class="fav-body">
+          <p class="fav-name">한예림</p>
+          <p class="fav-school">이대 국어국문학과 · 4학년</p>
+          <div class="fav-tags">
+            <span class="fav-tag">학부모 상담</span>
+            <span class="fav-tag">자소서</span>
+          </div>
+          <div class="fav-meta">
+            <span class="rating">★ 5.0 <span class="rating-count">(73)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+        <button class="fav-remove" aria-label="찜 해제">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </article>
+
+    </div>
+
+    <div style="height:24px;"></div>
+
+  </main>
+</body>
+</html>

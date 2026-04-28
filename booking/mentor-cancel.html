@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 예약 취소 (멘토)</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .intro {
+      padding: 20px 20px 8px;
+    }
+    .intro h1 {
+      font: 700 22px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-normal);
+      margin: 0 0 8px;
+    }
+    .intro p {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Booking summary */
+    .booking-box {
+      margin: 0 20px 20px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .booking-thumb {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1b61c9, #254fad);
+      color: #fff;
+      display: inline-flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      flex: 0 0 44px;
+    }
+    .booking-box .title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .booking-box .meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    /* Time bucket indicator */
+    .time-bucket {
+      margin: 0 20px 16px;
+      padding: 18px 20px;
+      border-radius: var(--radius-lg);
+      background: var(--color-amber-bg);
+      border: 1px solid var(--color-amber);
+    }
+    .time-bucket .tag {
+      display: inline-block;
+      font: 700 10px/1.4 var(--font-family);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 3px 8px;
+      background: var(--color-amber);
+      color: var(--color-text-on-primary);
+      border-radius: var(--radius-sm);
+      margin-bottom: 10px;
+    }
+    .time-bucket .timing {
+      font: 700 26px/1.1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-normal);
+      margin: 0 0 6px;
+    }
+    .time-bucket .timing .unit {
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--color-text-weak);
+      margin-left: 4px;
+    }
+    .time-bucket .sub {
+      font: var(--font-caption-strong);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .time-bucket .sub strong { color: var(--color-amber); font-weight: 600; filter: brightness(0.75); }
+
+    /* Section */
+    .sec {
+      padding: 4px 20px 20px;
+    }
+    .sec h2 {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .sec .hint {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 14px;
+    }
+
+    /* Reason dropdown */
+    .reason-dropdown {
+      position: relative;
+      margin-bottom: 12px;
+    }
+    .reason-select {
+      width: 100%;
+      padding: 14px 16px;
+      padding-right: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      appearance: none;
+      font-family: var(--font-family);
+    }
+    .reason-select:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 12%, transparent);
+    }
+    .reason-dropdown::after {
+      content: "";
+      position: absolute;
+      right: 16px; top: 50%;
+      width: 8px; height: 8px;
+      border-right: 1.5px solid var(--color-text-weak);
+      border-bottom: 1.5px solid var(--color-text-weak);
+      transform: translateY(-75%) rotate(45deg);
+      pointer-events: none;
+    }
+
+    /* Reason options (visual list) */
+    .reason-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .reason-opt {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      cursor: pointer;
+    }
+    .reason-opt.is-selected {
+      border-color: var(--color-primary);
+      background: var(--color-primary-bg);
+    }
+    .reason-opt .code {
+      display: inline-block;
+      font: 700 11px/1.4 var(--font-family);
+      padding: 2px 8px;
+      background: var(--color-surface-subtle);
+      color: var(--color-text-weak);
+      border-radius: var(--radius-sm);
+      letter-spacing: 0.3px;
+      flex: 0 0 auto;
+      margin-top: 2px;
+    }
+    .reason-opt.is-selected .code {
+      background: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+    .reason-opt .info { flex: 1; }
+    .reason-opt .label {
+      display: block;
+      font: 500 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 2px;
+    }
+    .reason-opt .desc {
+      display: block;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.4;
+    }
+
+    /* Textarea */
+    .textarea {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      min-height: 80px;
+      resize: vertical;
+      font-family: var(--font-family);
+    }
+
+    /* Emergency exemption */
+    .exempt-card {
+      margin: 0 20px 16px;
+      padding: 16px;
+      border-radius: var(--radius-md);
+      border: 1px dashed var(--color-success);
+      background: var(--color-success-bg);
+    }
+    .exempt-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .exempt-check {
+      width: 22px; height: 22px;
+      border: 2px solid var(--color-border-strong);
+      border-radius: var(--radius-sm);
+      flex: 0 0 22px;
+      position: relative;
+      background: var(--color-surface);
+    }
+    .exempt-card.is-on .exempt-check {
+      background: var(--color-success);
+      border-color: var(--color-success);
+    }
+    .exempt-card.is-on .exempt-check::after {
+      content: "";
+      position: absolute;
+      left: 7px; top: 3px;
+      width: 4px; height: 10px;
+      border-right: 2.5px solid #fff;
+      border-bottom: 2.5px solid #fff;
+      transform: rotate(45deg);
+    }
+    .exempt-card h3 {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-success);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .exempt-card p {
+      font: var(--font-caption);
+      color: var(--color-success);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+      filter: brightness(0.7);
+    }
+    .exempt-remaining {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+      padding: 3px 8px;
+      background: var(--color-surface);
+      border-radius: var(--radius-sm);
+      font: 600 11px/1.4 var(--font-family);
+      color: var(--color-success);
+      letter-spacing: 0.3px;
+    }
+
+    /* Penalty preview */
+    .penalty-card {
+      margin: 0 20px 16px;
+      padding: 20px;
+      border-radius: var(--radius-lg);
+      background: var(--color-error-bg);
+      border: 2px solid var(--color-error);
+    }
+    .penalty-card.is-exempt { background: var(--color-success-bg); border-color: var(--color-success); opacity: 0.75; }
+    .penalty-card .label {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-error);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 10px;
+    }
+    .penalty-card.is-exempt .label { color: var(--color-success); }
+    .penalty-card .amount {
+      font: 800 28px/1 var(--font-family);
+      color: var(--color-error);
+      letter-spacing: var(--tracking-normal);
+      margin: 0 0 8px;
+    }
+    .penalty-card.is-exempt .amount { color: var(--color-success); }
+    .penalty-card .sub {
+      font: var(--font-caption);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Escalation matrix */
+    .matrix-wrap { padding: 0 20px 20px; }
+    .matrix-wrap h3 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 10px;
+    }
+    .matrix {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--color-surface);
+    }
+    .matrix-row {
+      display: grid;
+      grid-template-columns: 48px 64px 1fr;
+      align-items: center;
+      padding: 12px 14px;
+      font: var(--font-caption-strong);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .matrix-row + .matrix-row {
+      border-top: 1px solid var(--color-border);
+    }
+    .matrix-row.is-applied {
+      background: var(--color-error-bg);
+      font-weight: 600;
+    }
+    .matrix-row.is-future {
+      opacity: 0.55;
+    }
+    .matrix-row .count {
+      font: 700 13px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-normal);
+    }
+    .matrix-row .pct {
+      font: 700 14px/1 var(--font-family);
+      color: var(--color-error);
+      letter-spacing: var(--tracking-normal);
+    }
+    .matrix-row.is-applied .pct { color: var(--color-error); filter: brightness(0.85); }
+    .matrix-row .extra {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .marker {
+      display: inline-block;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--color-border-strong);
+      margin-right: 12px;
+      flex: 0 0 12px;
+      position: relative;
+    }
+    .matrix-row.is-applied .marker {
+      background: var(--color-error);
+      border-color: var(--color-error);
+    }
+    .matrix-row.is-applied .marker::after {
+      content: "";
+      position: absolute;
+      left: 2px; top: 0px;
+      width: 3px; height: 6px;
+      border-right: 2px solid #fff;
+      border-bottom: 2px solid #fff;
+      transform: rotate(45deg);
+    }
+
+    /* Weighting table (for reference) */
+    .weight-table {
+      margin: 0 20px 16px;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+    }
+    .weight-table h4 {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 8px;
+    }
+    .weight-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font: 12px/1.4 var(--font-family);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .weight-row strong {
+      color: var(--color-text);
+      font-weight: 600;
+    }
+    .weight-row.is-now {
+      color: var(--color-amber);
+      font-weight: 600;
+      filter: brightness(0.7);
+    }
+
+    /* Final warning */
+    .warning {
+      margin: 0 20px 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      line-height: 1.6;
+      letter-spacing: var(--tracking-tight);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .warning svg { flex: 0 0 18px; margin-top: 1px; color: var(--color-text-weak); }
+    .warning strong { color: var(--color-text); font-weight: 600; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">예약 거절·취소</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h1>정말 이 예약을 취소하시겠어요?</h1>
+      <p>취소 시 패널티가 부과될 수 있어요. 시점과 사유에 따라 적용 비율이 달라집니다.</p>
+    </div>
+
+    <!-- Booking -->
+    <div class="booking-box">
+      <span class="booking-thumb">이</span>
+      <div style="flex:1;min-width:0;">
+        <p class="title">이하은 · 경영학과 진학 Q&amp;A 상담</p>
+        <p class="meta">4월 27일 (일) 오후 3:00 · 30분 · ₩29,900</p>
+      </div>
+    </div>
+
+    <!-- Time bucket (computed from current time vs booking time) -->
+    <div class="time-bucket">
+      <span class="tag">현재 시점 · 24h 이내</span>
+      <p class="timing">21시간 <span class="unit">남음</span></p>
+      <p class="sub">상담 시작 <strong>24시간 이내</strong> 취소에 해당합니다. 카운트 <strong>+2</strong> 가중.</p>
+    </div>
+
+    <!-- Reason -->
+    <section class="sec">
+      <h2>취소 사유</h2>
+      <p class="hint">정확한 사유 선택 시, 긴급 면제 대상인지 자동 판별됩니다.</p>
+
+      <div class="reason-list">
+        <label class="reason-opt">
+          <span class="code">R01</span>
+          <div class="info">
+            <span class="label">개인 스케줄 충돌</span>
+            <span class="desc">학교 일정·시험·이사 등 사전 예측 가능했던 이유</span>
+          </div>
+        </label>
+
+        <label class="reason-opt">
+          <span class="code">R02</span>
+          <div class="info">
+            <span class="label">건강·응급 상황</span>
+            <span class="desc">본인 또는 가족의 질병·사고 · <strong style="color:var(--color-success);">긴급 면제 대상</strong></span>
+          </div>
+        </label>
+
+        <label class="reason-opt is-selected">
+          <span class="code">R03</span>
+          <div class="info">
+            <span class="label">기술적 문제</span>
+            <span class="desc">인터넷·장비·Zoom 장애 등 불가항력</span>
+          </div>
+        </label>
+
+        <label class="reason-opt">
+          <span class="code">R04</span>
+          <div class="info">
+            <span class="label">멘티 요청/합의</span>
+            <span class="desc">멘티가 먼저 변경을 요청한 경우 · <strong style="color:var(--color-success);">면제 검토</strong></span>
+          </div>
+        </label>
+
+        <label class="reason-opt">
+          <span class="code">R05</span>
+          <div class="info">
+            <span class="label">기타</span>
+            <span class="desc">위 항목에 해당하지 않음 · 상세 설명 필수</span>
+          </div>
+        </label>
+      </div>
+
+      <textarea class="textarea" style="margin-top:12px;" placeholder="취소 이유를 구체적으로 적어주세요 (멘티에게도 공유됩니다)"></textarea>
+    </section>
+
+    <!-- Emergency exemption -->
+    <div class="exempt-card">
+      <div class="exempt-header">
+        <span class="exempt-check"></span>
+        <div>
+          <h3>긴급 사유 면제 신청</h3>
+          <p>질병·사고·자연재해 등 불가항력인 경우 운영팀 심사 후 패널티가 면제됩니다. 연 2회까지 신청 가능.</p>
+          <span class="exempt-remaining">
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            올해 잔여 2 / 2 회
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Penalty preview -->
+    <div class="penalty-card">
+      <p class="label">이 취소 시 예상 패널티</p>
+      <p class="amount">정산액 −10%</p>
+      <p class="sub">
+        누적 <strong>2회</strong> 단계 적용 · 다음 달 정산에서 차감.<br>
+        3회 누적 시 <strong>−20% + 1개월 프로필 정지</strong>로 가중됩니다.
+      </p>
+    </div>
+
+    <!-- Weighting -->
+    <div class="weight-table">
+      <h4>카운트 가중치</h4>
+      <div class="weight-row"><span>72시간 이전 취소</span><strong>+1</strong></div>
+      <div class="weight-row"><span>72시간 ~ 24시간 전</span><strong>+1</strong></div>
+      <div class="weight-row is-now"><span>24시간 이내 취소 (현재)</span><strong>+2</strong></div>
+      <div class="weight-row"><span>노쇼</span><strong>+2</strong></div>
+    </div>
+
+    <!-- Escalation matrix -->
+    <div class="matrix-wrap">
+      <h3>패널티 곱증가 체계 · 6개월 롤링</h3>
+      <div class="matrix">
+        <div class="matrix-row" style="grid-template-columns: 48px 64px 1fr;">
+          <span class="marker" style="background:var(--color-error);border-color:var(--color-error);position:relative;">
+            <span style="position:absolute;left:2px;top:0;width:3px;height:6px;border-right:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(45deg);display:block;"></span>
+          </span>
+          <span class="count">1회</span>
+          <span><strong class="pct">5%</strong> &nbsp;<span class="extra">정산 차감</span></span>
+        </div>
+        <div class="matrix-row is-applied">
+          <span class="marker"></span>
+          <span class="count">2회 (현재 → 적용)</span>
+          <span><strong class="pct">10%</strong> &nbsp;<span class="extra">정산 차감</span></span>
+        </div>
+        <div class="matrix-row is-future">
+          <span class="marker"></span>
+          <span class="count">3회</span>
+          <span><strong class="pct">20%</strong> &nbsp;<span class="extra">+ 1개월 프로필 정지</span></span>
+        </div>
+        <div class="matrix-row is-future">
+          <span class="marker"></span>
+          <span class="count">4회</span>
+          <span><strong class="pct">40%</strong></span>
+        </div>
+        <div class="matrix-row is-future">
+          <span class="marker"></span>
+          <span class="count">5회</span>
+          <span><strong class="pct">80%</strong> &nbsp;<span class="extra">+ 계정 정지</span></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Info -->
+    <div class="warning">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="8"/></svg>
+      <span>취소 확정 후 되돌릴 수 없습니다. 카운트는 <strong>6개월 롤링</strong>으로 계산되어 시간이 지나면 단계가 낮아집니다. 멘티에게는 자동으로 사과 메시지와 전액 환불이 발송됩니다.</span>
+    </div>
+
+    <!-- CTAs -->
+    <div class="bottom-cta">
+      <button class="btn btn-secondary">다시 생각할게요</button>
+      <button class="btn btn-primary" style="flex:1; background:var(--color-error);" data-next="../mentor/dashboard.html">−10% 감수하고 취소</button>
+    </div>
+
+  </main>
+</body>
+</html>

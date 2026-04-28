@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 예약 취소</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .intro {
+      padding: 20px 20px 16px;
+    }
+    .intro h1 {
+      font: 700 22px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+      margin: 0 0 8px;
+    }
+    .intro p {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* Booking summary */
+    .booking-box {
+      margin: 0 20px 16px;
+      padding: 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+    }
+    .booking-box .title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .booking-box .meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    /* Refund preview */
+    .refund-preview {
+      margin: 0 20px 20px;
+      padding: 20px;
+      border: 2px solid var(--color-success);
+      background: var(--color-success-bg);
+      border-radius: var(--radius-lg);
+    }
+    .refund-preview .label {
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-success);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 10px;
+    }
+    .refund-preview .amount {
+      font: 900 32px/1 var(--font-family);
+      color: var(--color-success);
+      letter-spacing: -0.6px;
+      margin: 0 0 6px;
+    }
+    .refund-preview .sub {
+      font: var(--font-caption-strong);
+      color: var(--color-success);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Policy matrix */
+    .policy-wrap {
+      margin: 0 20px 20px;
+    }
+    .policy-wrap h2 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 12px;
+    }
+    .policy-list {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .policy-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      background: var(--color-surface);
+      font: var(--font-caption-strong);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .policy-row + .policy-row {
+      border-top: 1px solid var(--color-border);
+    }
+    .policy-row.is-applied {
+      background: var(--color-success-bg);
+    }
+    .policy-row .when { flex: 1; }
+    .policy-row .refund { font-weight: 700; }
+    .policy-row .marker {
+      width: 14px; height: 14px;
+      border-radius: 50%;
+      background: var(--color-success);
+      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+      margin-right: 8px;
+      flex: 0 0 14px;
+    }
+    .policy-row .spacer { width: 14px; margin-right: 8px; flex: 0 0 14px; }
+
+    /* Reason select */
+    .reason-section {
+      padding: 0 20px 16px;
+    }
+    .reason-section h2 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 12px;
+    }
+    .reason-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .reason-opt {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .reason-opt.is-selected {
+      border-color: var(--color-primary);
+      background: #eef3fb;
+    }
+    .radio-dot {
+      width: 18px; height: 18px;
+      border: 2px solid var(--color-border-strong);
+      border-radius: 50%;
+      flex: 0 0 18px;
+      position: relative;
+    }
+    .reason-opt.is-selected .radio-dot { border-color: var(--color-primary); background: var(--color-primary); }
+    .reason-opt.is-selected .radio-dot::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+
+    /* Warning */
+    .warning {
+      margin: 0 20px 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--color-error-bg);
+      color: var(--color-error);
+      font: var(--font-caption);
+      line-height: 1.6;
+      letter-spacing: var(--tracking-tight);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .warning svg { flex: 0 0 18px; margin-top: 1px; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">예약 취소</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h1>정말 취소하시겠어요?</h1>
+      <p>아래 환불 예정 금액을 확인 후 취소해 주세요.</p>
+    </div>
+
+    <!-- Booking summary -->
+    <div class="booking-box">
+      <p class="title">경영학과 진학 Q&amp;A 상담</p>
+      <p class="meta">김서연 멘토 · 4월 27일 (일) 오후 3:00 · 30분 · ₩29,900 (카카오페이)</p>
+    </div>
+
+    <!-- Refund preview -->
+    <div class="refund-preview">
+      <p class="label">환불 예정 금액</p>
+      <p class="amount">₩29,900</p>
+      <p class="sub">✓ 상담 94시간 전 · 전액 환불 조건 충족</p>
+    </div>
+
+    <!-- Policy matrix -->
+    <div class="policy-wrap">
+      <h2>환불 정책 · 현재 적용</h2>
+      <div class="policy-list">
+        <div class="policy-row is-applied">
+          <span class="marker">
+            <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          <span class="when">24시간 이상 전 취소</span>
+          <span class="refund" style="color:var(--color-success);">전액 환불</span>
+        </div>
+        <div class="policy-row">
+          <span class="spacer"></span>
+          <span class="when">24시간 이내 ~ 3시간 전</span>
+          <span class="refund" style="color:var(--color-amber);">50% 환불</span>
+        </div>
+        <div class="policy-row">
+          <span class="spacer"></span>
+          <span class="when">3시간 이내</span>
+          <span class="refund" style="color:var(--color-error);">환불 불가</span>
+        </div>
+        <div class="policy-row">
+          <span class="spacer"></span>
+          <span class="when">멘토 노쇼 (자동)</span>
+          <span class="refund" style="color:var(--color-success);">전액 + 패널티</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Auto refund info (ADR-001) -->
+    <div class="info-card" style="margin:0 20px 16px;padding:14px 16px;border-radius:var(--radius-md);background:#eef3fb;display:flex;gap:10px;align-items:flex-start;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--color-primary);flex:0 0 18px;margin-top:1px;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12" y2="8"/>
+      </svg>
+      <p style="font:var(--font-caption);color:var(--color-text);letter-spacing:var(--tracking-tight);line-height:1.55;margin:0;">
+        <strong style="font-weight:600;">자동 환불 안내 ·</strong> 멘토가 시작 +15분 시점까지 미입장 시 시스템이 자동으로 노쇼 판정해 100% 환불을 처리합니다. 결제 수단별 환불 소요 시간은 결제·환불 내역에서 확인하세요.
+      </p>
+    </div>
+
+    <!-- Reason -->
+    <section class="reason-section">
+      <h2>취소 이유</h2>
+      <div class="reason-list">
+        <label class="reason-opt is-selected">
+          <span class="radio-dot"></span>
+          일정이 변경돼 시간을 맞추기 어려워요
+        </label>
+        <label class="reason-opt">
+          <span class="radio-dot"></span>
+          다른 멘토와 상담해보려고 해요
+        </label>
+        <label class="reason-opt">
+          <span class="radio-dot"></span>
+          단순 변심
+        </label>
+        <label class="reason-opt">
+          <span class="radio-dot"></span>
+          멘토 프로필과 다른 정보를 확인했어요
+        </label>
+        <label class="reason-opt">
+          <span class="radio-dot"></span>
+          기타
+        </label>
+      </div>
+    </section>
+
+    <!-- Warning -->
+    <div class="warning">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+      <span>취소 확정 후에는 되돌릴 수 없습니다. 환불은 결제 수단에 따라 영업일 기준 최대 5일 소요됩니다.</span>
+    </div>
+
+    <!-- CTAs -->
+    <div class="bottom-cta">
+      <button class="btn btn-secondary">돌아가기</button>
+      <button class="btn btn-primary" style="flex:1;background:var(--color-error);" data-next="../mypage/home.html">예약 취소하기</button>
+    </div>
+
+  </main>
+</body>
+</html>

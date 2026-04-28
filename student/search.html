@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 멘토 찾기</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+
+  <style>
+    /* Chip row: prevent vertical char wrap inside horizontal-scroll container */
+    .filter-row { -webkit-overflow-scrolling: touch; }
+    .filter-row::-webkit-scrollbar { display: none; }
+    .filter-row > .chip {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
+    .filter-summary {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 20px 10px;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+    }
+    .filter-summary strong { color: var(--color-text); font-weight: 500; }
+    .filter-summary .reset {
+      color: var(--color-primary);
+      font-weight: 500;
+      letter-spacing: var(--tracking-tight);
+    }
+    .count-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 20px 14px;
+    }
+    .count-row .count {
+      font: var(--font-caption-strong);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .count-row .sort {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .mentor-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      padding: 0 20px;
+    }
+    .mentor-row-photo-1 { background: linear-gradient(135deg, #f2d8c1, #c89a78); }
+    .mentor-row-photo-2 { background: linear-gradient(135deg, #d1dde9, #8aa3c1); }
+    .mentor-row-photo-3 { background: linear-gradient(135deg, #e5d8ea, #a28aba); }
+    .mentor-row-photo-4 { background: linear-gradient(135deg, #d8e8d1, #8bb27a); }
+    .mentor-row-photo-5 { background: linear-gradient(135deg, #d1d8e9, #7a8dc0); }
+    .mentor-row-photo-6 { background: linear-gradient(135deg, #e9d8d1, #c0927a); }
+
+    .verified-overlay {
+      position: absolute;
+      top: 6px; right: 6px;
+      width: 18px; height: 18px;
+      border-radius: 50%;
+      background: var(--color-success);
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Floating filter FAB */
+    .fab {
+      position: fixed;
+      bottom: 84px;
+      right: 20px;
+      height: 44px;
+      padding: 0 18px;
+      border-radius: var(--radius-full);
+      background: var(--color-text);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font: var(--font-button);
+      letter-spacing: var(--tracking-tight);
+      box-shadow: var(--shadow-soft), 0 8px 24px rgba(24, 29, 38, 0.28);
+      z-index: 5;
+    }
+
+    .spacer-24 { height: 24px; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">멘토 찾기</h1>
+      <button class="icon-btn" aria-label="필터">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      </button>
+    </header>
+
+    <!-- Search -->
+    <div class="search-wrap">
+      <div class="search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>멘토 · 학교 · 학과 검색</span>
+      </div>
+    </div>
+
+    <!-- Filter chips -->
+    <div class="filter-row">
+      <span class="chip is-selected">전체</span>
+      <span class="chip">서울대</span>
+      <span class="chip">연세대</span>
+      <span class="chip">고려대</span>
+      <span class="chip">진학/입시</span>
+      <span class="chip">공부법</span>
+      <span class="chip">전공 탐색</span>
+      <span class="chip">학부모 상담</span>
+    </div>
+
+    <!-- Active filter summary -->
+    <div class="filter-summary">
+      <span><strong>서울대</strong> · 진학/입시 · 가격 낮은순</span>
+      <a class="reset" href="#">초기화</a>
+    </div>
+
+    <!-- Result count + sort -->
+    <div class="count-row">
+      <span class="count">멘토 <strong>38명</strong></span>
+      <button class="sort">
+        추천순
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+    </div>
+
+    <!-- Mentor list -->
+    <section class="mentor-list">
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-1">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">김서연</span>
+            <span class="badge badge-hot">HOT</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 경영학과 · 3학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">진학/입시</span>
+            <span class="mentor-tag">전공탐색</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 4.9 <span class="rating-count">(217)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-2">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">박준호</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 의예과 · 2학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">의대 입시</span>
+            <span class="mentor-tag">내신</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 4.8 <span class="rating-count">(184)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-3">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">이수아</span>
+            <span class="badge badge-status-pending">신규</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 컴퓨터공학과 · 4학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">전공탐색</span>
+            <span class="mentor-tag">학생부</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 5.0 <span class="rating-count">(96)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-4">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">정민서</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 심리학과 · 3학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">학생부</span>
+            <span class="mentor-tag">진학/입시</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 4.9 <span class="rating-count">(142)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-5">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">한예림</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 국어국문학과 · 4학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">학부모 상담</span>
+            <span class="mentor-tag">자소서</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 5.0 <span class="rating-count">(73)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+      <article class="mentor-row" data-next="./mentor-detail.html">
+        <div class="mentor-row-photo mentor-row-photo-6">
+          <div class="verified-overlay">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+        </div>
+        <div class="mentor-row-body">
+          <div class="mentor-row-header">
+            <span class="mentor-row-name">최지훈</span>
+          </div>
+          <p class="mentor-row-school">서울대학교 기계공학과 · 4학년</p>
+          <div class="mentor-row-tags">
+            <span class="mentor-tag">공대 진학</span>
+            <span class="mentor-tag">공부법</span>
+          </div>
+          <div class="mentor-row-meta">
+            <span class="rating">★ 4.8 <span class="rating-count">(98)</span></span>
+            <span class="price">₩29,900<span class="price-unit">/30분</span></span>
+          </div>
+        </div>
+      </article>
+
+    </section>
+
+    <div class="spacer-24"></div>
+
+    <!-- Floating FAB -->
+    <button class="fab">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      필터
+      <span style="display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:9px;background:var(--color-amber);color:#3a2500;font-size:10px;font-weight:700;">3</span>
+    </button>
+
+    <!-- Tab bar -->
+    <nav class="tab-bar">
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>홈</span>
+      </button>
+      <button class="tab is-active">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <span>탐색</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg>
+        <span>내 예약</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 16.8 5.8 21.3l2.4-7.4L2 9.4h7.6z"/></svg>
+        <span>후기</span>
+      </button>
+      <button class="tab">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/></svg>
+        <span>마이</span>
+      </button>
+    </nav>
+
+  </main>
+</body>
+</html>

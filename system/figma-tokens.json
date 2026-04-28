@@ -1,0 +1,119 @@
+{
+  "$themes": [],
+  "$metadata": {
+    "tokenSetOrder": ["global"]
+  },
+  "global": {
+    "color": {
+      "primary": {
+        "base": { "value": "#1b61c9", "type": "color", "description": "Airtable Blue · CTA · Links" },
+        "hover": { "value": "#1854ae", "type": "color" },
+        "pressed": { "value": "#144699", "type": "color" },
+        "bg": { "value": "#eef3fb", "type": "color", "description": "Primary container / icon bg" }
+      },
+      "text": {
+        "default": { "value": "#181d26", "type": "color", "description": "Deep Navy · primary text" },
+        "weak": { "value": "rgba(4,14,32,0.69)", "type": "color", "description": "Secondary text" },
+        "secondary": { "value": "#333333", "type": "color" },
+        "onPrimary": { "value": "#ffffff", "type": "color" }
+      },
+      "surface": {
+        "base": { "value": "#ffffff", "type": "color" },
+        "subtle": { "value": "#f8fafc", "type": "color", "description": "Light section bg" },
+        "spotlight": { "value": "rgba(249,252,255,0.97)", "type": "color" }
+      },
+      "semantic": {
+        "success": { "value": "#006400", "type": "color", "description": "인증/예약 확정/완료" },
+        "successBg": { "value": "#ecf5ec", "type": "color" },
+        "error": { "value": "#dc2626", "type": "color", "description": "취소/환불/노쇼" },
+        "errorBg": { "value": "#fef2f2", "type": "color" }
+      },
+      "accent": {
+        "amber": { "value": "#f59e0b", "type": "color", "description": "인기/HOT 뱃지 전용 (화면당 1-2곳)" },
+        "amberBg": { "value": "#fef3c7", "type": "color" },
+        "midBlue": { "value": "#254fad", "type": "color" }
+      },
+      "border": {
+        "default": { "value": "#e0e2e6", "type": "color", "description": "Airtable signature card border" },
+        "strong": { "value": "#c9ccd1", "type": "color" }
+      }
+    },
+    "font": {
+      "family": {
+        "primary": { "value": "Inter", "type": "fontFamilies", "description": "Haas 대체 — Figma에서 Inter 사용" },
+        "fallback": { "value": "-apple-system, system-ui, Segoe UI, Roboto, Pretendard", "type": "fontFamilies" }
+      },
+      "weight": {
+        "regular": { "value": "400", "type": "fontWeights" },
+        "medium": { "value": "500", "type": "fontWeights" },
+        "semibold": { "value": "600", "type": "fontWeights" },
+        "bold": { "value": "700", "type": "fontWeights" },
+        "black": { "value": "900", "type": "fontWeights" }
+      },
+      "size": {
+        "displayHero": { "value": "48", "type": "fontSizes" },
+        "section": { "value": "40", "type": "fontSizes" },
+        "subheading": { "value": "32", "type": "fontSizes" },
+        "cardTitle": { "value": "24", "type": "fontSizes" },
+        "feature": { "value": "20", "type": "fontSizes" },
+        "bodyLg": { "value": "18", "type": "fontSizes" },
+        "body": { "value": "16", "type": "fontSizes" },
+        "caption": { "value": "14", "type": "fontSizes" },
+        "tiny": { "value": "11", "type": "fontSizes" }
+      },
+      "lineHeight": {
+        "tight": { "value": "1.15", "type": "lineHeights" },
+        "snug": { "value": "1.25", "type": "lineHeights" },
+        "normal": { "value": "1.3", "type": "lineHeights" },
+        "relaxed": { "value": "1.35", "type": "lineHeights" },
+        "loose": { "value": "1.5", "type": "lineHeights" }
+      },
+      "tracking": {
+        "tight": { "value": "0.08", "type": "letterSpacing", "description": "positive tracking per Airtable" },
+        "normal": { "value": "0.12", "type": "letterSpacing" },
+        "loose": { "value": "0.18", "type": "letterSpacing" }
+      }
+    },
+    "radius": {
+      "sm": { "value": "2", "type": "borderRadius", "description": "sharp accents" },
+      "md": { "value": "12", "type": "borderRadius", "description": "buttons, inputs" },
+      "lg": { "value": "16", "type": "borderRadius", "description": "cards" },
+      "xl": { "value": "24", "type": "borderRadius", "description": "sections / hero" },
+      "2xl": { "value": "32", "type": "borderRadius", "description": "large containers" },
+      "full": { "value": "9999", "type": "borderRadius", "description": "pills, avatars" }
+    },
+    "spacing": {
+      "1": { "value": "4", "type": "spacing" },
+      "2": { "value": "8", "type": "spacing" },
+      "3": { "value": "12", "type": "spacing" },
+      "4": { "value": "16", "type": "spacing" },
+      "5": { "value": "20", "type": "spacing" },
+      "6": { "value": "24", "type": "spacing" },
+      "7": { "value": "32", "type": "spacing" },
+      "8": { "value": "40", "type": "spacing" },
+      "9": { "value": "48", "type": "spacing" }
+    },
+    "shadow": {
+      "button": {
+        "value": [
+          { "x": "0", "y": "0", "blur": "1", "spread": "0", "color": "rgba(0,0,0,0.32)", "type": "dropShadow" },
+          { "x": "0", "y": "0", "blur": "2", "spread": "0", "color": "rgba(0,0,0,0.08)", "type": "dropShadow" },
+          { "x": "0", "y": "1", "blur": "3", "spread": "0", "color": "rgba(45,127,249,0.28)", "type": "dropShadow" }
+        ],
+        "type": "boxShadow",
+        "description": "Airtable signature blue-tinted multi-layer shadow"
+      },
+      "soft": {
+        "value": { "x": "0", "y": "0", "blur": "20", "spread": "0", "color": "rgba(15,48,106,0.05)", "type": "dropShadow" },
+        "type": "boxShadow"
+      },
+      "card": {
+        "value": [
+          { "x": "0", "y": "1", "blur": "2", "spread": "0", "color": "rgba(15,48,106,0.04)", "type": "dropShadow" },
+          { "x": "0", "y": "4", "blur": "12", "spread": "0", "color": "rgba(15,48,106,0.04)", "type": "dropShadow" }
+        ],
+        "type": "boxShadow"
+      }
+    }
+  }
+}

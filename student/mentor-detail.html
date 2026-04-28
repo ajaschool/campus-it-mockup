@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 멘토 상세</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .hero-photo {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: linear-gradient(135deg, #f2d8c1, #c89a78);
+      position: relative;
+    }
+    .hero-badges {
+      position: absolute;
+      top: 16px; left: 16px;
+      display: flex; gap: 6px;
+    }
+    .detail-header {
+      padding: 20px 20px 12px;
+    }
+    .detail-name {
+      font: 700 28px/1.2 var(--font-family);
+      letter-spacing: -0.2px;
+      color: var(--color-text);
+      margin: 0 0 6px;
+    }
+    .detail-school {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .stat-strip {
+      display: flex;
+      gap: 0;
+      padding: 16px 20px;
+      margin: 4px 20px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+    }
+    .stat {
+      flex: 1;
+      text-align: center;
+      position: relative;
+    }
+    .stat + .stat::before {
+      content: "";
+      position: absolute;
+      left: 0; top: 50%;
+      transform: translateY(-50%);
+      width: 1px; height: 28px;
+      background: var(--color-border);
+    }
+    .stat-value {
+      display: block;
+      font: 600 16px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 4px;
+    }
+    .stat-value .star { color: var(--color-amber); margin-right: 2px; }
+    .stat-label {
+      font-size: 12px;
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .subject-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 16px 20px;
+    }
+    .intro-block {
+      padding: 16px 20px;
+    }
+    .intro-block h3 {
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 10px;
+    }
+    .intro-quote {
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      line-height: 1.5;
+      padding-left: 12px;
+      border-left: 3px solid var(--color-primary);
+      margin: 0;
+    }
+    .bullet-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .bullet-list li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .bullet-list li::before {
+      content: "";
+      flex: 0 0 6px;
+      width: 6px; height: 6px;
+      margin-top: 9px;
+      border-radius: 50%;
+      background: var(--color-primary);
+    }
+
+    /* Product cards */
+    .product-list {
+      display: flex; flex-direction: column; gap: 10px;
+      padding: 4px 20px 16px;
+    }
+    .product-card {
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      background: var(--color-surface);
+    }
+    .product-category {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--color-primary-bg, #eef3fb);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 10px;
+    }
+    .product-title {
+      font: 600 17px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 8px;
+    }
+    .product-desc {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0 0 14px;
+    }
+    .product-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 12px;
+      border-top: 1px solid var(--color-border);
+    }
+    .product-duration {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .product-price {
+      font: 700 18px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.1px;
+    }
+
+    /* Reviews */
+    .review-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+    }
+    .review-card + .review-card { margin-top: 10px; }
+    .review-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .review-stars { color: var(--color-amber); font-weight: 600; }
+    .review-meta-text {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+    }
+    .review-text {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .review-wrap { padding: 0 20px 20px; }
+
+    /* Bottom fixed CTA */
+    .cta-bottom {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      padding: 14px 20px calc(14px + env(safe-area-inset-bottom));
+      background: var(--color-surface);
+      border-top: 1px solid var(--color-border);
+      z-index: 10;
+    }
+    .cta-bottom .summary {
+      flex: 0 0 auto;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+    }
+    .cta-bottom .summary strong {
+      display: block;
+      font: 700 18px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.1px;
+      margin-bottom: 2px;
+    }
+    .cta-bottom .btn {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- Floating action bar on photo -->
+    <div style="position:absolute; top:14px; left:14px; right:14px; display:flex; justify-content:space-between; z-index:5;">
+      <button class="icon-btn" style="background:rgba(255,255,255,0.9); backdrop-filter: blur(8px);" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div style="display:flex;gap:8px;">
+        <button class="icon-btn" style="background:rgba(255,255,255,0.9); backdrop-filter: blur(8px);" aria-label="공유">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button class="icon-btn" style="background:rgba(255,255,255,0.9); backdrop-filter: blur(8px);" aria-label="찜">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Hero photo -->
+    <div class="hero-photo">
+      <div class="hero-badges">
+        <span class="badge badge-verified">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          인증 멘토
+        </span>
+        <span class="badge badge-hot">HOT</span>
+      </div>
+    </div>
+
+    <!-- Name & school -->
+    <header class="detail-header">
+      <h1 class="detail-name">김서연</h1>
+      <p class="detail-school">서울대학교 경영학과 · 3학년</p>
+    </header>
+
+    <!-- Stats -->
+    <section class="stat-strip">
+      <div class="stat">
+        <span class="stat-value"><span class="star">★</span>4.9</span>
+        <span class="stat-label">후기 217개</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">482회</span>
+        <span class="stat-label">누적 상담</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value">1시간</span>
+        <span class="stat-label">응답 평균</span>
+      </div>
+    </section>
+
+    <!-- Subjects -->
+    <section class="subject-chips">
+      <span class="chip is-selected">진학/입시</span>
+      <span class="chip">전공 탐색</span>
+      <span class="chip">내신 관리</span>
+      <span class="chip">학생부</span>
+    </section>
+
+    <!-- Intro -->
+    <section class="intro-block">
+      <h3>한 줄 소개</h3>
+      <blockquote class="intro-quote">
+        경영학부 진학을 고민하는 학생들에게 실제 입시 경험과 학과 생활을 솔직하게 전해드려요.
+      </blockquote>
+    </section>
+
+    <!-- Experience -->
+    <section class="intro-block">
+      <h3>입시 경험</h3>
+      <ul class="bullet-list">
+        <li>2022학년도 수시 학생부종합전형 합격</li>
+        <li>일반고 내신 1.2등급, 학생부 우수</li>
+        <li>경영학과 2년 재학 중</li>
+      </ul>
+    </section>
+
+    <!-- Products -->
+    <section>
+      <div class="section-title-row" style="padding: 16px 20px 4px;">
+        <h2 class="section-title" style="margin:0;">멘토링 상품</h2>
+        <span class="link">3개</span>
+      </div>
+
+      <div class="product-list">
+
+        <article class="product-card">
+          <span class="product-category">진학/입시</span>
+          <h3 class="product-title">경영학과 진학 Q&amp;A 상담</h3>
+          <p class="product-desc">경영학부 진학을 고민하는 고1-고3 학생 대상. 학생부 방향, 자소서 전략, 실제 학과 생활까지 경험 기반 Q&amp;A.</p>
+          <div class="product-footer">
+            <span class="product-duration">30분 · Zoom</span>
+            <span class="product-price">₩29,900</span>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <span class="product-category">공부법</span>
+          <h3 class="product-title">내신 1등급 공부법 루틴 점검</h3>
+          <p class="product-desc">평일 방과후 / 주말 시간표 진단, 과목별 공부법 제안, 실제 학습 로그 기반 피드백.</p>
+          <div class="product-footer">
+            <span class="product-duration">30분 · Zoom</span>
+            <span class="product-price">₩29,900</span>
+          </div>
+        </article>
+
+        <article class="product-card">
+          <span class="product-category">학부모 상담</span>
+          <h3 class="product-title">학부모 대상 대학 현실 상담</h3>
+          <p class="product-desc">경영·경상 계열 진학을 자녀에게 권할지 고민하는 학부모 대상. 실제 취업·진로 이야기 포함.</p>
+          <div class="product-footer">
+            <span class="product-duration">30분 · Zoom</span>
+            <span class="product-price">₩29,900</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section>
+      <div class="section-title-row" style="padding: 8px 20px 4px;">
+        <h2 class="section-title" style="margin:0;">후기 217개 · ★4.9</h2>
+        <a class="link" href="#">전체보기 →</a>
+      </div>
+      <div class="review-wrap">
+        <article class="review-card">
+          <div class="review-head">
+            <span class="review-stars">★★★★★</span>
+            <span class="review-meta-text">고2 학생 · 2026.03</span>
+          </div>
+          <p class="review-text">상담 전에 보낸 질문을 꼼꼼히 읽고 준비해 주셔서 30분이 정말 알차게 느껴졌어요.</p>
+        </article>
+        <article class="review-card">
+          <div class="review-head">
+            <span class="review-stars">★★★★★</span>
+            <span class="review-meta-text">학부모 · 2026.03</span>
+          </div>
+          <p class="review-text">학원에서 듣기 어려운 실제 학과 생활과 진로 현실까지 얘기해주셔서 도움이 많이 됐습니다.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Bottom CTA -->
+    <div class="cta-bottom">
+      <div class="summary">
+        <strong>₩29,900~</strong>
+        30분 기준 · 3개 상품
+      </div>
+      <button class="btn btn-primary" data-next="./schedule.html">상담 신청</button>
+    </div>
+
+  </main>
+</body>
+</html>

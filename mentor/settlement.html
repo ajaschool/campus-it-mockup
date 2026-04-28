@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 정산 상세</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Period selector */
+    .period-row {
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .period-btn {
+      padding: 8px 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font: 600 14px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .download-btn {
+      padding: 8px 12px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      font: var(--font-caption-strong);
+      color: var(--color-text-secondary);
+      display: flex; align-items: center; gap: 6px;
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Big amount card */
+    .hero-card {
+      margin: 4px 20px 16px;
+      padding: 24px 24px 22px;
+      border-radius: var(--radius-xl);
+      background: linear-gradient(135deg, #eef3fb 0%, #ffffff 100%);
+      border: 1px solid var(--color-border);
+    }
+    .hero-label {
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 6px;
+    }
+    .hero-amount {
+      font: 900 36px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: -0.8px;
+      margin-bottom: 10px;
+    }
+    .hero-meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .hero-meta strong { color: var(--color-text); font-weight: 500; }
+
+    /* Breakdown */
+    .breakdown {
+      margin: 0 20px 20px;
+      padding: 18px 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .breakdown h3 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 14px;
+    }
+    .bk-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font: var(--font-body);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .bk-row .sub {
+      font-size: 12px;
+      color: var(--color-text-weak);
+      margin-left: 6px;
+      font-weight: 400;
+    }
+    .bk-row + .bk-row {
+      border-top: 1px solid var(--color-border);
+    }
+    .bk-row.total {
+      font-weight: 600;
+      color: var(--color-text);
+      padding-top: 14px;
+      margin-top: 8px;
+      border-top: 2px solid var(--color-text);
+    }
+    .bk-row.total .amount {
+      font: 700 18px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: -0.2px;
+    }
+
+    /* Status card */
+    .pay-status {
+      margin: 0 20px 20px;
+      padding: 16px 18px;
+      background: var(--color-success-bg);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .pay-icon {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: var(--color-success);
+      color: #ffffff;
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 40px;
+    }
+    .pay-text h4 { font: 600 14px/1.2 var(--font-family); color: var(--color-success); letter-spacing: var(--tracking-tight); margin: 0 0 2px; }
+    .pay-text p { font: var(--font-caption); color: var(--color-success); letter-spacing: var(--tracking-tight); margin: 0; }
+
+    /* Section */
+    .section-h {
+      padding: 16px 20px 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .section-h h2 { font: 600 15px/1.3 var(--font-family); color: var(--color-text); margin: 0; letter-spacing: var(--tracking-tight); }
+    .section-h .link { font: var(--font-caption-strong); color: var(--color-text-weak); letter-spacing: var(--tracking-tight); }
+
+    /* Transaction list */
+    .tx-list {
+      margin: 0 20px;
+    }
+    .tx-item {
+      padding: 14px 0;
+      display: flex;
+      gap: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tx-avatar {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: linear-gradient(135deg,#cdd8ec,#8aa3c1);
+      color: #fff; font: 600 14px/1 var(--font-family);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 40px;
+    }
+    .tx-body { flex: 1; }
+    .tx-top { display: flex; justify-content: space-between; margin-bottom: 4px; }
+    .tx-student { font: 500 14px/1.2 var(--font-family); color: var(--color-text); letter-spacing: var(--tracking-tight); }
+    .tx-amount { font: 600 14px/1 var(--font-family); color: var(--color-text); letter-spacing: -0.1px; }
+    .tx-amount.refund { color: var(--color-error); }
+    .tx-sub { font: var(--font-caption); color: var(--color-text-weak); letter-spacing: var(--tracking-tight); margin: 0; }
+    .tx-status {
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      margin-left: 4px;
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-completed { background: var(--color-success-bg); color: var(--color-success); }
+    .status-refunded { background: var(--color-error-bg); color: var(--color-error); }
+
+    /* Account info */
+    .account-card {
+      margin: 16px 20px;
+      padding: 16px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+    }
+    .account-card h3 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 10px;
+    }
+    .account-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font: var(--font-body);
+    }
+    .account-bank { color: var(--color-text); font-weight: 500; letter-spacing: var(--tracking-tight); }
+    .account-edit { font: var(--font-caption-strong); color: var(--color-primary); letter-spacing: var(--tracking-tight); }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">정산 상세</h1>
+      <button class="icon-btn" aria-label="도움말">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      </button>
+    </header>
+
+    <!-- Period -->
+    <div class="period-row">
+      <button class="period-btn">
+        2026년 4월
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <button class="download-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        명세서
+      </button>
+    </div>
+
+    <!-- Hero amount -->
+    <div class="hero-card">
+      <p class="hero-label">정산 예정 금액</p>
+      <p class="hero-amount">₩179,400</p>
+      <p class="hero-meta">지급일 <strong>2026년 5월 10일</strong> · 신한은행 110-***-****</p>
+    </div>
+
+    <!-- Status -->
+    <div class="pay-status">
+      <span class="pay-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </span>
+      <div class="pay-text">
+        <h4>정산 준비 완료</h4>
+        <p>모든 상담이 완료되었으며 클레임 없음. 17일 후 자동 지급됩니다.</p>
+      </div>
+    </div>
+
+    <!-- Breakdown -->
+    <div class="breakdown">
+      <h3>정산 내역</h3>
+      <div class="bk-row">
+        <span>완료 상담 <span class="sub">12건 × ₩29,900</span></span>
+        <span>₩358,800</span>
+      </div>
+      <div class="bk-row">
+        <span>환불 <span class="sub">0건</span></span>
+        <span>-₩0</span>
+      </div>
+      <div class="bk-row">
+        <span>부분 환불 <span class="sub">0건</span></span>
+        <span>-₩0</span>
+      </div>
+      <div class="bk-row">
+        <span>플랫폼 수수료 <span class="sub">50%</span></span>
+        <span>-₩179,400</span>
+      </div>
+      <div class="bk-row">
+        <span>원천징수세 <span class="sub">3.3%</span></span>
+        <span>-₩5,920</span>
+      </div>
+      <div class="bk-row" style="color:var(--color-amber);">
+        <span>패널티 차감 <span class="sub" style="color:var(--color-amber);">1회 단계 · 5% · §20-5</span></span>
+        <span>-₩8,970</span>
+      </div>
+      <div class="bk-row total">
+        <span>실 지급액</span>
+        <span class="amount">₩164,510</span>
+      </div>
+    </div>
+
+    <!-- Penalty notice -->
+    <div style="margin:0 20px 16px;padding:14px 16px;background:var(--color-amber-bg);border-radius:var(--radius-md);display:flex;gap:10px;align-items:flex-start;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:var(--color-amber);flex:0 0 18px;margin-top:1px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12" y2="16"/></svg>
+      <div style="flex:1;">
+        <p style="font:600 13px/1.3 var(--font-family);color:var(--color-text);margin:0 0 4px;letter-spacing:var(--tracking-tight);">패널티 1회 누적</p>
+        <p style="font:var(--font-caption);color:var(--color-text-secondary);margin:0;line-height:1.5;letter-spacing:var(--tracking-tight);">
+          3월 20일 취소 1건 (R01 · 개인 스케줄) · 6개월 롤링 · 다음 단계(2회)부터 <strong style="color:var(--color-amber);filter:brightness(0.7);">−10%</strong>.
+        </p>
+      </div>
+      <a href="#" style="font:var(--font-caption-strong);color:var(--color-primary);letter-spacing:var(--tracking-tight);flex:0 0 auto;">내역 →</a>
+    </div>
+
+    <!-- Account -->
+    <div class="account-card">
+      <h3>입금 계좌</h3>
+      <div class="account-row">
+        <span class="account-bank">신한은행 110-***-**** · 김서연</span>
+        <a class="account-edit" href="#">변경</a>
+      </div>
+    </div>
+
+    <!-- Transactions -->
+    <div class="section-h">
+      <h2>개별 상담 내역 · 12건</h2>
+      <a class="link" href="#">전체 보기 ›</a>
+    </div>
+
+    <div class="tx-list">
+      <article class="tx-item">
+        <span class="tx-avatar" style="background:linear-gradient(135deg,#1b61c9,#254fad);">이</span>
+        <div class="tx-body">
+          <div class="tx-top">
+            <span class="tx-student">이하은 <span class="tx-status status-completed">완료</span></span>
+            <span class="tx-amount">₩14,950</span>
+          </div>
+          <p class="tx-sub">4/21 19:00 · 경영학과 진학 Q&amp;A</p>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <span class="tx-avatar" style="background:linear-gradient(135deg,#006400,#10b981);">박</span>
+        <div class="tx-body">
+          <div class="tx-top">
+            <span class="tx-student">박민수 <span class="tx-status status-completed">완료</span></span>
+            <span class="tx-amount">₩14,950</span>
+          </div>
+          <p class="tx-sub">4/19 20:00 · 내신 공부법 루틴 점검</p>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <span class="tx-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">정</span>
+        <div class="tx-body">
+          <div class="tx-top">
+            <span class="tx-student">정서우 <span class="tx-status status-completed">완료</span></span>
+            <span class="tx-amount">₩14,950</span>
+          </div>
+          <p class="tx-sub">4/17 19:30 · 경영학과 진학 Q&amp;A</p>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <span class="tx-avatar" style="background:linear-gradient(135deg,#254fad,#1b61c9);">김</span>
+        <div class="tx-body">
+          <div class="tx-top">
+            <span class="tx-student">김다은 <span class="tx-status status-completed">완료</span></span>
+            <span class="tx-amount">₩14,950</span>
+          </div>
+          <p class="tx-sub">4/15 20:00 · 학부모 상담</p>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <span class="tx-avatar" style="background:linear-gradient(135deg,#8aa3c1,#cdd8ec);">최</span>
+        <div class="tx-body">
+          <div class="tx-top">
+            <span class="tx-student">최지유 <span class="tx-status status-completed">완료</span></span>
+            <span class="tx-amount">₩14,950</span>
+          </div>
+          <p class="tx-sub">4/13 19:00 · 경영학과 진학 Q&amp;A</p>
+        </div>
+      </article>
+    </div>
+
+    <div style="padding: 16px 20px 32px; text-align: center;">
+      <a href="#" style="font:var(--font-caption-strong);color:var(--color-primary);letter-spacing:var(--tracking-tight);">전체 12건 모두 보기 →</a>
+    </div>
+
+  </main>
+</body>
+</html>

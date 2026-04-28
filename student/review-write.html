@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 후기 작성</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Context card */
+    .context-card {
+      margin: 8px 20px 20px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .context-thumb {
+      width: 44px; height: 44px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg, #e5d8ea, #a28aba);
+      flex: 0 0 44px;
+    }
+    .context-body { flex: 1; min-width: 0; }
+    .context-mentor {
+      font: 600 14px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .context-meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+
+    /* Section block */
+    .block {
+      margin: 0 20px 16px;
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .block-title {
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 4px;
+    }
+    .block-sub {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 16px;
+    }
+
+    /* Big rating stars */
+    .rating-big {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .rating-big .star {
+      font-size: 38px;
+      line-height: 1;
+      color: var(--color-amber);
+      cursor: pointer;
+    }
+    .rating-big .star.is-empty {
+      color: var(--color-border);
+    }
+    .rating-label {
+      text-align: center;
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+    }
+    .rating-label .weak { color: var(--color-text-weak); font-weight: 400; margin-left: 4px; }
+
+    /* Criteria rows */
+    .criteria-list { display: flex; flex-direction: column; gap: 12px; }
+    .criteria-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .criteria-label {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .criteria-stars {
+      display: flex;
+      gap: 4px;
+    }
+    .criteria-stars .star {
+      font-size: 20px;
+      line-height: 1;
+      color: var(--color-amber);
+    }
+    .criteria-stars .star.is-empty {
+      color: var(--color-border);
+    }
+
+    /* Tag chips */
+    .tag-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    /* Textarea */
+    .textarea {
+      width: 100%;
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      line-height: 1.5;
+      min-height: 120px;
+      resize: vertical;
+      font-family: var(--font-family);
+    }
+    .textarea::placeholder { color: var(--color-text-weak); }
+    .textarea:focus {
+      outline: none;
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 3px rgba(27, 97, 201, 0.12);
+    }
+    .char-counter {
+      display: block;
+      text-align: right;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      margin-top: 6px;
+    }
+
+    /* Attachment */
+    .attach-zone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      height: 80px;
+      border: 1.5px dashed var(--color-border-strong);
+      border-radius: var(--radius-md);
+      color: var(--color-text-weak);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      background: var(--color-surface-subtle);
+    }
+
+    /* Toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .toggle-row .text {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .toggle-row .text-sub {
+      display: block;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      margin-top: 2px;
+    }
+    .toggle {
+      width: 44px; height: 26px; border-radius: 13px;
+      background: var(--color-primary);
+      position: relative;
+      flex: 0 0 44px;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 21px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    }
+    .toggle.is-off { background: var(--color-border-strong); }
+    .toggle.is-off::after { left: 3px; }
+
+    /* Policy note */
+    .note {
+      margin: 0 20px 16px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: #eef3fb;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .note svg { color: var(--color-primary); flex: 0 0 18px; margin-top: 1px; }
+    .note p {
+      font: var(--font-caption);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">후기 작성</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Context card -->
+    <section class="context-card">
+      <div class="context-thumb"></div>
+      <div class="context-body">
+        <p class="context-mentor">이수아 · 서울대 컴퓨터공학과</p>
+        <p class="context-meta">컴공 진학 Q&amp;A 상담 · 4월 15일 (화) 오후 7:00 · 완료</p>
+      </div>
+    </section>
+
+    <!-- 종합 만족도 -->
+    <section class="block">
+      <h2 class="block-title">이 멘토링 어떠셨어요?</h2>
+      <p class="block-sub">이수아 멘토님과의 상담을 평가해 주세요.</p>
+
+      <div class="rating-big">
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star">★</span>
+        <span class="star is-empty">★</span>
+      </div>
+      <p class="rating-label">4점<span class="weak">· 만족해요</span></p>
+    </section>
+
+    <!-- 세부 평가 -->
+    <section class="block">
+      <h2 class="block-title">세부 평가</h2>
+      <p class="block-sub">각 항목별로 별점을 매겨 주세요.</p>
+
+      <div class="criteria-list">
+        <div class="criteria-row">
+          <span class="criteria-label">설명 이해도</span>
+          <div class="criteria-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star is-empty">★</span>
+          </div>
+        </div>
+        <div class="criteria-row">
+          <span class="criteria-label">문제 해결 도움</span>
+          <div class="criteria-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+        </div>
+        <div class="criteria-row">
+          <span class="criteria-label">시간 준수</span>
+          <div class="criteria-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          </div>
+        </div>
+        <div class="criteria-row">
+          <span class="criteria-label">재신청 의향</span>
+          <div class="criteria-stars">
+            <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star is-empty">★</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 한 줄 태그 -->
+    <section class="block">
+      <h2 class="block-title">이 멘토의 좋았던 점</h2>
+      <p class="block-sub">여러 개 선택할 수 있어요.</p>
+
+      <div class="tag-group">
+        <span class="chip is-selected">친절해요</span>
+        <span class="chip">설명이 쉬워요</span>
+        <span class="chip is-selected">실제 경험 풍부</span>
+        <span class="chip">꼼꼼한 준비</span>
+        <span class="chip is-selected">현실적인 조언</span>
+        <span class="chip">시간 정확</span>
+        <span class="chip">재미있어요</span>
+        <span class="chip">문과 이해도 높음</span>
+      </div>
+    </section>
+
+    <!-- 상세 후기 -->
+    <section class="block">
+      <h2 class="block-title">상세 후기</h2>
+      <p class="block-sub">다른 학생·학부모에게도 큰 도움이 돼요.</p>
+
+      <textarea class="textarea" placeholder="구체적으로 어떤 점이 도움이 되었는지 남겨주시면 다른 분들이 멘토를 선택하는 데 큰 도움이 됩니다."></textarea>
+      <span class="char-counter">0 / 500</span>
+    </section>
+
+    <!-- 사진 첨부 (선택) -->
+    <section class="block">
+      <h2 class="block-title">사진 첨부 <span style="font-weight:400;color:var(--color-text-weak);">(선택)</span></h2>
+      <p class="block-sub">상담 중 공유받은 자료·노트가 있다면 첨부하세요.</p>
+
+      <div class="attach-zone">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        파일 추가
+      </div>
+    </section>
+
+    <!-- 공개 설정 -->
+    <section class="block">
+      <div class="toggle-row">
+        <div>
+          <h2 class="block-title" style="margin-bottom:4px;">익명으로 공개</h2>
+          <span class="text-sub">내 이름·학년을 비공개로 처리합니다.</span>
+        </div>
+        <div class="toggle"></div>
+      </div>
+    </section>
+
+    <!-- Policy note -->
+    <div class="note">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12" y2="8"/>
+      </svg>
+      <p>허위·비방 등 부적절한 후기는 운영팀 검토 후 삭제될 수 있습니다.</p>
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <button class="btn btn-primary btn-block" data-next="../mypage/home.html">후기 등록하기</button>
+    </div>
+
+  </main>
+</body>
+</html>

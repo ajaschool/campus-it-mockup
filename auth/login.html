@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 로그인</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .auth-canvas {
+      padding: 80px 24px 32px;
+      min-height: calc(844px - 48px);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    .brand-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 64px; height: 64px;
+      border-radius: var(--radius-lg);
+      background: linear-gradient(135deg, #1b61c9 0%, #144699 100%);
+      color: #ffffff;
+      font: 900 28px/1 var(--font-family);
+      letter-spacing: -1px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-button);
+    }
+    .brand h1 {
+      font: 800 26px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.4px;
+      margin: 0 0 10px;
+    }
+    .brand p {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .social-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .social-btn {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 54px;
+      padding: 0 20px;
+      border-radius: var(--radius-md);
+      font: var(--font-button);
+      font-weight: 600;
+      letter-spacing: var(--tracking-tight);
+      position: relative;
+    }
+    .social-btn .logo {
+      width: 22px; height: 22px;
+      display: inline-flex; align-items: center; justify-content: center;
+      border-radius: 4px;
+      font-weight: 800;
+    }
+    .social-btn .text { flex: 1; text-align: center; padding-right: 22px; }
+    .social-btn .badge {
+      position: absolute;
+      top: -8px; right: 14px;
+      padding: 3px 8px;
+      border-radius: var(--radius-full);
+      background: var(--color-primary);
+      color: #ffffff;
+      font: 700 10px/1.2 var(--font-family);
+      letter-spacing: 0.3px;
+    }
+
+    .social-kakao {
+      background: #FEE500;
+      color: #191919;
+    }
+    .social-kakao .logo { background: #191919; color: #FEE500; }
+    .social-naver {
+      background: #03C75A;
+      color: #ffffff;
+    }
+    .social-naver .logo { background: #ffffff; color: #03C75A; }
+    .social-email {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+    }
+    .social-email .logo { background: var(--color-surface-subtle); color: var(--color-text); }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 24px 0;
+    }
+    .divider::before, .divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--color-border);
+    }
+    .divider span {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .mentor-cta {
+      padding: 16px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      text-align: center;
+      margin-top: auto;
+    }
+    .mentor-cta p {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 10px;
+    }
+    .mentor-cta a {
+      font: 600 14px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    .legal-footer {
+      text-align: center;
+      padding-top: 24px;
+      font: 11px/1.5 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .legal-footer a { color: var(--color-text-weak); text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+    <div class="auth-canvas">
+
+      <div class="brand">
+        <div class="brand-logo">A</div>
+        <h1>아자스쿨 멘토링에<br>오신 것을 환영합니다</h1>
+        <p>대학생 선배에게 30분 상담받는 중개 플랫폼</p>
+      </div>
+
+      <div class="social-list">
+        <button class="social-btn social-kakao" data-next="./role.html">
+          <span class="logo">K</span>
+          <span class="text">카카오로 1초만에 시작</span>
+          <span class="badge">추천</span>
+        </button>
+        <button class="social-btn social-naver" data-next="./role.html">
+          <span class="logo">N</span>
+          <span class="text">네이버로 시작</span>
+        </button>
+        <button class="social-btn social-email">
+          <span class="logo">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-10 5L2 7"/></svg>
+          </span>
+          <span class="text">이메일로 시작</span>
+        </button>
+      </div>
+
+      <div class="divider"><span>이미 계정이 있나요?</span></div>
+
+      <div style="text-align:center;">
+        <a href="#" style="font:500 14px/1 var(--font-family);color:var(--color-text);letter-spacing:var(--tracking-tight);">로그인하기 →</a>
+      </div>
+
+      <div class="mentor-cta">
+        <p>대학생이신가요?</p>
+        <a href="../mentor/signup.html">멘토로 등록하고 수익 시작 →</a>
+      </div>
+
+      <div class="legal-footer">
+        계속 진행 시 <a href="#">이용약관</a> · <a href="#">개인정보처리방침</a>에<br>동의한 것으로 간주됩니다.
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

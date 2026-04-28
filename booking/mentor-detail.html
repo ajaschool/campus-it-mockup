@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 신청 상세 (멘토)</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .status-bar {
+      margin: 12px 20px 16px;
+      padding: 12px 16px;
+      background: var(--color-amber-bg);
+      color: #7a4a00;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-bar .timer {
+      margin-left: auto;
+      font-weight: 700;
+      color: var(--color-error);
+    }
+
+    .section {
+      padding: 4px 20px 20px;
+    }
+    .section h2 {
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      margin: 0 0 12px;
+    }
+
+    /* Student card */
+    .student-card {
+      padding: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .student-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .student-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #1b61c9, #254fad);
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: 700 18px/1 var(--font-family);
+      flex: 0 0 48px;
+    }
+    .student-meta { flex: 1; }
+    .student-name {
+      font: 600 16px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 2px;
+    }
+    .student-info {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+    }
+    .contact-btn {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: var(--color-surface-subtle);
+      color: var(--color-text);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    .info-item {
+      padding: 10px 12px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+    }
+    .info-item .label {
+      display: block;
+      font: 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .info-item .value {
+      font: 500 13px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Product info */
+    .product-info {
+      padding: 14px 16px;
+      background: #eef3fb;
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+    }
+    .product-info .title {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 6px;
+    }
+    .product-info .meta {
+      font: var(--font-caption);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Pre-question block */
+    .q-block {
+      padding: 16px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      margin-bottom: 10px;
+    }
+    .q-label {
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-primary);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      margin: 0 0 8px;
+    }
+    .q-answer {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    /* Action buttons */
+    .action-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+    }
+    .btn-reject {
+      background: var(--color-surface);
+      color: var(--color-error);
+      border: 1px solid var(--color-border);
+      height: 48px;
+      border-radius: var(--radius-md);
+      font: var(--font-button);
+      letter-spacing: var(--tracking-tight);
+    }
+    .btn-propose {
+      background: var(--color-surface);
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      height: 48px;
+      border-radius: var(--radius-md);
+      font: var(--font-button);
+      letter-spacing: var(--tracking-tight);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back" data-role="mentor">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">
+        신청 상세
+        <span class="app-bar-title-sub">멘토용</span>
+      </h1>
+      <button class="icon-btn" aria-label="더보기">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      </button>
+    </header>
+
+    <!-- Status -->
+    <div class="status-bar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      응답 대기중
+      <span class="timer">21시간 23분 남음</span>
+    </div>
+
+    <!-- 학생 -->
+    <section class="section">
+      <h2>학생 정보</h2>
+      <div class="student-card">
+        <div class="student-head">
+          <span class="student-avatar">이</span>
+          <div class="student-meta">
+            <p class="student-name">이하은</p>
+            <p class="student-info">고2 · 이화여고 · 18세</p>
+          </div>
+          <button class="contact-btn" aria-label="연락">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          </button>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-item">
+            <span class="label">관심 대학</span>
+            <span class="value">서울대 · 연세대</span>
+          </div>
+          <div class="info-item">
+            <span class="label">관심 전공</span>
+            <span class="value">경영 · 경제</span>
+          </div>
+          <div class="info-item">
+            <span class="label">현재 성적대</span>
+            <span class="value">1등급 후반</span>
+          </div>
+          <div class="info-item">
+            <span class="label">학부모 동석</span>
+            <span class="value">학생 혼자</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 예약 정보 -->
+    <section class="section">
+      <h2>예약 정보</h2>
+      <div class="product-info">
+        <p class="title">경영학과 진학 Q&amp;A 상담</p>
+        <p class="meta">4월 27일 (일) 오후 3:00 · 30분 · Zoom · ₩29,900</p>
+      </div>
+    </section>
+
+    <!-- 사전 질문 -->
+    <section class="section">
+      <h2>사전 질문 · 3</h2>
+
+      <article class="q-block">
+        <p class="q-label">현재 고민</p>
+        <p class="q-answer">문과인데 경영이 저에게 맞을지 고민이에요. 내신은 1.8 정도이고, 학생부에 경영 관련 활동이 부족한 것 같아요.</p>
+      </article>
+
+      <article class="q-block">
+        <p class="q-label">상담에서 얻고 싶은 것</p>
+        <p class="q-answer">경영학과의 실제 수업 분위기와 학생부 방향 잡는 법을 알고 싶어요.</p>
+      </article>
+
+      <article class="q-block">
+        <p class="q-label">태그</p>
+        <div class="tag-row">
+          <span class="chip is-subtle">문과</span>
+          <span class="chip is-subtle">내신 관리</span>
+          <span class="chip is-subtle">전공 선택</span>
+        </div>
+      </article>
+    </section>
+
+    <!-- Actions -->
+    <div class="bottom-cta" style="flex-direction:column;gap:8px;align-items:stretch;">
+      <button class="btn btn-primary btn-block" style="height:52px;" data-next="../mentor/dashboard.html">수락하기</button>
+      <div class="action-grid">
+        <button class="btn-propose" data-next="./reschedule.html">다른 시간 제안</button>
+        <button class="btn-reject" data-next="./mentor-cancel.html">거절하기</button>
+      </div>
+    </div>
+
+  </main>
+</body>
+</html>

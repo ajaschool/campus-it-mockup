@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 결제·환불 내역</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Period filter */
+    .period-row {
+      padding: 12px 20px;
+      display: flex;
+      gap: 8px;
+    }
+    .period-chip {
+      padding: 6px 12px;
+      border-radius: var(--radius-full);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface);
+      color: var(--color-text-secondary);
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+    }
+    .period-chip.is-selected {
+      background: var(--color-text);
+      border-color: var(--color-text);
+      color: #ffffff;
+    }
+
+    /* Summary card */
+    .summary-card {
+      margin: 0 20px 16px;
+      padding: 18px 20px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-card .label {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 4px;
+    }
+    .summary-card .value {
+      font: 700 22px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.4px;
+    }
+
+    /* Transaction list */
+    .tx-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .tx-date-header {
+      padding: 12px 20px 8px;
+      font: 600 12px/1.2 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: 0.3px;
+      background: var(--color-surface-subtle);
+    }
+    .tx-item {
+      padding: 14px 20px;
+      background: var(--color-surface);
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .tx-icon {
+      width: 36px; height: 36px;
+      border-radius: var(--radius-md);
+      display: inline-flex; align-items: center; justify-content: center;
+      flex: 0 0 36px;
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .tx-icon.kakao { background: #FEE500; color: #191919; }
+    .tx-icon.naver { background: #03C75A; color: #ffffff; }
+    .tx-icon.toss { background: #0064FF; color: #ffffff; }
+    .tx-icon.card { background: var(--color-surface-subtle); color: var(--color-text); border: 1px solid var(--color-border); }
+    .tx-body { flex: 1; min-width: 0; }
+    .tx-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 4px;
+    }
+    .tx-title {
+      font: 600 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0;
+      max-width: 180px;
+    }
+    .tx-amount {
+      font: 700 15px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.2px;
+    }
+    .tx-amount.refund { color: var(--color-error); }
+    .tx-meta {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 8px;
+    }
+    .tx-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .tx-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+      letter-spacing: var(--tracking-tight);
+    }
+    .status-paid { background: var(--color-success-bg); color: var(--color-success); }
+    .status-refunded { background: var(--color-error-bg); color: var(--color-error); }
+    .status-partial { background: var(--color-amber-bg); color: #7a4a00; }
+    .tx-receipt {
+      font: var(--font-caption-strong);
+      color: var(--color-primary);
+      letter-spacing: var(--tracking-tight);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">결제·환불 내역</h1>
+      <button class="icon-btn" aria-label="다운로드">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      </button>
+    </header>
+
+    <!-- Period filter -->
+    <div class="period-row">
+      <span class="period-chip is-selected">전체</span>
+      <span class="period-chip">1개월</span>
+      <span class="period-chip">3개월</span>
+      <span class="period-chip">6개월</span>
+      <span class="period-chip">직접 선택</span>
+    </div>
+
+    <!-- Summary -->
+    <div class="summary-card">
+      <div>
+        <p class="label">이번달 결제</p>
+        <p class="value">₩89,700</p>
+      </div>
+      <div style="text-align:right;">
+        <p class="label">환불 · 1건</p>
+        <p class="value" style="color:var(--color-error);font-size:18px;">-₩29,900</p>
+      </div>
+    </div>
+
+    <!-- Transaction list -->
+    <div class="tx-list">
+      <div class="tx-date-header">2026년 4월</div>
+
+      <article class="tx-item">
+        <div class="tx-icon kakao">K</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">경영학과 진학 Q&amp;A 상담</p>
+            <span class="tx-amount">₩29,900</span>
+          </div>
+          <p class="tx-meta">2026.04.23 · 김서연 멘토 · 카카오페이</p>
+          <div class="tx-footer">
+            <span class="tx-status status-paid">결제 완료</span>
+            <a class="tx-receipt" href="#">영수증 보기</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <div class="tx-icon card">CARD</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">의대 입시 준비 Q&amp;A</p>
+            <span class="tx-amount">₩29,900</span>
+          </div>
+          <p class="tx-meta">2026.04.18 · 박준호 멘토 · 신한카드</p>
+          <div class="tx-footer">
+            <span class="tx-status status-paid">결제 완료</span>
+            <a class="tx-receipt" href="#">영수증 보기</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <div class="tx-icon kakao">K</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">컴공 진학 Q&amp;A 상담</p>
+            <span class="tx-amount refund">-₩29,900</span>
+          </div>
+          <p class="tx-meta">2026.04.15 · 이수아 멘토 · 카카오페이</p>
+          <div class="tx-footer">
+            <span class="tx-status status-refunded">전액 환불</span>
+            <a class="tx-receipt" href="#">환불 내역</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <div class="tx-icon naver">N</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">문과 전공 선택 상담</p>
+            <span class="tx-amount">₩29,900</span>
+          </div>
+          <p class="tx-meta">2026.04.10 · 정민서 멘토 · 네이버페이</p>
+          <div class="tx-footer">
+            <span class="tx-status status-paid">결제 완료</span>
+            <a class="tx-receipt" href="#">영수증 보기</a>
+          </div>
+        </div>
+      </article>
+
+      <div class="tx-date-header">2026년 3월</div>
+
+      <article class="tx-item">
+        <div class="tx-icon toss">T</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">학생부 방향 잡기 상담</p>
+            <span class="tx-amount">₩29,900</span>
+          </div>
+          <p class="tx-meta">2026.03.28 · 한예림 멘토 · 토스페이</p>
+          <div class="tx-footer">
+            <span class="tx-status status-paid">결제 완료</span>
+            <a class="tx-receipt" href="#">영수증 보기</a>
+          </div>
+        </div>
+      </article>
+
+      <article class="tx-item">
+        <div class="tx-icon kakao">K</div>
+        <div class="tx-body">
+          <div class="tx-top">
+            <p class="tx-title">공부법 루틴 점검</p>
+            <span class="tx-amount" style="color:var(--color-amber);">-₩15,000</span>
+          </div>
+          <p class="tx-meta">2026.03.20 · 최지훈 멘토 · 카카오페이</p>
+          <div class="tx-footer">
+            <span class="tx-status status-partial">부분 환불 · 50%</span>
+            <a class="tx-receipt" href="#">환불 내역</a>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <!-- Footer info -->
+    <div style="padding: 24px 20px 32px;text-align:center;">
+      <p style="font:var(--font-caption);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);line-height:1.6;margin:0;">
+        현금영수증은 결제 완료 후 5영업일 내 국세청에 자동 제출됩니다.<br>
+        영수증 재발행·사업자등록증 현금영수증은 1:1 문의로 요청해 주세요.
+      </p>
+    </div>
+
+  </main>
+</body>
+</html>

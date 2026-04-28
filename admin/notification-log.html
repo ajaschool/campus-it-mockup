@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 관리자 — 알림 발송 기록</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <style>
+    body { background: var(--color-surface-subtle); }
+    .desktop-canvas {
+      width: 1280px; min-height: 900px;
+      margin: 24px auto;
+      background: var(--color-surface);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas: "logo topbar" "sidebar main";
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .logo-area { grid-area: logo; padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid var(--color-border); border-right: 1px solid var(--color-border); }
+    .logo-text { font: 700 17px/1 var(--font-family); color: var(--color-text); }
+    .logo-text .accent { color: var(--color-primary); }
+    .badge-admin { margin-left: 8px; padding: 2px 8px; background: var(--color-text); color: #fff; font: 600 10px/1.4 var(--font-family); border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.4px; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--color-border); }
+    .breadcrumb { font: var(--font-caption-strong); color: var(--color-text-weak); }
+    .breadcrumb strong { color: var(--color-text); font-weight: 600; }
+    .breadcrumb .sep { margin: 0 8px; opacity: 0.5; }
+
+    .sidebar { grid-area: sidebar; padding: 20px 12px; border-right: 1px solid var(--color-border); }
+    .nav-label { padding: 0 12px; font: 600 11px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.6px; margin: 0 0 8px; }
+    .nav-label + .nav-label { margin-top: 20px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius-md); color: var(--color-text-secondary); font: 500 14px/1 var(--font-family); margin-bottom: 2px; }
+    .nav-item.is-active { background: #eef3fb; color: var(--color-primary); font-weight: 600; }
+
+    .main-area { grid-area: main; padding: 28px 32px; overflow-y: auto; background: var(--color-surface-subtle); }
+    .main-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 24px; }
+    .main-title { font: 700 24px/1.2 var(--font-family); color: var(--color-text); letter-spacing: -0.3px; margin: 0 0 6px; }
+    .main-sub { font: var(--font-body); color: var(--color-text-weak); margin: 0; }
+
+    /* KPI strip */
+    .stats-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 24px; }
+    .stat-tile { padding: 16px 18px; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+    .stat-tile .label { font: var(--font-caption); color: var(--color-text-weak); margin-bottom: 6px; display: block; letter-spacing: var(--tracking-tight); }
+    .stat-tile .value { font: 700 22px/1 var(--font-family); color: var(--color-text); letter-spacing: -0.3px; }
+    .stat-tile .value.success { color: var(--color-success); }
+    .stat-tile .value.error { color: var(--color-error); }
+    .stat-tile .value.amber { color: var(--color-amber); }
+    .stat-tile .sub { font: 11px/1 var(--font-family); color: var(--color-text-weak); margin-top: 6px; }
+
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 20px; }
+    .panel-head { display: flex; justify-content: space-between; padding: 18px 20px 14px; border-bottom: 1px solid var(--color-border); }
+    .panel-head h3 { font: 600 15px/1 var(--font-family); color: var(--color-text); margin: 0; letter-spacing: var(--tracking-tight); }
+
+    /* Filter */
+    .filter-row {
+      display: flex; gap: 8px; padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+      align-items: center;
+    }
+    .search-sm {
+      flex: 1;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      color: var(--color-text-weak);
+      font: var(--font-caption);
+    }
+    .f-chip {
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      background: var(--color-surface);
+      font: var(--font-caption-strong);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .f-chip.is-selected { background: var(--color-text); color: #fff; border-color: var(--color-text); }
+
+    /* Log table */
+    .log-table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .log-table th { text-align: left; padding: 10px 16px; background: var(--color-surface-subtle); font: 600 11px/1.2 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--color-border); }
+    .log-table td { padding: 14px 16px; border-bottom: 1px solid var(--color-border); font: var(--font-body); color: var(--color-text); letter-spacing: var(--tracking-tight); vertical-align: top; }
+    .log-table td .muted { color: var(--color-text-weak); font-size: 12px; }
+
+    .type-chip { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-sm); letter-spacing: var(--tracking-tight); }
+    .type-confirm { background: var(--color-success-bg); color: var(--color-success); }
+    .type-remind { background: #eef3fb; color: var(--color-primary); }
+    .type-cancel { background: var(--color-error-bg); color: var(--color-error); }
+    .type-noshow { background: var(--color-amber-bg); color: #7a4a00; }
+    .type-settle { background: var(--color-surface-subtle); color: var(--color-text); }
+
+    .status-cell { display: flex; align-items: center; gap: 8px; }
+    .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+    .status-dot.read { background: var(--color-success); }
+    .status-dot.unread { background: var(--color-amber); }
+    .status-dot.failed { background: var(--color-error); }
+
+    .action-link { font: var(--font-caption-strong); color: var(--color-primary); letter-spacing: var(--tracking-tight); }
+    .retry-btn { font: var(--font-caption-strong); padding: 4px 10px; border-radius: var(--radius-sm); background: var(--color-error); color: #fff; border: none; letter-spacing: var(--tracking-tight); }
+  </style>
+</head>
+<body>
+  <main class="desktop-canvas">
+
+    <div class="logo-area"><span class="logo-text">아자스쿨 <span class="accent">멘토링</span></span><span class="badge-admin">Admin</span></div>
+    <div class="topbar">
+      <div class="breadcrumb"><strong>설정</strong><span class="sep">/</span><strong>알림 발송 기록</strong></div>
+    </div>
+
+    <aside class="sidebar">
+      <p class="nav-label">현황</p>
+      <div class="nav-item">대시보드</div>
+      <p class="nav-label">운영</p>
+      <div class="nav-item">멘토 관리</div>
+      <div class="nav-item">예약 관리</div>
+      <div class="nav-item">결제·환불</div>
+      <div class="nav-item">후기·클레임</div>
+      <div class="nav-item">정산</div>
+      <p class="nav-label">설정</p>
+      <div class="nav-item">대학·단과대 구조</div>
+      <div class="nav-item">인기 멘토 영역</div>
+      <div class="nav-item is-active">알림 발송 기록</div>
+    </aside>
+
+    <div class="main-area">
+
+      <div class="main-head">
+        <div>
+          <h1 class="main-title">카카오톡 알림 발송 기록</h1>
+          <p class="main-sub">최근 24시간 · 실시간 업데이트</p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-tile">
+          <span class="label">총 발송</span>
+          <span class="value">124</span>
+          <p class="sub">24시간 기준</p>
+        </div>
+        <div class="stat-tile">
+          <span class="label">성공률</span>
+          <span class="value success">99.1%</span>
+          <p class="sub">주간 평균 98.7%</p>
+        </div>
+        <div class="stat-tile">
+          <span class="label">읽음</span>
+          <span class="value">102</span>
+          <p class="sub">82.2% 개봉률</p>
+        </div>
+        <div class="stat-tile">
+          <span class="label">실패</span>
+          <span class="value error">1</span>
+          <p class="sub">재시도 대기</p>
+        </div>
+        <div class="stat-tile">
+          <span class="label">미읽음 12h+</span>
+          <span class="value amber">7</span>
+          <p class="sub">리마인드 대상</p>
+        </div>
+      </div>
+
+      <!-- Log -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>발송 로그</h3>
+        </div>
+
+        <div class="filter-row">
+          <div class="search-sm">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span>수신자명 · 예약번호 · 메시지 검색</span>
+          </div>
+          <span class="f-chip is-selected">전체 124</span>
+          <span class="f-chip">예약 확정 38</span>
+          <span class="f-chip">리마인드 54</span>
+          <span class="f-chip">취소·환불 14</span>
+          <span class="f-chip">노쇼 2</span>
+          <span class="f-chip">정산 16</span>
+          <span class="f-chip" style="background:var(--color-error);color:#fff;border-color:var(--color-error);">실패 1</span>
+        </div>
+
+        <table class="log-table">
+          <thead>
+            <tr>
+              <th>시각</th>
+              <th>유형</th>
+              <th>수신자</th>
+              <th>메시지 요약</th>
+              <th>예약 참조</th>
+              <th>상태</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="muted">14:32:18</span></td>
+              <td><span class="type-chip type-confirm">예약 확정</span></td>
+              <td>이하은 <span class="muted">010-****-5678</span></td>
+              <td>김서연 멘토와의 상담이 확정됐어요! 4/27 15:00...</td>
+              <td><a class="action-link">AJ-0427-015</a></td>
+              <td><div class="status-cell"><span class="status-dot read"></span><span>읽음 14:35</span></div></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><span class="muted">14:28:05</span></td>
+              <td><span class="type-chip type-remind">1일 전 리마인드</span></td>
+              <td>박민수 <span class="muted">010-****-1122</span></td>
+              <td>내일 오후 7시 상담 있어요. Zoom 링크 준비해...</td>
+              <td><a class="action-link">AJ-0424-009</a></td>
+              <td><div class="status-cell"><span class="status-dot read"></span><span>읽음 14:40</span></div></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><span class="muted">14:15:42</span></td>
+              <td><span class="type-chip type-settle">정산 완료</span></td>
+              <td>김서연 멘토 <span class="muted">010-****-2244</span></td>
+              <td>3월 정산 ₩179,400이 신한은행 계좌로 입금됐...</td>
+              <td><span class="muted">S-2026-03</span></td>
+              <td><div class="status-cell"><span class="status-dot read"></span><span>읽음 14:22</span></div></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><span class="muted">13:42:11</span></td>
+              <td><span class="type-chip type-cancel">환불 완료</span></td>
+              <td>최지유 <span class="muted">010-****-7788</span></td>
+              <td>박준호 멘토 상담이 취소되어 ₩29,900이 환불...</td>
+              <td><a class="action-link">AJ-0422-042</a></td>
+              <td><div class="status-cell"><span class="status-dot unread"></span><span class="muted">미읽음 1h</span></div></td>
+              <td></td>
+            </tr>
+            <tr style="background:var(--color-error-bg);">
+              <td><span class="muted">13:18:03</span></td>
+              <td><span class="type-chip type-noshow">노쇼 경고</span></td>
+              <td>멘토 박지훈 <span class="muted">010-****-5533</span></td>
+              <td>4/22 20:00 상담 미접속으로 패널티가 부과됐...</td>
+              <td><a class="action-link">AJ-0422-018</a></td>
+              <td><div class="status-cell"><span class="status-dot failed"></span><span style="color:var(--color-error);font-weight:600;">발송 실패</span></div></td>
+              <td><button class="retry-btn">재발송</button></td>
+            </tr>
+            <tr>
+              <td><span class="muted">12:55:29</span></td>
+              <td><span class="type-chip type-confirm">예약 확정</span></td>
+              <td>정서우 <span class="muted">010-****-9900</span></td>
+              <td>이수아 멘토와의 상담이 확정됐어요! 4/27 16:00...</td>
+              <td><a class="action-link">AJ-0427-031</a></td>
+              <td><div class="status-cell"><span class="status-dot read"></span><span>읽음 13:02</span></div></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td><span class="muted">12:30:47</span></td>
+              <td><span class="type-chip type-remind">3일 전 리마인드</span></td>
+              <td>김다은 <span class="muted">010-****-4567</span></td>
+              <td>4/28 오전 10시 한예림 멘토와의 상담이 예...</td>
+              <td><a class="action-link">AJ-0428-003</a></td>
+              <td><div class="status-cell"><span class="status-dot read"></span><span>읽음 12:33</span></div></td>
+              <td></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

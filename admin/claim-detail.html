@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 관리자 — 클레임 처리</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <style>
+    body { background: var(--color-surface-subtle); }
+    .desktop-canvas {
+      width: 1280px;
+      min-height: 900px;
+      margin: 24px auto;
+      background: var(--color-surface);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas: "logo topbar" "sidebar main";
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .logo-area { grid-area: logo; padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid var(--color-border); border-right: 1px solid var(--color-border); }
+    .logo-text { font: 700 17px/1 var(--font-family); color: var(--color-text); }
+    .logo-text .accent { color: var(--color-primary); }
+    .badge-admin { margin-left: 8px; padding: 2px 8px; background: var(--color-text); color: #fff; font: 600 10px/1.4 var(--font-family); border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.4px; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; justify-content: space-between; padding: 0 24px; border-bottom: 1px solid var(--color-border); }
+    .breadcrumb { font: var(--font-caption-strong); color: var(--color-text-weak); }
+    .breadcrumb strong { color: var(--color-text); font-weight: 600; }
+    .breadcrumb .sep { margin: 0 8px; opacity: 0.5; }
+
+    .sidebar { grid-area: sidebar; padding: 20px 12px; border-right: 1px solid var(--color-border); }
+    .nav-label { padding: 0 12px; font: 600 11px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.6px; margin: 0 0 8px; }
+    .nav-label + .nav-label { margin-top: 20px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius-md); color: var(--color-text-secondary); font: 500 14px/1 var(--font-family); margin-bottom: 2px; }
+    .nav-item.is-active { background: #eef3fb; color: var(--color-primary); font-weight: 600; }
+    .nav-item .nav-badge { margin-left: auto; padding: 2px 7px; border-radius: var(--radius-full); background: var(--color-error); color: #fff; font-size: 10px; font-weight: 700; }
+
+    .main-area { grid-area: main; padding: 28px 32px; overflow-y: auto; background: var(--color-surface-subtle); }
+
+    .main-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .main-title { font: 700 24px/1.2 var(--font-family); color: var(--color-text); letter-spacing: -0.3px; margin: 0 0 6px; }
+    .main-sub { font: var(--font-body); color: var(--color-text-weak); margin: 0; }
+    .main-sub .severity { padding: 2px 8px; border-radius: var(--radius-sm); background: var(--color-error-bg); color: var(--color-error); font-weight: 600; font-size: 11px; margin-right: 8px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 360px; gap: 20px; }
+
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 20px; margin-bottom: 20px; }
+    .panel h3 { font: 600 14px/1 var(--font-family); color: var(--color-text); margin: 0 0 14px; letter-spacing: var(--tracking-tight); }
+    .panel .meta { font: var(--font-caption); color: var(--color-text-weak); margin: 0 0 16px; letter-spacing: var(--tracking-tight); }
+
+    /* Timeline */
+    .timeline { border-left: 2px solid var(--color-border); padding-left: 20px; margin-left: 8px; }
+    .event { position: relative; padding-bottom: 16px; }
+    .event::before { content: ""; position: absolute; left: -27px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-surface); border: 2px solid var(--color-border-strong); }
+    .event.is-now::before { background: var(--color-primary); border-color: var(--color-primary); }
+    .event-time { font: 11px/1 var(--font-family); color: var(--color-text-weak); letter-spacing: 0.3px; text-transform: uppercase; margin-bottom: 4px; }
+    .event-text { font: var(--font-body); color: var(--color-text); letter-spacing: var(--tracking-tight); margin: 0; }
+    .event-text strong { font-weight: 600; }
+
+    /* Messages */
+    .msg { padding: 14px 16px; border-radius: var(--radius-md); margin-bottom: 12px; }
+    .msg.from-mentee { background: #eef3fb; margin-right: 60px; }
+    .msg.from-mentor { background: var(--color-surface-subtle); margin-left: 60px; }
+    .msg-author { font: 600 12px/1 var(--font-family); margin: 0 0 6px; letter-spacing: var(--tracking-tight); }
+    .msg-author.mentee { color: var(--color-primary); }
+    .msg-author.mentor { color: var(--color-text); }
+    .msg-text { font: var(--font-body); color: var(--color-text); line-height: 1.5; margin: 0; letter-spacing: var(--tracking-tight); }
+    .msg-meta { font: 11px/1 var(--font-family); color: var(--color-text-weak); margin-top: 6px; }
+
+    /* Actions */
+    .action-list { display: flex; flex-direction: column; gap: 8px; }
+    .action-btn {
+      width: 100%;
+      padding: 12px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: 500 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      text-align: left;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .action-btn .ico { color: var(--color-text-weak); }
+    .action-btn.danger { color: var(--color-error); }
+
+    .party-card {
+      padding: 14px 16px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .party-avatar { width: 36px; height: 36px; border-radius: 50%; background: linear-gradient(135deg,#cdd8ec,#8aa3c1); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; }
+    .party-name { font: 600 13px/1.2 var(--font-family); color: var(--color-text); letter-spacing: var(--tracking-tight); margin: 0 0 2px; }
+    .party-role { font: 11px/1 var(--font-family); color: var(--color-text-weak); }
+
+    .booking-ref {
+      padding: 12px 14px;
+      background: #eef3fb;
+      border-radius: var(--radius-md);
+      font: var(--font-caption); color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+    }
+    .booking-ref strong { display: block; color: var(--color-primary); font-weight: 600; margin-bottom: 2px; }
+
+    .resolution-form { margin-top: 16px; }
+    .resolution-form label { display: block; font: 500 13px/1.2 var(--font-family); color: var(--color-text); margin-bottom: 8px; letter-spacing: var(--tracking-tight); }
+    .resolution-form textarea { width: 100%; padding: 12px 14px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); font: var(--font-body); resize: vertical; min-height: 80px; font-family: var(--font-family); letter-spacing: var(--tracking-tight); }
+
+    /* Queue tabs (A-2) */
+    .queue-tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .queue-tab {
+      padding: 10px 16px;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .queue-tab.is-active {
+      color: var(--color-primary);
+      border-bottom-color: var(--color-primary);
+      font-weight: 600;
+    }
+    .queue-tab .count {
+      padding: 2px 7px;
+      border-radius: var(--radius-full);
+      background: var(--color-surface-subtle);
+      color: var(--color-text-weak);
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .queue-tab.is-active .count {
+      background: var(--color-primary);
+      color: var(--color-text-on-primary);
+    }
+    .queue-tab .err-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--color-error);
+      display: inline-block;
+    }
+
+    /* Source badge (A-2) */
+    .src-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      font: 600 10px/1.4 var(--font-family);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+    }
+    .src-auto      { background: var(--color-primary-bg); color: var(--color-primary); }
+    .src-reported  { background: var(--color-amber-bg);   color: var(--color-amber); filter: brightness(0.92); }
+    .src-both      { background: var(--color-error-bg);   color: var(--color-error); }
+    .src-override  { background: var(--color-surface-subtle); color: var(--color-text-secondary); border: 1px solid var(--color-border); }
+
+    /* Refund failure callout (A-2) */
+    .refund-fail {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-error-bg);
+      border-left: 3px solid var(--color-error);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .refund-fail svg { color: var(--color-error); flex: 0 0 16px; margin-top: 2px; }
+    .refund-fail .label { font: 600 11px/1 var(--font-family); color: var(--color-error); text-transform: uppercase; letter-spacing: 0.4px; margin: 0 0 4px; }
+    .refund-fail .text { font: var(--font-caption); color: var(--color-text); margin: 0; line-height: 1.5; letter-spacing: var(--tracking-tight); }
+
+    /* Dispute hint (A-2) */
+    .dispute-hint {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      font: 11px/1.5 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .dispute-hint strong { color: var(--color-text); font-weight: 600; }
+
+    /* Coupon comp (B-4) */
+    .coupon-comp {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-amber-bg);
+      border: 1px dashed var(--color-amber);
+    }
+    .coupon-comp .head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+    .coupon-comp .head .label {
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-amber);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      filter: brightness(0.7);
+    }
+    .coupon-comp .text { font: var(--font-caption); color: var(--color-text); line-height: 1.5; margin: 0; letter-spacing: var(--tracking-tight); }
+    .coupon-comp .text strong { font-weight: 600; color: var(--color-text); }
+  </style>
+</head>
+<body>
+  <main class="desktop-canvas">
+
+    <div class="logo-area"><span class="logo-text">아자스쿨 <span class="accent">멘토링</span></span><span class="badge-admin">Admin</span></div>
+    <div class="topbar">
+      <div class="breadcrumb"><strong>운영</strong><span class="sep">/</span>후기·클레임<span class="sep">/</span><strong>클레임 #C-0421-003</strong></div>
+    </div>
+
+    <aside class="sidebar">
+      <p class="nav-label">현황</p>
+      <div class="nav-item">대시보드</div>
+      <p class="nav-label">운영</p>
+      <div class="nav-item">멘토 관리</div>
+      <div class="nav-item">예약 관리</div>
+      <div class="nav-item">결제·환불</div>
+      <div class="nav-item is-active">후기·클레임<span class="nav-badge">2</span></div>
+      <div class="nav-item">정산</div>
+      <p class="nav-label">설정</p>
+      <div class="nav-item">대학·단과대 구조</div>
+      <div class="nav-item">인기 멘토 영역</div>
+      <div class="nav-item">알림 발송 기록</div>
+    </aside>
+
+    <div class="main-area">
+
+      <!-- Queue tabs (A-2) -->
+      <div class="queue-tabs">
+        <span class="queue-tab is-active">전체 클레임 <span class="count">12</span></span>
+        <span class="queue-tab">AUTO · 노쇼 자동 <span class="count">3</span> <span class="err-dot" title="환불 실패 1건"></span></span>
+        <span class="queue-tab">REPORTED · 사용자 신고 <span class="count">4</span></span>
+        <span class="queue-tab">BOTH · 양측 노쇼 <span class="count">2</span></span>
+        <span class="queue-tab">ADMIN_OVERRIDE · 이의 신청 <span class="count">3</span></span>
+      </div>
+
+      <div class="main-head">
+        <div>
+          <h1 class="main-title">"상담 시간이 지연됐어요"</h1>
+          <p class="main-sub">
+            <span class="severity">클레임</span>
+            <span class="src-badge src-reported">REPORTED · 멘티 신고</span>
+            접수 4/21 21:34 · 담당 박운영 · 처리 기한 4/24 까지
+          </p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="action-btn" style="width:auto;padding:10px 16px;">1:1 문의로 이동</button>
+          <button class="action-btn danger" style="width:auto;padding:10px 16px;">보류</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+
+        <!-- Left: main content -->
+        <div>
+
+          <!-- Case summary -->
+          <div class="panel">
+            <h3>사건 요약</h3>
+            <p class="meta">
+              멘티 이하은(고2) · 멘토 최민호(서울대 경영) · 2026-04-21 상담
+              <span class="src-badge src-reported" style="margin-left:6px;">REPORTED</span>
+            </p>
+            <p style="margin:0;line-height:1.7;color:var(--color-text-secondary);letter-spacing:var(--tracking-tight);font:var(--font-body);">
+              예약된 19:00 상담이 19:17에야 시작되어 실제 상담 시간이 13분만 진행됨. 멘티는 전액 환불을 요청하고 있음. 멘토는 직전 상담의 지연으로 인한 불가항력이었다고 주장.
+            </p>
+
+            <!-- Sample: refund failure flag (강조 색상) -->
+            <div class="refund-fail" style="margin-top:14px;margin-bottom:0;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
+              <div>
+                <p class="label">환불 API 실패 · 자동 재시도 중단</p>
+                <p class="text">자동 노쇼 판정 후 토스 환불 API 응답 실패(에러 코드: TOSS-4031). 결제일 60일 초과로 환불 불가. <strong style="font-weight:600;">수동 송금 + 보상 쿠폰</strong>으로 처리 필요.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Timeline -->
+          <div class="panel">
+            <h3>타임라인</h3>
+            <div class="timeline">
+              <div class="event">
+                <p class="event-time">4월 21일 19:00</p>
+                <p class="event-text"><strong>상담 시작 예정 시간</strong> · Zoom 링크 멘티만 접속</p>
+              </div>
+              <div class="event">
+                <p class="event-time">4월 21일 19:05</p>
+                <p class="event-text">멘티 앱에서 "멘토가 안 들어와요" 알림 발송</p>
+              </div>
+              <div class="event">
+                <p class="event-time">4월 21일 19:17</p>
+                <p class="event-text">멘토 접속 · 상담 시작 (17분 지연)</p>
+              </div>
+              <div class="event">
+                <p class="event-time">4월 21일 19:30</p>
+                <p class="event-text">상담 종료 · 실제 진행 시간 <strong>13분</strong></p>
+              </div>
+              <div class="event is-now">
+                <p class="event-time">4월 21일 21:34</p>
+                <p class="event-text"><strong>클레임 접수</strong> · 멘티 전액 환불 요청</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Party messages -->
+          <div class="panel">
+            <h3>당사자 진술</h3>
+
+            <div class="msg from-mentee">
+              <p class="msg-author mentee">멘티 · 이하은</p>
+              <p class="msg-text">예약 확정까지 받고 시간 맞춰서 접속했는데 17분이나 늦게 들어오셔서 실제 상담은 13분밖에 못 받았어요. 미리 양해 메시지도 없었습니다. 학부모님도 걱정하셔서 전액 환불 부탁드려요.</p>
+              <p class="msg-meta">4/21 21:34 · 앱 접수</p>
+            </div>
+
+            <div class="msg from-mentor">
+              <p class="msg-author mentor">멘토 · 최민호</p>
+              <p class="msg-text">직전 18:30 상담이 멘티 사정으로 늦게 시작되어 뒤 일정에 영향을 줬습니다. 알림을 드려야 했는데 놓쳤습니다. 죄송합니다. 남은 17분 재상담을 제안드리고 싶어요.</p>
+              <p class="msg-meta">4/22 09:12 · 운영팀 요청 후 답변</p>
+            </div>
+          </div>
+
+          <!-- Resolution -->
+          <div class="panel">
+            <h3>운영 판단 & 처리</h3>
+
+            <div class="resolution-form">
+              <label>결정 사유</label>
+              <textarea placeholder="판단 근거를 적어주세요. 이 메모는 당사자에게 공개되지 않습니다.">멘토 귀책으로 상담 시간 13분 진행. 사전 고지 없이 17분 지연한 점을 인정하여 전액 환불 + 1회 패널티 부과. 재상담은 멘티 선택에 맡김.</textarea>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Right: parties + actions -->
+        <div>
+
+          <div class="panel">
+            <h3>당사자</h3>
+            <div class="party-card">
+              <span class="party-avatar" style="background:linear-gradient(135deg,#1b61c9,#254fad);">이</span>
+              <div style="flex:1;">
+                <p class="party-name">이하은 <span style="color:var(--color-text-weak);font-weight:400;">· 고2</span></p>
+                <p class="party-role">멘티 · 결제자 학부모</p>
+              </div>
+            </div>
+            <div class="party-card">
+              <span class="party-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">최</span>
+              <div style="flex:1;">
+                <p class="party-name">최민호 <span style="color:var(--color-text-weak);font-weight:400;">· 서울대 경영</span></p>
+                <p class="party-role">멘토 · 누적 클레임 1건</p>
+              </div>
+            </div>
+
+            <div class="booking-ref" style="margin-top:12px;">
+              <strong>예약 #AJ-2026-0421-077</strong>
+              ₩29,900 · 카카오페이 · 4/21 19:00 · 30분
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>사유 코드 · 필수</h3>
+            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:14px;">
+              <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font:var(--font-caption);color:var(--color-text);cursor:pointer;">
+                <span style="font-weight:700;color:var(--color-text-weak);letter-spacing:0.3px;">R01</span>
+                개인 스케줄 충돌
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font:var(--font-caption);color:var(--color-text);cursor:pointer;">
+                <span style="font-weight:700;color:var(--color-text-weak);letter-spacing:0.3px;">R02</span>
+                건강·응급 상황 <span style="font-size:10px;padding:2px 6px;background:var(--color-success-bg);color:var(--color-success);border-radius:var(--radius-sm);margin-left:auto;">면제 대상</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:2px solid var(--color-primary);background:var(--color-primary-bg);border-radius:var(--radius-md);font:var(--font-caption);color:var(--color-text);cursor:pointer;">
+                <span style="font-weight:700;color:var(--color-primary);letter-spacing:0.3px;">R03</span>
+                시간 미준수 · 무성의한 진행 <span style="font-size:10px;padding:2px 6px;background:var(--color-primary);color:var(--color-text-on-primary);border-radius:var(--radius-sm);margin-left:auto;">선택됨</span>
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font:var(--font-caption);color:var(--color-text);cursor:pointer;">
+                <span style="font-weight:700;color:var(--color-text-weak);letter-spacing:0.3px;">R04</span>
+                멘티 요청/합의
+              </label>
+              <label style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--color-border);border-radius:var(--radius-md);font:var(--font-caption);color:var(--color-text);cursor:pointer;">
+                <span style="font-weight:700;color:var(--color-text-weak);letter-spacing:0.3px;">R05</span>
+                기타 · 상세 설명 필수
+              </label>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>멘토 패널티 적용 · §20-5</h3>
+
+            <!-- Current status -->
+            <div style="padding:14px 16px;background:var(--color-amber-bg);border-radius:var(--radius-md);margin-bottom:14px;">
+              <p style="font:600 11px/1 var(--font-family);color:var(--color-amber);text-transform:uppercase;letter-spacing:0.4px;margin:0 0 6px;filter:brightness(0.7);">멘토 최민호 · 6개월 롤링</p>
+              <p style="font:700 20px/1.1 var(--font-family);color:var(--color-text);letter-spacing:var(--tracking-normal);margin:0 0 4px;">현재 누적 <span style="color:var(--color-amber);filter:brightness(0.75);">2회</span> → 이 건 적용 시 <span style="color:var(--color-error);">3회</span></p>
+              <p style="font:11px/1.4 var(--font-family);color:var(--color-text-weak);margin:0;letter-spacing:var(--tracking-tight);">노쇼 가중치 +2 (시간 미준수는 노쇼 준하는 수준)</p>
+            </div>
+
+            <!-- Matrix -->
+            <div style="border:1px solid var(--color-border);border-radius:var(--radius-md);overflow:hidden;margin-bottom:14px;">
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:10px 12px;font:var(--font-caption);color:var(--color-text-weak);background:var(--color-surface-subtle);border-bottom:1px solid var(--color-border);text-transform:uppercase;letter-spacing:0.3px;font-weight:600;">
+                <span>단계</span>
+                <span>조치</span>
+                <span style="text-align:right;">차감</span>
+              </div>
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:10px 12px;font:12px/1.3 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);border-bottom:1px solid var(--color-border);opacity:0.55;">
+                <span style="font-weight:600;">1회</span>
+                <span>경고 차감</span>
+                <span style="text-align:right;font-weight:600;">5%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:10px 12px;font:12px/1.3 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);border-bottom:1px solid var(--color-border);opacity:0.55;">
+                <span style="font-weight:600;">2회</span>
+                <span>반복 주의</span>
+                <span style="text-align:right;font-weight:600;">10%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:12px;background:var(--color-error-bg);color:var(--color-text);letter-spacing:var(--tracking-tight);font:600 13px/1.3 var(--font-family);border-bottom:1px solid var(--color-border);">
+                <span>3회 ✓</span>
+                <span>정산 차감 + <strong style="color:var(--color-error);">1개월 프로필 정지</strong></span>
+                <span style="text-align:right;font-weight:700;color:var(--color-error);">20%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:10px 12px;font:12px/1.3 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);border-bottom:1px solid var(--color-border);opacity:0.45;">
+                <span style="font-weight:600;">4회</span>
+                <span>가중 차감</span>
+                <span style="text-align:right;font-weight:600;">40%</span>
+              </div>
+              <div style="display:grid;grid-template-columns:48px 1fr 80px;align-items:center;padding:10px 12px;font:12px/1.3 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);opacity:0.45;">
+                <span style="font-weight:600;">5회</span>
+                <span>계정 정지</span>
+                <span style="text-align:right;font-weight:600;">80%</span>
+              </div>
+            </div>
+
+            <div class="action-list">
+              <button class="action-btn" style="background:var(--color-error);color:#fff;border-color:var(--color-error);">
+                ✓ 3단계 적용 · 전액 환불 + 20% 차감 + 프로필 1개월 정지
+              </button>
+              <button class="action-btn">현 단계(2회) 유지 · 환불만</button>
+              <button class="action-btn">긴급 면제 심사로 전환</button>
+              <button class="action-btn">클레임 기각 (패널티 미적용)</button>
+              <button class="action-btn danger">계정 즉시 정지 (중대 위반)</button>
+            </div>
+
+            <!-- Compensation coupon (B-4) -->
+            <div class="coupon-comp">
+              <div class="head">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--color-amber);filter:brightness(0.7);"><path d="M20 12V8H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h14v4"/><path d="M4 6v12a2 2 0 0 0 2 2h14v-4"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                <span class="label">보상 쿠폰 발급</span>
+              </div>
+              <p class="text">
+                자동 발급은 미지원. <strong>SQL 또는 운영 엑셀로 직접 발급</strong> 후 1:1 문의 답변에 코드를 첨부해 멘티에게 전달하세요. (발급 화면 IN-수동, Week 5+ 자동화)
+              </p>
+            </div>
+
+            <!-- Dispute redirect (A-2) -->
+            <div class="dispute-hint">
+              ⓘ 멘토/멘티의 <strong>이의 신청</strong>은 별도 폼이 아닌 <strong>1:1 문의 카테고리(노쇼 이의)</strong>로 통합 접수됩니다 (ADR-001 §20-3-5). 신청 건은 위 "이의 신청" 큐로 자동 분류됩니다.
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3>자동 발송 알림</h3>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <label style="display:flex;align-items:center;gap:8px;font:var(--font-caption);color:var(--color-text);">
+                <input type="checkbox" checked> 멘티에게 처리 결과 알림톡
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font:var(--font-caption);color:var(--color-text);">
+                <input type="checkbox" checked> 멘토에게 패널티 통보
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;font:var(--font-caption);color:var(--color-text);">
+                <input type="checkbox"> 운영팀 슬랙 채널 공유
+              </label>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>

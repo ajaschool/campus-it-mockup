@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 역할 선택</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .intro {
+      padding: 32px 20px 24px;
+      text-align: center;
+    }
+    .intro h1 {
+      font: 700 24px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: -0.3px;
+      margin: 0 0 10px;
+    }
+    .intro p {
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    .role-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding: 0 20px;
+    }
+    .role-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      cursor: pointer;
+      transition: border-color 120ms ease, background 120ms ease;
+    }
+    .role-card:hover {
+      border-color: var(--color-primary);
+    }
+    .role-card.is-selected {
+      border-color: var(--color-primary);
+      background: #eef3fb;
+      box-shadow: 0 0 0 2px rgba(27, 97, 201, 0.15);
+    }
+    .role-icon {
+      width: 56px; height: 56px;
+      border-radius: var(--radius-md);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 56px;
+      color: #ffffff;
+    }
+    .role-icon.student { background: linear-gradient(135deg, #1b61c9, #254fad); }
+    .role-icon.parent { background: linear-gradient(135deg, #006400, #10b981); }
+    .role-icon.mentor { background: linear-gradient(135deg, #f59e0b, #d97706); }
+
+    .role-body { flex: 1; }
+    .role-name {
+      font: 600 17px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .role-desc {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0;
+    }
+    .role-chevron {
+      color: var(--color-text-weak);
+      flex: 0 0 auto;
+    }
+    .role-card.is-selected .role-chevron {
+      color: var(--color-primary);
+    }
+
+    .pre-hint {
+      margin: 0 20px 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: var(--color-primary-bg);
+      color: var(--color-primary);
+      font: var(--font-caption);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.55;
+      text-align: center;
+    }
+    .pre-hint strong { color: var(--color-primary); font-weight: 700; }
+
+    .info-note {
+      margin: 24px 20px 0;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--color-surface-subtle);
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+      text-align: center;
+    }
+    .info-note strong { color: var(--color-text); font-weight: 500; }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">역할 선택</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Intro -->
+    <div class="intro">
+      <h1>어떻게 이용하실 계획인가요?</h1>
+      <p>언제든지 마이페이지에서 변경할 수 있어요.</p>
+    </div>
+
+    <!-- Pre-cards hint -->
+    <p class="pre-hint">선택하신 역할에 따라 <strong>약관과 입력 정보</strong>가 달라집니다. 카드를 누르면 다음 단계로 바로 진행돼요.</p>
+
+    <!-- Role cards -->
+    <div class="role-list">
+      <button class="role-card" data-next="./terms-mentee.html">
+        <span class="role-icon student">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 4 2 10l10 6 10-6Z"/><path d="M6 12v5c3 2 9 2 12 0v-5"/></svg>
+        </span>
+        <div class="role-body">
+          <p class="role-name">학생 · 내가 직접 상담받기</p>
+          <p class="role-desc">중·고등학생 본인. 결제는 학부모 카드도 등록 가능합니다.</p>
+        </div>
+        <span class="role-chevron">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </button>
+
+      <button class="role-card" data-next="./terms-parent.html">
+        <span class="role-icon parent">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </span>
+        <div class="role-body">
+          <p class="role-name">학부모 · 자녀를 위한 상담 예약</p>
+          <p class="role-desc">자녀 프로필을 등록하고 대신 결제합니다. 여러 자녀 추가 가능.</p>
+        </div>
+        <span class="role-chevron">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </button>
+
+      <button class="role-card" data-next="./terms-mentor.html">
+        <span class="role-icon mentor">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-7 8-7s8 3 8 7"/><path d="M19 2l1.5 3.5L24 7l-3.5 1.5L19 12l-1.5-3.5L14 7l3.5-1.5z" stroke-width="1.2"/></svg>
+        </span>
+        <div class="role-body">
+          <p class="role-name">멘토 · 상담 제공하기</p>
+          <p class="role-desc">대학 재학생 · 합격자. 증빙 서류 제출 후 관리자 승인이 필요해요.</p>
+        </div>
+        <span class="role-chevron">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </span>
+      </button>
+    </div>
+
+    <!-- Info -->
+    <div class="info-note">
+      학부모 역할은 <strong>만 14세 미만 자녀</strong>를 위한 예약 시 반드시 필요합니다.
+    </div>
+
+    <div style="height:32px;"></div>
+
+  </main>
+</body>
+</html>

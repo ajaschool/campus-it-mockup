@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 관리자 — 정산 관리</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <style>
+    body { background: var(--color-surface-subtle); }
+    .desktop-canvas {
+      width: 1280px;
+      min-height: 900px;
+      margin: 24px auto;
+      background: var(--color-surface);
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      grid-template-rows: 56px 1fr;
+      grid-template-areas: "logo topbar" "sidebar main";
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+    .logo-area { grid-area: logo; padding: 0 20px; display: flex; align-items: center; border-bottom: 1px solid var(--color-border); border-right: 1px solid var(--color-border); }
+    .logo-text { font: 700 17px/1 var(--font-family); color: var(--color-text); }
+    .logo-text .accent { color: var(--color-primary); }
+    .badge-admin { margin-left: 8px; padding: 2px 8px; background: var(--color-text); color: #fff; font: 600 10px/1.4 var(--font-family); border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 0.4px; }
+    .topbar { grid-area: topbar; display: flex; align-items: center; padding: 0 24px; border-bottom: 1px solid var(--color-border); }
+    .breadcrumb { font: var(--font-caption-strong); color: var(--color-text-weak); }
+    .breadcrumb strong { color: var(--color-text); font-weight: 600; }
+    .breadcrumb .sep { margin: 0 8px; opacity: 0.5; }
+
+    .sidebar { grid-area: sidebar; padding: 20px 12px; border-right: 1px solid var(--color-border); }
+    .nav-label { padding: 0 12px; font: 600 11px/1 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.6px; margin: 0 0 8px; }
+    .nav-label + .nav-label { margin-top: 20px; }
+    .nav-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius-md); color: var(--color-text-secondary); font: 500 14px/1 var(--font-family); margin-bottom: 2px; }
+    .nav-item.is-active { background: #eef3fb; color: var(--color-primary); font-weight: 600; }
+
+    .main-area { grid-area: main; padding: 28px 32px; overflow-y: auto; background: var(--color-surface-subtle); }
+
+    .main-head {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .main-title { font: 700 24px/1.2 var(--font-family); color: var(--color-text); letter-spacing: -0.3px; margin: 0 0 6px; }
+    .main-sub { font: var(--font-body); color: var(--color-text-weak); margin: 0; }
+
+    .period-tabs { display: flex; gap: 6px; }
+    .period-tab { padding: 8px 14px; border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text-secondary); font: var(--font-caption-strong); border: 1px solid var(--color-border); letter-spacing: var(--tracking-tight); }
+    .period-tab.is-active { background: var(--color-text); color: #fff; border-color: var(--color-text); }
+
+    /* Summary strip */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .summary-tile {
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .summary-tile .label { font: var(--font-caption); color: var(--color-text-weak); margin-bottom: 8px; display: block; letter-spacing: var(--tracking-tight); }
+    .summary-tile .value { font: 800 24px/1 var(--font-family); letter-spacing: -0.4px; color: var(--color-text); }
+    .summary-tile .value.primary { color: var(--color-primary); }
+    .summary-tile .value.success { color: var(--color-success); }
+    .summary-tile .value.amber { color: var(--color-amber); }
+    .summary-tile .sub { font: 11px/1.3 var(--font-family); color: var(--color-text-weak); margin-top: 6px; }
+
+    .panel { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-md); margin-bottom: 20px; }
+    .panel-head {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 20px 14px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .panel-head h3 { font: 600 15px/1 var(--font-family); color: var(--color-text); margin: 0; letter-spacing: var(--tracking-tight); }
+    .panel-head .right { display: flex; gap: 8px; }
+    .btn-ghost { padding: 6px 14px; border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text); font: var(--font-caption-strong); border: 1px solid var(--color-border); letter-spacing: var(--tracking-tight); }
+    .btn-pri { padding: 6px 14px; border-radius: var(--radius-md); background: var(--color-primary); color: #fff; font: var(--font-caption-strong); border: none; letter-spacing: var(--tracking-tight); }
+
+    /* Table */
+    .table { width: 100%; border-collapse: separate; border-spacing: 0; }
+    .table th { text-align: left; padding: 10px 16px; background: var(--color-surface-subtle); font: 600 11px/1.2 var(--font-family); color: var(--color-text-weak); text-transform: uppercase; letter-spacing: 0.4px; border-bottom: 1px solid var(--color-border); }
+    .table td { padding: 14px 16px; border-bottom: 1px solid var(--color-border); font: var(--font-body); color: var(--color-text); letter-spacing: var(--tracking-tight); }
+    .table tbody tr:hover td { background: var(--color-surface-subtle); }
+
+    .chip-sm { display: inline-block; font-size: 11px; font-weight: 600; padding: 2px 8px; border-radius: var(--radius-sm); letter-spacing: var(--tracking-tight); }
+    .chip-scheduled { background: var(--color-amber-bg); color: #7a4a00; }
+    .chip-paid { background: var(--color-success-bg); color: var(--color-success); }
+    .chip-held { background: var(--color-error-bg); color: var(--color-error); }
+
+    .mentor-cell { display: flex; align-items: center; gap: 10px; }
+    .mentor-cell .avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: linear-gradient(135deg, #cdd8ec, #8aa3c1);
+      color: #fff; font: 600 12px/1 var(--font-family);
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .mentor-cell .name { font: 500 14px/1.2 var(--font-family); letter-spacing: var(--tracking-tight); }
+    .mentor-cell .school { display: block; font-size: 12px; color: var(--color-text-weak); margin-top: 2px; }
+
+    .amount-col { font: 700 15px/1 var(--font-family); letter-spacing: -0.2px; }
+    .amount-col.neg { color: var(--color-error); }
+
+    /* Filter row */
+    .filter-row {
+      display: flex; gap: 8px; padding: 14px 20px;
+      border-bottom: 1px solid var(--color-border);
+      align-items: center;
+    }
+    .search-small {
+      flex: 1;
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 12px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-md);
+      color: var(--color-text-weak);
+      font: var(--font-caption);
+    }
+    .f-chip {
+      padding: 6px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      background: var(--color-surface);
+      font: var(--font-caption-strong);
+      color: var(--color-text-secondary);
+      letter-spacing: var(--tracking-tight);
+    }
+    .f-chip.is-selected { background: var(--color-text); color: #fff; border-color: var(--color-text); }
+  </style>
+</head>
+<body>
+  <main class="desktop-canvas">
+
+    <div class="logo-area"><span class="logo-text">아자스쿨 <span class="accent">멘토링</span></span><span class="badge-admin">Admin</span></div>
+    <div class="topbar">
+      <div class="breadcrumb"><strong>운영</strong><span class="sep">/</span><strong>정산 관리</strong></div>
+    </div>
+
+    <aside class="sidebar">
+      <p class="nav-label">현황</p>
+      <div class="nav-item">대시보드</div>
+      <p class="nav-label">운영</p>
+      <div class="nav-item">멘토 관리</div>
+      <div class="nav-item">예약 관리</div>
+      <div class="nav-item">결제·환불</div>
+      <div class="nav-item">후기·클레임</div>
+      <div class="nav-item is-active">정산</div>
+      <p class="nav-label">설정</p>
+      <div class="nav-item">대학·단과대 구조</div>
+      <div class="nav-item">인기 멘토 영역</div>
+      <div class="nav-item">알림 발송 기록</div>
+    </aside>
+
+    <div class="main-area">
+
+      <div class="main-head">
+        <div>
+          <h1 class="main-title">정산 관리 · 2026년 4월</h1>
+          <p class="main-sub">다음 정산일 · <strong style="color:var(--color-text);font-weight:600;">2026년 5월 10일</strong> (14일 후)</p>
+        </div>
+        <div class="period-tabs">
+          <button class="period-tab is-active">이번달</button>
+          <button class="period-tab">지난달</button>
+          <button class="period-tab">3개월</button>
+          <button class="period-tab">연간</button>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="summary-row">
+        <div class="summary-tile">
+          <span class="label">총 거래액</span>
+          <span class="value">₩2,480,700</span>
+          <p class="sub">+12% vs 지난달</p>
+        </div>
+        <div class="summary-tile">
+          <span class="label">플랫폼 수수료 (50%)</span>
+          <span class="value primary">₩1,240,350</span>
+          <p class="sub">매출 인식 기준</p>
+        </div>
+        <div class="summary-tile">
+          <span class="label">멘토 지급 예정</span>
+          <span class="value success">₩1,164,600</span>
+          <p class="sub">환불·패널티 반영</p>
+        </div>
+        <div class="summary-tile">
+          <span class="label">보류 건</span>
+          <span class="value amber">₩75,750</span>
+          <p class="sub">3건 · 클레임 처리중</p>
+        </div>
+      </div>
+
+      <!-- Mentor settlement list -->
+      <div class="panel">
+        <div class="panel-head">
+          <h3>멘토별 정산 명세 · 12명</h3>
+          <div class="right">
+            <button class="btn-ghost">CSV 내보내기</button>
+            <button class="btn-pri">일괄 승인 (9건)</button>
+          </div>
+        </div>
+
+        <div class="filter-row">
+          <div class="search-small">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <span>멘토명 · 학교 · 계좌 검색</span>
+          </div>
+          <span class="f-chip is-selected">전체 12</span>
+          <span class="f-chip">지급 예정 9</span>
+          <span class="f-chip">보류 3</span>
+          <span class="f-chip">완료 0</span>
+        </div>
+
+        <table class="table">
+          <thead>
+            <tr>
+              <th>멘토</th>
+              <th>완료 상담</th>
+              <th>환불</th>
+              <th>거래액</th>
+              <th>지급 금액 (50%)</th>
+              <th>계좌</th>
+              <th>상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar">김</span>
+                  <div>
+                    <span class="name">김서연</span>
+                    <span class="school">서울대 경영</span>
+                  </div>
+                </div>
+              </td>
+              <td>12건</td>
+              <td>0건</td>
+              <td class="amount-col">₩358,800</td>
+              <td class="amount-col" style="color:var(--color-primary);">₩179,400</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">신한 110-***-****</span></td>
+              <td><span class="chip-sm chip-scheduled">지급 예정</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar" style="background:linear-gradient(135deg,#d1dde9,#8aa3c1);">박</span>
+                  <div>
+                    <span class="name">박준호</span>
+                    <span class="school">연세대 의예</span>
+                  </div>
+                </div>
+              </td>
+              <td>18건</td>
+              <td>1건 (-₩14,950)</td>
+              <td class="amount-col">₩523,250</td>
+              <td class="amount-col" style="color:var(--color-primary);">₩261,625</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">국민 042-**-*****</span></td>
+              <td><span class="chip-sm chip-scheduled">지급 예정</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar" style="background:linear-gradient(135deg,#e5d8ea,#a28aba);">이</span>
+                  <div>
+                    <span class="name">이수아</span>
+                    <span class="school">고려대 컴공</span>
+                  </div>
+                </div>
+              </td>
+              <td>9건</td>
+              <td>0건</td>
+              <td class="amount-col">₩269,100</td>
+              <td class="amount-col" style="color:var(--color-primary);">₩134,550</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">카카오 3333-**-*****</span></td>
+              <td><span class="chip-sm chip-scheduled">지급 예정</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706);">최</span>
+                  <div>
+                    <span class="name">최민호</span>
+                    <span class="school">서울대 경영</span>
+                  </div>
+                </div>
+              </td>
+              <td>5건</td>
+              <td>1건 (-₩29,900)</td>
+              <td class="amount-col">₩119,600</td>
+              <td class="amount-col neg">₩45,000</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">신한 110-***-****</span></td>
+              <td><span class="chip-sm chip-held">보류 · 클레임 1건</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar" style="background:linear-gradient(135deg,#d8e8d1,#8bb27a);">정</span>
+                  <div>
+                    <span class="name">정민서</span>
+                    <span class="school">서강대 심리</span>
+                  </div>
+                </div>
+              </td>
+              <td>7건</td>
+              <td>0건</td>
+              <td class="amount-col">₩209,300</td>
+              <td class="amount-col" style="color:var(--color-primary);">₩104,650</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">토스 1000-***-****</span></td>
+              <td><span class="chip-sm chip-scheduled">지급 예정</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="mentor-cell">
+                  <span class="avatar" style="background:linear-gradient(135deg,#d1d8e9,#7a8dc0);">한</span>
+                  <div>
+                    <span class="name">한예림</span>
+                    <span class="school">이대 국문</span>
+                  </div>
+                </div>
+              </td>
+              <td>6건</td>
+              <td>0건</td>
+              <td class="amount-col">₩179,400</td>
+              <td class="amount-col" style="color:var(--color-primary);">₩89,700</td>
+              <td><span style="font-size:12px;color:var(--color-text-weak);">우리 1002-***-****</span></td>
+              <td><span class="chip-sm chip-scheduled">지급 예정</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+</body>
+</html>

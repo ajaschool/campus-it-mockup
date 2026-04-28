@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 쿠폰함</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    /* Sub tabs */
+    .sub-tabs {
+      display: flex;
+      gap: 16px;
+      padding: 8px 20px 0;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .sub-tab {
+      padding: 12px 0;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      position: relative;
+    }
+    .sub-tab.is-active {
+      color: var(--color-text);
+    }
+    .sub-tab.is-active::after {
+      content: "";
+      position: absolute;
+      bottom: -1px;
+      left: 0; right: 0;
+      height: 2px;
+      background: var(--color-primary);
+    }
+
+    /* Coupon code input */
+    .code-input-row {
+      display: flex;
+      gap: 8px;
+      padding: 16px 20px;
+    }
+    .code-input-row .input {
+      flex: 1;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: 1.5px;
+      color: var(--color-text);
+      text-transform: uppercase;
+    }
+    .code-input-row .input::placeholder { color: var(--color-text-weak); letter-spacing: 0.8px; }
+
+    /* Coupon list */
+    .coupon-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 4px 20px 16px;
+    }
+
+    .coupon {
+      position: relative;
+      display: flex;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+    .coupon.is-used, .coupon.is-expired {
+      opacity: 0.55;
+    }
+    .coupon-left {
+      background: var(--color-primary);
+      color: #ffffff;
+      padding: 20px 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-width: 110px;
+    }
+    .coupon.is-used .coupon-left { background: var(--color-text-weak); }
+    .coupon.is-expired .coupon-left { background: var(--color-error); }
+    .coupon-discount {
+      font: 900 28px/1 var(--font-family);
+      letter-spacing: -0.8px;
+    }
+    .coupon-discount .unit {
+      font: 500 14px/1 var(--font-family);
+      letter-spacing: 0;
+      margin-left: 2px;
+    }
+    .coupon-type {
+      margin-top: 6px;
+      font: 500 11px/1 var(--font-family);
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      opacity: 0.9;
+    }
+
+    /* Dashed separator */
+    .coupon::before {
+      content: "";
+      position: absolute;
+      left: 110px;
+      top: 0; bottom: 0;
+      width: 1px;
+      background: repeating-linear-gradient(to bottom, var(--color-border) 0 6px, transparent 6px 12px);
+    }
+    .coupon-left::after,
+    .coupon-left::before {
+      content: "";
+      position: absolute;
+      left: 104px;
+      width: 12px; height: 12px;
+      border-radius: 50%;
+      background: var(--color-surface-subtle);
+      box-shadow: 0 0 0 1px var(--color-border) inset;
+    }
+    .coupon-left::before { top: -6px; }
+    .coupon-left::after { bottom: -6px; }
+
+    .coupon-right {
+      flex: 1;
+      padding: 16px 18px;
+    }
+    .coupon-title {
+      font: 600 15px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin: 0 0 4px;
+    }
+    .coupon-desc {
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.5;
+      margin: 0 0 10px;
+    }
+    .coupon-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 10px;
+      border-top: 1px solid var(--color-border);
+    }
+    .coupon-expires {
+      font: 11px/1.3 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .coupon-expires.urgent { color: var(--color-error); font-weight: 600; }
+    .coupon-status {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: var(--radius-sm);
+    }
+    .status-avail { background: var(--color-success-bg); color: var(--color-success); }
+    .status-used { background: var(--color-surface-subtle); color: var(--color-text-weak); }
+    .status-expired { background: var(--color-error-bg); color: var(--color-error); }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">쿠폰함</h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Code input -->
+    <div class="code-input-row">
+      <input class="input" placeholder="쿠폰 코드 입력">
+      <button class="btn btn-primary" style="height:46px;padding:0 18px;">등록</button>
+    </div>
+
+    <!-- Issue source notice -->
+    <div style="margin:0 20px 12px;padding:12px 14px;border-radius:var(--radius-md);background:#eef3fb;display:flex;gap:10px;align-items:flex-start;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.6" style="color:var(--color-primary);flex:0 0 16px;margin-top:1px;">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="16" x2="12" y2="12"/>
+        <line x1="12" y1="8" x2="12" y2="8"/>
+      </svg>
+      <p style="font:var(--font-caption);color:var(--color-text);letter-spacing:var(--tracking-tight);line-height:1.5;margin:0;">
+        쿠폰은 운영팀이 발급해 <strong style="font-weight:600;">1:1 문의 답변</strong>으로 코드를 전달드려요. 받은 코드를 위 입력란에 등록하면 결제 시 사용할 수 있습니다.
+      </p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="sub-tabs">
+      <span class="sub-tab is-active">사용 가능 · 3</span>
+      <span class="sub-tab">사용 완료 · 2</span>
+      <span class="sub-tab">만료됨 · 1</span>
+    </div>
+
+    <!-- Coupon list -->
+    <div class="coupon-list">
+
+      <article class="coupon">
+        <div class="coupon-left">
+          <span class="coupon-discount">50<span class="unit">%</span></span>
+          <span class="coupon-type">할인</span>
+        </div>
+        <div class="coupon-right">
+          <p class="coupon-title">첫 상담 반값 쿠폰</p>
+          <p class="coupon-desc">모든 멘토링 상품 · 첫 구매자 대상. 1회 사용.</p>
+          <div class="coupon-footer">
+            <span class="coupon-expires urgent">2026.04.30 까지 · 7일 남음</span>
+            <span class="coupon-status status-avail">사용 가능</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="coupon">
+        <div class="coupon-left">
+          <span class="coupon-discount">5,000<span class="unit">원</span></span>
+          <span class="coupon-type">할인</span>
+        </div>
+        <div class="coupon-right">
+          <p class="coupon-title">친구 추천 감사 쿠폰</p>
+          <p class="coupon-desc">3만원 이상 결제 시 사용 가능. 중복 할인 불가.</p>
+          <div class="coupon-footer">
+            <span class="coupon-expires">2026.05.31 까지</span>
+            <span class="coupon-status status-avail">사용 가능</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="coupon">
+        <div class="coupon-left">
+          <span class="coupon-discount">20<span class="unit">%</span></span>
+          <span class="coupon-type">할인</span>
+        </div>
+        <div class="coupon-right">
+          <p class="coupon-title">3월 신학기 프로모션</p>
+          <p class="coupon-desc">진학/입시 카테고리 멘토링 대상. 2회까지 사용.</p>
+          <div class="coupon-footer">
+            <span class="coupon-expires">2026.06.15 까지</span>
+            <span class="coupon-status status-avail">사용 가능 · 2회</span>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+  </main>
+</body>
+</html>

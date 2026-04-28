@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="robots" content="noindex, nofollow">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>아자스쿨 멘토링 — 결제</title>
+  <script src="../system/theme-switcher.js"></script>
+  <script src="../system/nav.js" defer></script>
+  <script src="../system/shell-header.js" defer></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../system/tokens.css">
+  <link rel="stylesheet" href="../system/components.css">
+  <style>
+    .section-block {
+      margin: 0 20px 16px;
+      padding: 20px;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+    }
+    .section-block h2 {
+      font: 600 15px/1.3 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+      margin: 0 0 14px;
+    }
+
+    /* Info rows */
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .info-row .label { color: var(--color-text-weak); }
+    .info-row .value { font-weight: 500; text-align: right; }
+    .info-row + .info-row { border-top: 1px solid var(--color-border); }
+
+    /* Payer toggle */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0 16px;
+    }
+    .toggle-row .text {
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .toggle {
+      width: 44px; height: 26px; border-radius: 13px;
+      background: var(--color-primary);
+      position: relative;
+      flex: 0 0 44px;
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 3px; left: 21px;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: #ffffff;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
+      transition: left 160ms ease;
+    }
+    .toggle.is-off { background: var(--color-border-strong); }
+    .toggle.is-off::after { left: 3px; }
+
+    /* Form fields */
+    .field { margin-bottom: 14px; }
+    .field-label {
+      display: block;
+      font: 500 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 8px;
+    }
+    .input {
+      width: 100%;
+      padding: 12px 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+    }
+    .input::placeholder { color: var(--color-text-weak); }
+
+    /* Radio */
+    .radio-inline {
+      display: flex; gap: 8px;
+    }
+    .radio-opt {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      text-align: center;
+      font: var(--font-caption-strong);
+      letter-spacing: var(--tracking-tight);
+      color: var(--color-text);
+    }
+    .radio-opt.is-selected {
+      border-color: var(--color-primary);
+      background: #eef3fb;
+      color: var(--color-primary);
+    }
+
+    /* Payment methods */
+    .pay-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .pay-tile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      cursor: pointer;
+    }
+    .pay-tile.is-selected {
+      border-color: var(--color-primary);
+      box-shadow: 0 0 0 2px rgba(27,97,201,0.12) inset;
+    }
+    .pay-logo {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700;
+      font-size: 12px;
+      letter-spacing: -0.3px;
+    }
+    .pay-logo-kakao { background: #FEE500; color: #391F1E; }
+    .pay-logo-naver { background: #03C75A; color: #ffffff; }
+    .pay-logo-toss { background: #0064FF; color: #ffffff; }
+    .pay-logo-card { background: var(--color-surface-subtle); color: var(--color-text); border: 1px solid var(--color-border); }
+    .pay-name {
+      font: var(--font-body);
+      font-weight: 500;
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Coupon row */
+    .coupon-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 0 0;
+      color: var(--color-text-weak);
+      font: var(--font-body);
+      font-weight: 500;
+    }
+
+    /* Coupon code input block (B-1) */
+    .coupon-block {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid var(--color-border);
+    }
+    .coupon-block .coupon-label {
+      display: block;
+      font: 500 13px/1.2 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      margin-bottom: 8px;
+    }
+    .coupon-input-row {
+      display: flex;
+      gap: 8px;
+    }
+    .coupon-input-row input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: var(--font-body);
+      letter-spacing: 1.2px;
+      color: var(--color-text);
+      text-transform: uppercase;
+      font-family: var(--font-family);
+    }
+    .coupon-input-row input::placeholder {
+      color: var(--color-text-weak);
+      letter-spacing: 0.6px;
+      text-transform: none;
+    }
+    .coupon-input-row .apply-btn {
+      padding: 0 16px;
+      height: 40px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+      font: 600 13px/1 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+      flex: 0 0 auto;
+    }
+    .coupon-applied {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      background: var(--color-success-bg);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font: var(--font-caption);
+      color: var(--color-success);
+      letter-spacing: var(--tracking-tight);
+    }
+    .coupon-applied .name { font-weight: 600; color: var(--color-text); flex: 1; }
+    .coupon-applied .discount { font-weight: 700; color: var(--color-success); }
+    .coupon-applied .remove {
+      padding: 2px 8px;
+      font-size: 11px;
+      color: var(--color-text-weak);
+      background: transparent;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      letter-spacing: var(--tracking-tight);
+    }
+
+    /* Total block */
+    .total-block {
+      margin: 0 20px 16px;
+      padding: 18px 20px;
+      background: var(--color-surface-subtle);
+      border-radius: var(--radius-lg);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      font: var(--font-body);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
+    .total-row.grand {
+      border-top: 1px solid var(--color-border);
+      margin-top: 8px;
+      padding-top: 14px;
+      font-weight: 500;
+      color: var(--color-text);
+    }
+    .total-row.grand .amount {
+      font: 700 22px/1 var(--font-family);
+      letter-spacing: -0.2px;
+      color: var(--color-primary);
+    }
+
+    /* Policy expand */
+    .policy {
+      margin: 0 20px 16px;
+      padding: 14px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background: var(--color-surface);
+    }
+    .policy-head {
+      display: flex; justify-content: space-between; align-items: center;
+      font: 500 14px/1.3 var(--font-family);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .policy-body {
+      margin: 10px 0 0;
+      padding: 0;
+      list-style: none;
+      font: var(--font-caption);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+      line-height: 1.6;
+    }
+    .policy-body li::before { content: "· "; color: var(--color-text-weak); }
+
+    /* Consent checkboxes */
+    .consent-list {
+      margin: 0 20px 16px;
+      display: flex; flex-direction: column; gap: 10px;
+    }
+    .consent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font: var(--font-body);
+      color: var(--color-text);
+      letter-spacing: var(--tracking-tight);
+    }
+    .checkbox {
+      width: 20px; height: 20px; border-radius: 4px;
+      border: 1.5px solid var(--color-border-strong);
+      flex: 0 0 20px;
+      margin-top: 2px;
+      position: relative;
+    }
+    .consent-row.is-checked .checkbox {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    .consent-row.is-checked .checkbox::after {
+      content: "";
+      position: absolute;
+      left: 6px; top: 2px;
+      width: 5px; height: 10px;
+      border-right: 2px solid #ffffff;
+      border-bottom: 2px solid #ffffff;
+      transform: rotate(45deg);
+    }
+    .consent-row .required {
+      color: var(--color-primary);
+      font-size: 11px;
+      font-weight: 600;
+      margin-left: 4px;
+    }
+    .consent-row .link {
+      margin-left: auto;
+      font: var(--font-caption-strong);
+      color: var(--color-text-weak);
+    }
+  </style>
+</head>
+<body>
+  <main class="mobile-canvas">
+
+    <!-- App bar -->
+    <header class="app-bar with-back">
+      <button class="icon-btn" aria-label="뒤로">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <h1 class="app-bar-title">
+        결제
+        <span class="app-bar-title-sub">3 / 3 단계</span>
+      </h1>
+      <span style="width:36px;"></span>
+    </header>
+
+    <!-- Progress -->
+    <div class="progress">
+      <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div>
+    </div>
+
+    <!-- 예약 정보 -->
+    <div class="section-block">
+      <h2>예약 정보</h2>
+      <div class="info-row">
+        <span class="label">멘토</span>
+        <span class="value">김서연 · 서울대 경영 3학년</span>
+      </div>
+      <div class="info-row">
+        <span class="label">상담 주제</span>
+        <span class="value">경영학과 진학 Q&amp;A 상담</span>
+      </div>
+      <div class="info-row">
+        <span class="label">일시</span>
+        <span class="value">4월 27일 (일) 오후 3:00</span>
+      </div>
+      <div class="info-row">
+        <span class="label">진행 시간</span>
+        <span class="value">30분</span>
+      </div>
+      <div class="info-row">
+        <span class="label">진행 방식</span>
+        <span class="value">Zoom <span style="color:var(--color-text-weak);font-weight:400;">· 확정 후 링크 전달</span></span>
+      </div>
+    </div>
+
+    <!-- 결제자 정보 -->
+    <div class="section-block">
+      <div class="toggle-row">
+        <div>
+          <h2 style="margin:0 0 4px;">결제자 정보</h2>
+          <span style="font:var(--font-caption);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">학부모가 대신 결제하시나요?</span>
+        </div>
+        <div class="toggle"></div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">결제자 이름</label>
+        <input class="input" value="김영희" placeholder="실명">
+      </div>
+
+      <div class="field">
+        <label class="field-label">휴대폰</label>
+        <input class="input" value="010-XXXX-XXXX" inputmode="tel">
+      </div>
+
+      <div class="field" style="margin-bottom:0;">
+        <label class="field-label">학생과의 관계</label>
+        <div class="radio-inline">
+          <button class="radio-opt">부</button>
+          <button class="radio-opt is-selected">모</button>
+          <button class="radio-opt">법정대리인</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 결제 수단 -->
+    <div class="section-block">
+      <h2>결제 수단</h2>
+      <div class="pay-grid">
+        <div class="pay-tile is-selected">
+          <span class="pay-logo pay-logo-kakao">K</span>
+          <span class="pay-name">카카오페이</span>
+        </div>
+        <div class="pay-tile">
+          <span class="pay-logo pay-logo-naver">N</span>
+          <span class="pay-name">네이버페이</span>
+        </div>
+        <div class="pay-tile">
+          <span class="pay-logo pay-logo-toss">T</span>
+          <span class="pay-name">토스페이</span>
+        </div>
+        <div class="pay-tile">
+          <span class="pay-logo pay-logo-card">카드</span>
+          <span class="pay-name">신용/체크</span>
+        </div>
+      </div>
+
+      <div class="coupon-block">
+        <label class="coupon-label">쿠폰 코드</label>
+        <div class="coupon-input-row">
+          <input value="WELCOME5000" placeholder="쿠폰 코드를 입력하세요" inputmode="text">
+          <button class="apply-btn">적용</button>
+        </div>
+        <div class="coupon-applied">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="name">친구 추천 감사 쿠폰 적용됨</span>
+          <span class="discount">-₩5,000</span>
+          <button class="remove" type="button">제거</button>
+        </div>
+        <p style="margin:8px 0 0;font:11px/1.5 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">
+          쿠폰은 운영팀이 발급해 1:1 문의 답변으로 코드를 전달드려요.
+        </p>
+      </div>
+    </div>
+
+    <!-- Total -->
+    <div class="total-block">
+      <div class="total-row">
+        <span>상담료 (기준가)</span>
+        <span>₩29,900</span>
+      </div>
+      <div class="total-row">
+        <span>쿠폰 할인 <span style="font-size:11px;color:var(--color-text-weak);margin-left:4px;">친구 추천 감사</span></span>
+        <span style="color:var(--color-success);">-₩5,000</span>
+      </div>
+      <div class="total-row grand">
+        <span>최종 결제 금액</span>
+        <span class="amount">₩24,900</span>
+      </div>
+    </div>
+
+    <!-- Refund policy -->
+    <div class="policy">
+      <div class="policy-head">
+        <span>환불 정책</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <ul class="policy-body">
+        <li>24시간 이전 취소 시 전액 환불</li>
+        <li>3시간 이전 취소 시 부분 환불</li>
+        <li>멘토 노쇼 시 전액 환불 + 패널티 적용</li>
+      </ul>
+    </div>
+
+    <!-- Consents (결제 시점 전용 약관 T13·T14) -->
+    <div class="consent-list">
+      <label class="consent-row is-checked">
+        <span class="checkbox"></span>
+        <span style="flex:1;"><span style="font-weight:600;color:var(--color-text-weak);font-size:11px;margin-right:6px;">T13</span>전자상거래법 고지사항 확인<span class="required">필수</span></span>
+        <span class="link">보기 ›</span>
+      </label>
+      <label class="consent-row is-checked">
+        <span class="checkbox"></span>
+        <span style="flex:1;"><span style="font-weight:600;color:var(--color-text-weak);font-size:11px;margin-right:6px;">T14</span>결제대행 서비스 약관 (토스페이먼츠)<span class="required">필수</span></span>
+        <span class="link">보기 ›</span>
+      </label>
+      <label class="consent-row is-checked">
+        <span class="checkbox"></span>
+        <span style="flex:1;">환불 정책 확인 <span style="font-size:11px;color:var(--color-text-weak);margin-left:4px;">· 24h/3h/노쇼 기준</span><span class="required">필수</span></span>
+        <span class="link">보기 ›</span>
+      </label>
+    </div>
+
+    <div style="padding:0 20px 8px;font:11px/1.5 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">
+      * T01-T04 등 회원가입 약관은 가입 시 이미 동의하셨습니다.
+    </div>
+
+    <!-- Bottom CTA -->
+    <div class="bottom-cta">
+      <button class="btn btn-primary btn-block" data-next="./booking-confirmed.html">₩24,900 결제하기</button>
+    </div>
+
+  </main>
+</body>
+</html>
