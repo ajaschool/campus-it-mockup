@@ -113,7 +113,7 @@
 
     var brand = document.createElement('a');
     brand.className = 'mockup-shell-brand';
-    brand.href = withTheme('./index.html', theme);
+    brand.href = withTheme('../index.html', theme);
     brand.innerHTML = '<span class="mockup-shell-mark">A</span>AjaMentor';
     header.appendChild(brand);
 
@@ -162,7 +162,7 @@
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.button === 1) return;
       // Always use the current theme at click time to avoid stale hrefs.
       var t = currentTheme();
-      brand.setAttribute('href', withTheme('./index.html', t));
+      brand.setAttribute('href', withTheme('../index.html', t));
     });
   }
 
