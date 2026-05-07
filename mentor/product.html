@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="robots" content="noindex, nofollow">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>아자스쿨 멘토링 — 멘토링 상품 만들기</title>
@@ -156,43 +155,70 @@
       color: var(--color-text-weak);
       letter-spacing: -0.1px;
     }
+    .price-input-wrap .unit {
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      font: 500 14px/1 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
+    }
     .price-input {
       padding-left: 32px;
+      padding-right: 36px;
       font: 600 18px/1 var(--font-family);
       letter-spacing: -0.1px;
     }
-    .price-hint {
+    .price-recommend {
       margin-top: 6px;
       font: var(--font-caption);
       color: var(--color-text-weak);
       letter-spacing: var(--tracking-tight);
     }
-    .price-hint strong { color: var(--color-success); font-weight: 500; }
 
-    /* Advisory warning (B-3) */
-    .price-advisory {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      background: var(--color-amber-bg);
-      display: flex;
-      gap: 8px;
-      align-items: flex-start;
-      font: var(--font-caption);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      line-height: 1.5;
+    /* Price range slider */
+    .price-slider-wrap {
+      margin-top: 14px;
     }
-    .price-advisory svg { color: var(--color-amber); flex: 0 0 16px; margin-top: 1px; filter: brightness(0.75); }
-    .price-advisory strong { color: var(--color-amber); font-weight: 600; filter: brightness(0.7); }
-    .price-bounds {
+    .price-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--color-border);
+      outline: none;
+    }
+    .price-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      cursor: pointer;
+    }
+    .price-slider::-moz-range-thumb {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--color-primary);
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+      cursor: pointer;
+    }
+    .price-range-labels {
+      display: flex;
+      justify-content: space-between;
       margin-top: 6px;
+    }
+    .price-range-labels span {
       font: 11px/1.4 var(--font-family);
       color: var(--color-text-weak);
       letter-spacing: var(--tracking-tight);
     }
-    .price-bounds .floor { color: var(--color-text); font-weight: 600; }
-    .price-bounds .cap { color: var(--color-amber); font-weight: 600; filter: brightness(0.75); }
 
     /* Radio buttons (진행 방식) */
     .radio-list { display: flex; flex-direction: column; gap: 8px; }
@@ -382,14 +408,29 @@
         <label class="field-label">가격</label>
         <div class="price-input-wrap">
           <span class="currency">₩</span>
-          <input class="input price-input" value="120,000" inputmode="numeric">
+          <!-- id="priceInput": 슬라이더와 양방향 동기화 -->
+          <input id="priceInput" class="input price-input" placeholder="29,900" inputmode="numeric">
+          <span class="unit">원</span>
         </div>
-        <p class="price-bounds">
-          <span class="floor">최저 ₩29,900</span> · <span class="cap">권장 상한 ₩99,900</span>
-        </p>
-        <div class="price-advisory">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>
-          <span><strong>권장 상한을 초과한 가격이에요.</strong> 시장 평균 대비 진입 장벽이 높아질 수 있어요. (등록은 가능 — advisory)</span>
+        <p class="price-recommend">권장가 ₩29,900</p>
+        <div class="price-slider-wrap">
+          <!--
+            min/max는 관리자 설정값으로 대체될 예정 (ADR-003, 2026-05-04).
+            현재 임시값: min=10,000 / max=150,000
+          -->
+          <input
+            id="priceSlider"
+            class="price-slider"
+            type="range"
+            min="10000"
+            max="150000"
+            step="100"
+            value="29900"
+          >
+          <div class="price-range-labels">
+            <span>₩10,000</span>
+            <span>₩150,000</span>
+          </div>
         </div>
       </div>
     </section>
@@ -443,5 +484,37 @@
     </div>
 
   </main>
+
+  <script>
+    (function () {
+      var input  = document.getElementById('priceInput');
+      var slider = document.getElementById('priceSlider');
+      if (!input || !slider) return;
+
+      function toDisplay(raw) {
+        var n = parseInt(raw, 10);
+        return isNaN(n) ? '' : n.toLocaleString('ko-KR');
+      }
+      function fromDisplay(str) {
+        return parseInt(str.replace(/[^\d]/g, ''), 10) || 0;
+      }
+
+      /* 슬라이더 → 숫자 input */
+      slider.addEventListener('input', function () {
+        input.value = toDisplay(slider.value);
+      });
+
+      /* 숫자 input → 슬라이더 */
+      input.addEventListener('input', function () {
+        var n = fromDisplay(input.value);
+        var min = parseInt(slider.min, 10);
+        var max = parseInt(slider.max, 10);
+        slider.value = Math.min(Math.max(n, min), max);
+      });
+
+      /* 초기 슬라이더 위치에 맞게 input 세팅 */
+      slider.dispatchEvent(new Event('input'));
+    })();
+  </script>
 </body>
 </html>

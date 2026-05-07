@@ -2,9 +2,9 @@
  * AjaMentor Design Tokens · 5-Theme System
  *
  * Themes:
- *  [data-theme="mentoring"]   — Mentoring DS (Intercom-inspired · Fin Orange)   ← default
+ *  [data-theme="mentoring"]   — Mentoring DS (Intercom-inspired · Fin Orange)
  *  [data-theme="academic"]    — Academic Classic (Oxford Navy)
- *  [data-theme="editorial"]   — Campus Editorial (Ivy Purple)
+ *  [data-theme="editorial"]   — Campus Editorial (Indigo)   ← default  (확정 2026-04-30)
  *  [data-theme="seoul-grad"]  — Seoul Grad (Deep Forest)
  *  [data-theme="warmth"]      — Mentor Warmth (Chestnut)
  *
@@ -46,7 +46,8 @@
 }
 
 /* ========================================================
-   THEME 1 — Mentoring DS (Intercom-inspired, DEFAULT)
+   THEME 1 — Mentoring DS (Intercom-inspired)
+   비확정 — 목업 비교용
    Warm cream canvas · Fin Orange · Sharp 4px radii · Pretendard
    ======================================================== */
 :root,
@@ -138,47 +139,52 @@
 }
 
 /* ========================================================
-   THEME 3 — Campus Editorial (Ivy Purple + Clay Pink)
+   THEME 3 — Campus Editorial (Indigo + Warm Cream)   ← DEFAULT (확정 2026-04-30)
    ======================================================== */
 [data-theme="editorial"] {
-  --color-primary: #5b3a8c;
-  --color-primary-hover: #4b2f75;
-  --color-primary-pressed: #3c255e;
-  --color-primary-bg: #ede7f5;
+  --color-primary:         #4a3d99;   /* 확정 인디고 */
+  --color-primary-hover:   #3d3380;
+  --color-primary-pressed: #322a6b;
+  --color-primary-bg:      #ede8ff;
+  --color-primary-subtle:  #f5f3ff;
 
-  --color-text: #2a1d3d;
-  --color-text-weak: rgba(42,29,61,0.65);
-  --color-text-secondary: #44344d;
+  /* editorial 보조 팔레트 */
+  --color-editorial-studio: #6b42b0;
+  --color-editorial-plum:   #6b5585;
+
+  --color-text:            #111111;
+  --color-text-weak:       #626260;
+  --color-text-secondary:  #313130;
   --color-text-on-primary: #ffffff;
 
-  --color-surface: #ffffff;
-  --color-surface-subtle: #f4f1ec;
-  --color-surface-sunk: #ebe7de;
+  --color-surface:         #ffffff;
+  --color-surface-subtle:  #faf9f6;
+  --color-surface-sunk:    #ede9e1;
 
-  --color-success: #2f6b3a;
-  --color-success-bg: #e5f1e7;
-  --color-error: #a81e3e;
-  --color-error-bg: #f7dde5;
-  --color-amber: #e8a87c;
-  --color-amber-bg: #faeade;
+  --color-success:    #2c6415;
+  --color-success-bg: #e8f3df;
+  --color-error:      #c41c1c;
+  --color-error-bg:   #fce4e4;
+  --color-amber:      #ff6b00;
+  --color-amber-bg:   #fff1e5;
 
-  --color-border: #d7d2c9;
-  --color-border-strong: #c7c1b4;
+  --color-border:        #dedbd6;
+  --color-border-strong: #d3cec6;
 
-  --shadow-button: 0 1px 3px rgba(91,58,140,0.1);
-  --shadow-soft: rgba(91,58,140,0.08) 0 8px 24px;
-  --shadow-card: rgba(91,58,140,0.06) 0 4px 12px;
+  --shadow-button: none;
+  --shadow-soft:   none;
+  --shadow-card:   none;
 
-  --font-family: "Inter", "Pretendard", -apple-system, system-ui, sans-serif;
-  --tracking-tight: 0px;
-  --tracking-normal: 0px;
-  --tracking-loose: 0.08px;
+  --font-family: "Pretendard", "Inter", -apple-system, system-ui, sans-serif;
+  --tracking-tight:  -0.1px;
+  --tracking-normal: -0.2px;
+  --tracking-loose:  0px;
 
-  --radius-sm: 2px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
-  --radius-xl: 20px;
-  --radius-2xl: 28px;
+  --radius-sm:   2px;
+  --radius-md:   4px;
+  --radius-lg:   8px;
+  --radius-xl:   12px;
+  --radius-2xl:  16px;
   --radius-full: 9999px;
 }
 

@@ -2,13 +2,13 @@
  * AjaMentor Theme Switcher
  *
  * Reads URL parameter ?theme=<key> and sets <html data-theme="...">
- * Valid themes: mentoring (default) · academic · editorial · seoul-grad · warmth
+ * Valid themes: editorial (default · confirmed 2026-04-30) · mentoring · academic · seoul-grad · warmth
  *
  * Fallback: localStorage key 'ajamentor-theme'
  */
 (function () {
   var VALID_THEMES = ['mentoring', 'academic', 'editorial', 'seoul-grad', 'warmth'];
-  var DEFAULT_THEME = 'mentoring';
+  var DEFAULT_THEME = 'editorial';
   var STORAGE_KEY = 'ajamentor-theme';
 
   function applyTheme(theme) {

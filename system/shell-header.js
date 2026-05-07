@@ -95,7 +95,14 @@
     'letter-spacing:var(--tracking-tight);white-space:nowrap;flex-shrink:0;}',
     '.mockup-shell-url-hint code{background:var(--color-surface-subtle);',
     'padding:2px 6px;border-radius:3px;font-family:"JetBrains Mono",ui-monospace,monospace;',
-    'font-size:11px;}'
+    'font-size:11px;}',
+    '.mockup-shell-docs-btn{appearance:none;border:1px solid var(--color-primary);',
+    'background:var(--color-primary);color:var(--color-text-on-primary,#fff);',
+    'padding:7px 14px;border-radius:var(--radius-full);cursor:pointer;flex-shrink:0;',
+    'font:600 13px/1 var(--font-family);letter-spacing:var(--tracking-tight);',
+    'display:inline-flex;align-items:center;gap:6px;transition:filter 120ms ease,transform 120ms ease;}',
+    '.mockup-shell-docs-btn:hover{filter:brightness(0.95);transform:translateY(-1px);}',
+    '.mockup-shell-docs-btn svg{width:14px;height:14px;}'
   ].join('');
 
   function injectShellStyles() {
@@ -141,12 +148,58 @@
     });
     header.appendChild(options);
 
-    var hint = document.createElement('span');
-    hint.className = 'mockup-shell-url-hint';
-    hint.innerHTML = 'URL: <code>?theme=' + escapeHtml(theme) + '</code>';
-    header.appendChild(hint);
+    var docsBtn = document.createElement('button');
+    docsBtn.type = 'button';
+    docsBtn.className = 'mockup-shell-docs-btn';
+    docsBtn.setAttribute('aria-label', '기획문서 보기');
+    docsBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"' +
+      ' stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>' +
+      '<polyline points="14 2 14 8 20 8"/>' +
+      '<line x1="9" y1="13" x2="15" y2="13"/>' +
+      '<line x1="9" y1="17" x2="13" y2="17"/>' +
+      '</svg>기획문서 보기';
+    docsBtn.addEventListener('click', openDocsViewer);
+    header.appendChild(docsBtn);
 
     return header;
+  }
+
+  function ensureDocsViewerLoaded() {
+    if (window.ajaDocsViewer) return Promise.resolve();
+    return new Promise(function (resolve, reject) {
+      var existing = document.querySelector('script[data-aja-docs-viewer]');
+      if (existing) {
+        existing.addEventListener('load', function () { resolve(); });
+        existing.addEventListener('error', function () { reject(new Error('viewer load failed')); });
+        return;
+      }
+      var thisScript = document.currentScript ||
+        Array.prototype.find.call(document.scripts, function (s) {
+          return s.src && /shell-header\.js/.test(s.src);
+        });
+      var src = thisScript ? thisScript.src.replace(/shell-header\.js(\?.*)?$/, 'docs-viewer.js') : 'system/docs-viewer.js';
+      var s = document.createElement('script');
+      s.src = src;
+      s.defer = true;
+      s.setAttribute('data-aja-docs-viewer', 'true');
+      s.onload = function () { resolve(); };
+      s.onerror = function () { reject(new Error('viewer load failed')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  function openDocsViewer() {
+    ensureDocsViewerLoaded().then(function () {
+      if (window.ajaDocsViewer && typeof window.ajaDocsViewer.open === 'function') {
+        window.ajaDocsViewer.open();
+      } else {
+        alert('docs viewer 를 불러오지 못했습니다.');
+      }
+    }).catch(function (e) {
+      alert('docs viewer 로드 실패: ' + e.message);
+    });
   }
 
   function escapeHtml(s) {

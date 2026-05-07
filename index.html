@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta name="robots" content="noindex, nofollow">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AjaMentor — 목업 인덱스 v1.2 · 5-Theme · 37 화면</title>
@@ -102,6 +101,25 @@
       font-family: "JetBrains Mono", ui-monospace, monospace;
       font-size: 11px;
     }
+
+    .theme-docs-btn {
+      appearance: none;
+      border: 1px solid var(--color-primary);
+      background: var(--color-primary);
+      color: var(--color-text-on-primary, #fff);
+      padding: 8px 16px;
+      border-radius: var(--radius-full);
+      cursor: pointer;
+      flex-shrink: 0;
+      font: 600 13px/1 var(--font-family);
+      letter-spacing: var(--tracking-tight);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: filter 120ms ease, transform 120ms ease;
+    }
+    .theme-docs-btn:hover { filter: brightness(0.95); transform: translateY(-1px); }
+    .theme-docs-btn svg { width: 14px; height: 14px; }
 
     /* ============ Site layout ============ */
     .site { max-width: 1200px; margin: 0 auto; padding: 48px 32px 80px; }
@@ -392,7 +410,15 @@
         Warmth
       </button>
     </div>
-    <span class="theme-url-hint">URL: <code>?theme=mentoring</code></span>
+    <button type="button" class="theme-docs-btn" id="docsViewerBtn" aria-label="기획문서 보기">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+           stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+        <polyline points="14 2 14 8 20 8"/>
+        <line x1="9" y1="13" x2="15" y2="13"/>
+        <line x1="9" y1="17" x2="13" y2="17"/>
+      </svg>기획문서 보기
+    </button>
   </div>
 
   <div class="site">
@@ -575,6 +601,20 @@
   <!-- Theme switcher script (runs on this page too) -->
   <script src="./system/theme-switcher.js"></script>
   <script src="./system/nav.js" defer></script>
+  <script src="./system/docs-viewer.js" defer></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var btn = document.getElementById('docsViewerBtn');
+      if (!btn) return;
+      btn.addEventListener('click', function () {
+        if (window.ajaDocsViewer && typeof window.ajaDocsViewer.open === 'function') {
+          window.ajaDocsViewer.open();
+        } else {
+          alert('docs viewer 가 아직 로드되지 않았습니다. 잠시 후 다시 시도하세요.');
+        }
+      });
+    });
+  </script>
 
   <script>
     /* =====================================================

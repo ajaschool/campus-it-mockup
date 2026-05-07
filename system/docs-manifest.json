@@ -1,0 +1,59 @@
+{
+  "title": "AjaMentor 기획문서",
+  "description": "PRD v1.3 · 14종 분리 문서 · 마케팅팀 공유용",
+  "basePath": "../docs",
+  "groups": [
+    {
+      "label": "제품 정의 & 범위",
+      "items": [
+        { "file": "README.md", "label": "00 — 전체 목차 · 변경 이력" },
+        { "file": "01-product.md", "label": "01 — 제품 정의" },
+        { "file": "02-scope-and-architecture.md", "label": "02 — MVP 범위 · 정보 구조" }
+      ]
+    },
+    {
+      "label": "사용자 · 인증",
+      "items": [
+        { "file": "03-auth-and-terms.md", "label": "03 — 인증 및 약관" },
+        { "file": "19-terms-content.md", "label": "19 — 약관 본문 초안" }
+      ]
+    },
+    {
+      "label": "핵심 도메인",
+      "items": [
+        { "file": "04-mentor-and-products.md", "label": "04 — 멘토 · 상품" },
+        { "file": "05-booking-and-sessions.md", "label": "05 — 예약 · 상담" },
+        { "file": "06-notifications.md", "label": "06 — 알림 시스템" },
+        { "file": "06-notification-templates-draft.md", "label": "06b — 알림 템플릿 초안" },
+        { "file": "07-payment-and-settlement.md", "label": "07 — 결제 · 정산" },
+        { "file": "08-quality-and-discovery.md", "label": "08 — 품질 · 탐색 보조" }
+      ]
+    },
+    {
+      "label": "운영 · 관리자",
+      "items": [
+        { "file": "09-dashboards-and-admin.md", "label": "09 — 대시보드 · 관리자" },
+        { "file": "10-ux-and-support.md", "label": "10 — UX · 고객지원" },
+        { "file": "11-policies-and-decisions.md", "label": "11 — 정책 · 미확정 항목" }
+      ]
+    },
+    {
+      "label": "전략 · KPI",
+      "items": [
+        { "file": "12-kpi-and-roadmap.md", "label": "12 — KPI · 로드맵" },
+        { "file": "17-project-kpi.md", "label": "17 — 프로젝트 KPI 통합" },
+        { "file": "18-competitive-advantage.md", "label": "18 — 경쟁력 · 차별점" }
+      ]
+    },
+    {
+      "label": "기술 · 디자인 · 코드값",
+      "items": [
+        { "file": "13-tech-stack.md", "label": "13 — 기술 스택 · 인프라" },
+        { "file": "14-enum-catalog.md", "label": "14 — Enum 카탈로그" },
+        { "file": "15-flowcharts.md", "label": "15 — 플로우차트 (Mermaid)" },
+        { "file": "16-infrastructure-cost.md", "label": "16 — 인프라 비용 정리" },
+        { "file": "20-design-system.md", "label": "20 — 디자인 시스템" }
+      ]
+    }
+  ]
+}
