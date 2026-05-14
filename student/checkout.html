@@ -13,387 +13,122 @@
   <link rel="stylesheet" href="../system/tokens.css">
   <link rel="stylesheet" href="../system/components.css">
   <style>
+    /* β 체험단 무료 배너 — ADR-008 */
+    .beta-banner {
+      margin: 12px 20px 0; padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: linear-gradient(135deg,#fef9ec,#fef3c7);
+      border: 1px solid #fde68a;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+    .beta-banner-icon { font-size: 22px; line-height:1; flex:0 0 auto; }
+    .beta-banner-title { font: 600 14px/1.2 var(--font-family); color:#92400e; letter-spacing:var(--tracking-tight); margin:0 0 3px; }
+    .beta-banner-desc  { font: var(--font-caption); color:#b45309; letter-spacing:var(--tracking-tight); margin:0; line-height:1.5; }
+
     .section-block {
-      margin: 0 20px 16px;
-      padding: 20px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
+      margin:16px 20px 0; padding:20px;
+      background:var(--color-surface); border:1px solid var(--color-border); border-radius:var(--radius-lg);
     }
-    .section-block h2 {
-      font: 600 15px/1.3 var(--font-family);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text);
-      margin: 0 0 14px;
-    }
+    .section-block h2 { font:600 15px/1.3 var(--font-family); letter-spacing:var(--tracking-tight); color:var(--color-text); margin:0 0 14px; }
+    .info-row { display:flex; justify-content:space-between; padding:8px 0; font:var(--font-body); color:var(--color-text); letter-spacing:var(--tracking-tight); }
+    .info-row .label { color:var(--color-text-weak); }
+    .info-row .value { font-weight:500; text-align:right; max-width:62%; }
+    .info-row + .info-row { border-top:1px solid var(--color-border); }
 
-    /* Info rows */
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font: var(--font-body);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-    }
-    .info-row .label { color: var(--color-text-weak); }
-    .info-row .value { font-weight: 500; text-align: right; }
-    .info-row + .info-row { border-top: 1px solid var(--color-border); }
+    .toggle-row { display:flex; align-items:center; justify-content:space-between; padding:10px 0 16px; }
+    .toggle { width:44px; height:26px; border-radius:13px; background:var(--color-primary); position:relative; flex:0 0 44px; cursor:pointer; }
+    .toggle::after { content:""; position:absolute; top:3px; left:21px; width:20px; height:20px; border-radius:50%; background:#fff; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+    .field { margin-bottom:14px; }
+    .field-label { display:block; font:500 13px/1.2 var(--font-family); color:var(--color-text); letter-spacing:var(--tracking-tight); margin-bottom:8px; }
+    .input { width:100%; padding:12px 14px; border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); font:var(--font-body); letter-spacing:var(--tracking-tight); color:var(--color-text); box-sizing:border-box; }
+    .input::placeholder { color:var(--color-text-weak); }
+    .radio-inline { display:flex; gap:8px; }
+    .radio-opt { flex:1; padding:10px 12px; border:1px solid var(--color-border); border-radius:var(--radius-md); text-align:center; font:var(--font-caption-strong); letter-spacing:var(--tracking-tight); color:var(--color-text); cursor:pointer; }
+    .radio-opt.is-selected { border-color:var(--color-primary); background:#eef3fb; color:var(--color-primary); }
 
-    /* Payer toggle */
-    .toggle-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 10px 0 16px;
-    }
-    .toggle-row .text {
-      font: var(--font-body);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-    }
-    .toggle {
-      width: 44px; height: 26px; border-radius: 13px;
-      background: var(--color-primary);
-      position: relative;
-      flex: 0 0 44px;
-    }
-    .toggle::after {
-      content: "";
-      position: absolute;
-      top: 3px; left: 21px;
-      width: 20px; height: 20px;
-      border-radius: 50%;
-      background: #ffffff;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-      transition: left 160ms ease;
-    }
-    .toggle.is-off { background: var(--color-border-strong); }
-    .toggle.is-off::after { left: 3px; }
+    /* β 무료 결제 안내 */
+    .free-trial-notice { padding:16px; border-radius:var(--radius-md); background:var(--color-success-bg); display:flex; align-items:flex-start; gap:10px; }
+    .free-trial-notice svg { flex:0 0 18px; color:var(--color-success); margin-top:1px; }
+    .ftn-text { font:var(--font-caption); color:var(--color-success); letter-spacing:var(--tracking-tight); line-height:1.5; }
+    .ftn-text strong { display:block; font:600 13px/1.2 var(--font-family); margin-bottom:2px; }
 
-    /* Form fields */
-    .field { margin-bottom: 14px; }
-    .field-label {
-      display: block;
-      font: 500 13px/1.2 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: 8px;
-    }
-    .input {
-      width: 100%;
-      padding: 12px 14px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      font: var(--font-body);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text);
-    }
-    .input::placeholder { color: var(--color-text-weak); }
+    /* 금액 합계 */
+    .total-block { margin:16px 20px 0; padding:18px 20px; background:var(--color-surface-subtle); border-radius:var(--radius-lg); }
+    .total-row { display:flex; justify-content:space-between; padding:4px 0; font:var(--font-body); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); }
+    .total-row.grand { border-top:1px solid var(--color-border); margin-top:8px; padding-top:14px; font-weight:500; color:var(--color-text); }
+    .grand-amount { font:700 22px/1 var(--font-family); letter-spacing:-0.2px; color:var(--color-success); }
+    .badge-free { font:600 10px/1 var(--font-family); padding:2px 6px; border-radius:3px; background:var(--color-success); color:#fff; text-transform:uppercase; vertical-align:middle; margin-left:6px; letter-spacing:0.3px; }
 
-    /* Radio */
-    .radio-inline {
-      display: flex; gap: 8px;
-    }
-    .radio-opt {
-      flex: 1;
-      padding: 10px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      text-align: center;
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text);
-    }
-    .radio-opt.is-selected {
-      border-color: var(--color-primary);
-      background: #eef3fb;
-      color: var(--color-primary);
-    }
+    /* 취소 안내 */
+    .policy { margin:16px 20px 0; padding:14px 16px; border:1px solid var(--color-border); border-radius:var(--radius-md); background:var(--color-surface); }
+    .policy-head { display:flex; justify-content:space-between; align-items:center; font:500 14px/1.3 var(--font-family); color:var(--color-text); letter-spacing:var(--tracking-tight); }
+    .policy-body { margin:10px 0 0; padding:0; list-style:none; font:var(--font-caption); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); line-height:1.6; }
+    .policy-body li::before { content:"· "; }
 
-    /* Payment methods */
-    .pay-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-    .pay-tile {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 14px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      cursor: pointer;
-    }
-    .pay-tile.is-selected {
-      border-color: var(--color-primary);
-      box-shadow: 0 0 0 2px rgba(27,97,201,0.12) inset;
-    }
-    .pay-logo {
-      width: 32px; height: 32px; border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 700;
-      font-size: 12px;
-      letter-spacing: -0.3px;
-    }
-    .pay-logo-kakao { background: #FEE500; color: #391F1E; }
-    .pay-logo-naver { background: #03C75A; color: #ffffff; }
-    .pay-logo-toss { background: #0064FF; color: #ffffff; }
-    .pay-logo-card { background: var(--color-surface-subtle); color: var(--color-text); border: 1px solid var(--color-border); }
-    .pay-name {
-      font: var(--font-body);
-      font-weight: 500;
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-    }
-
-    /* Coupon row */
-    .coupon-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 14px 0 0;
-      color: var(--color-text-weak);
-      font: var(--font-body);
-      font-weight: 500;
-    }
-
-    /* Coupon code input block (B-1) */
-    .coupon-block {
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--color-border);
-    }
-    .coupon-block .coupon-label {
-      display: block;
-      font: 500 13px/1.2 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: 8px;
-    }
-    .coupon-input-row {
-      display: flex;
-      gap: 8px;
-    }
-    .coupon-input-row input {
-      flex: 1;
-      padding: 10px 12px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      font: var(--font-body);
-      letter-spacing: 1.2px;
-      color: var(--color-text);
-      text-transform: uppercase;
-      font-family: var(--font-family);
-    }
-    .coupon-input-row input::placeholder {
-      color: var(--color-text-weak);
-      letter-spacing: 0.6px;
-      text-transform: none;
-    }
-    .coupon-input-row .apply-btn {
-      padding: 0 16px;
-      height: 40px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      font: 600 13px/1 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      flex: 0 0 auto;
-    }
-    .coupon-applied {
-      margin-top: 10px;
-      padding: 10px 12px;
-      border-radius: var(--radius-md);
-      background: var(--color-success-bg);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font: var(--font-caption);
-      color: var(--color-success);
-      letter-spacing: var(--tracking-tight);
-    }
-    .coupon-applied .name { font-weight: 600; color: var(--color-text); flex: 1; }
-    .coupon-applied .discount { font-weight: 700; color: var(--color-success); }
-    .coupon-applied .remove {
-      padding: 2px 8px;
-      font-size: 11px;
-      color: var(--color-text-weak);
-      background: transparent;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-sm);
-      letter-spacing: var(--tracking-tight);
-    }
-
-    /* Total block */
-    .total-block {
-      margin: 0 20px 16px;
-      padding: 18px 20px;
-      background: var(--color-surface-subtle);
-      border-radius: var(--radius-lg);
-    }
-    .total-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 4px 0;
-      font: var(--font-body);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-    }
-    .total-row.grand {
-      border-top: 1px solid var(--color-border);
-      margin-top: 8px;
-      padding-top: 14px;
-      font-weight: 500;
-      color: var(--color-text);
-    }
-    .total-row.grand .amount {
-      font: 700 22px/1 var(--font-family);
-      letter-spacing: -0.2px;
-      color: var(--color-primary);
-    }
-
-    /* Policy expand */
-    .policy {
-      margin: 0 20px 16px;
-      padding: 14px 16px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-    }
-    .policy-head {
-      display: flex; justify-content: space-between; align-items: center;
-      font: 500 14px/1.3 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-    }
-    .policy-body {
-      margin: 10px 0 0;
-      padding: 0;
-      list-style: none;
-      font: var(--font-caption);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-      line-height: 1.6;
-    }
-    .policy-body li::before { content: "· "; color: var(--color-text-weak); }
-
-    /* Consent checkboxes */
-    .consent-list {
-      margin: 0 20px 16px;
-      display: flex; flex-direction: column; gap: 10px;
-    }
-    .consent-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font: var(--font-body);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-    }
-    .checkbox {
-      width: 20px; height: 20px; border-radius: 4px;
-      border: 1.5px solid var(--color-border-strong);
-      flex: 0 0 20px;
-      margin-top: 2px;
-      position: relative;
-    }
-    .consent-row.is-checked .checkbox {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-    }
-    .consent-row.is-checked .checkbox::after {
-      content: "";
-      position: absolute;
-      left: 6px; top: 2px;
-      width: 5px; height: 10px;
-      border-right: 2px solid #ffffff;
-      border-bottom: 2px solid #ffffff;
-      transform: rotate(45deg);
-    }
-    .consent-row .required {
-      color: var(--color-primary);
-      font-size: 11px;
-      font-weight: 600;
-      margin-left: 4px;
-    }
-    .consent-row .link {
-      margin-left: auto;
-      font: var(--font-caption-strong);
-      color: var(--color-text-weak);
-    }
+    /* T13 — 체크박스(동의) · 전문보기(토글) 완전 분리 — be85015·67cd639 */
+    .consent-list { margin:16px 20px 0; display:flex; flex-direction:column; gap:12px; }
+    .consent-item { border:1px solid var(--color-border); border-radius:var(--radius-md); overflow:hidden; background:var(--color-surface); }
+    .consent-item.is-checked { border-color:var(--color-primary); }
+    .consent-row { display:flex; align-items:center; gap:10px; padding:12px 14px; cursor:pointer; }
+    .checkbox { width:20px; height:20px; border-radius:4px; border:1.5px solid var(--color-border-strong); flex:0 0 20px; position:relative; background:var(--color-surface); }
+    .consent-item.is-checked .checkbox { background:var(--color-primary); border-color:var(--color-primary); }
+    .consent-item.is-checked .checkbox::after { content:""; position:absolute; left:6px; top:2px; width:5px; height:10px; border-right:2px solid #fff; border-bottom:2px solid #fff; transform:rotate(45deg); }
+    .consent-code { font:700 10px/1 var(--font-family); color:var(--color-text-weak); background:var(--color-surface-subtle); border:1px solid var(--color-border); border-radius:3px; padding:2px 5px; margin-right:5px; letter-spacing:0.2px; }
+    .required { color:var(--color-primary); font-size:11px; font-weight:600; margin-left:4px; }
+    /* 전문보기 버튼 — 체크박스와 독립된 별도 클릭 영역 */
+    .terms-toggle-btn { display:flex; align-items:center; gap:4px; padding:9px 14px; border-top:1px solid var(--color-border); background:var(--color-surface-subtle); font:var(--font-caption-strong); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); width:100%; text-align:left; cursor:pointer; }
+    .terms-toggle-btn svg { transition:transform 200ms; }
+    .terms-toggle-btn.is-open svg { transform:rotate(180deg); }
+    .terms-body { display:none; padding:14px; border-top:1px solid var(--color-border); font:12px/1.75 var(--font-family); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); white-space:pre-line; background:var(--color-surface-subtle); max-height:200px; overflow-y:auto; }
+    .terms-body.is-open { display:block; }
   </style>
 </head>
 <body>
   <main class="mobile-canvas">
 
-    <!-- App bar -->
     <header class="app-bar with-back">
       <button class="icon-btn" aria-label="뒤로">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
       </button>
-      <h1 class="app-bar-title">
-        결제
-        <span class="app-bar-title-sub">3 / 3 단계</span>
-      </h1>
+      <h1 class="app-bar-title">결제<span class="app-bar-title-sub">3 / 3 단계</span></h1>
       <span style="width:36px;"></span>
     </header>
+    <div class="progress"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div></div>
 
-    <!-- Progress -->
-    <div class="progress">
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div>
+    <!-- β 체험단 무료 배너 — ADR-008 -->
+    <div class="beta-banner">
+      <span class="beta-banner-icon">🎉</span>
+      <div>
+        <p class="beta-banner-title">체험단 무료 운영</p>
+        <p class="beta-banner-desc">β 기간 모든 상담을 무료로 제공합니다. 결제 없이 즉시 예약이 확정됩니다.</p>
+      </div>
     </div>
 
-    <!-- 예약 정보 -->
     <div class="section-block">
       <h2>예약 정보</h2>
-      <div class="info-row">
-        <span class="label">멘토</span>
-        <span class="value">김서연 · 서울대 경영 3학년</span>
-      </div>
-      <div class="info-row">
-        <span class="label">상담 주제</span>
-        <span class="value">경영학과 진학 Q&amp;A 상담</span>
-      </div>
-      <div class="info-row">
-        <span class="label">일시</span>
-        <span class="value">4월 27일 (일) 오후 3:00</span>
-      </div>
-      <div class="info-row">
-        <span class="label">진행 시간</span>
-        <span class="value">30분</span>
-      </div>
-      <div class="info-row">
-        <span class="label">진행 방식</span>
-        <span class="value">Zoom <span style="color:var(--color-text-weak);font-weight:400;">· 확정 후 링크 전달</span></span>
-      </div>
+      <div class="info-row"><span class="label">멘토</span><span class="value">김서연 · 서울대 경영 3학년</span></div>
+      <div class="info-row"><span class="label">상담 주제</span><span class="value">경영학과 진학 Q&amp;A 상담</span></div>
+      <div class="info-row"><span class="label">일시</span><span class="value">5월 17일 (토) 오후 2:00</span></div>
+      <div class="info-row"><span class="label">진행 시간</span><span class="value">60분</span></div>
+      <div class="info-row"><span class="label">진행 방식</span><span class="value">Zoom <span style="color:var(--color-text-weak);font-weight:400;">· 확정 후 링크 전달</span></span></div>
     </div>
 
-    <!-- 결제자 정보 -->
     <div class="section-block">
       <div class="toggle-row">
         <div>
-          <h2 style="margin:0 0 4px;">결제자 정보</h2>
-          <span style="font:var(--font-caption);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">학부모가 대신 결제하시나요?</span>
+          <h2 style="margin:0 0 4px;">신청자 정보</h2>
+          <span style="font:var(--font-caption);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">학부모가 대신 신청하시나요?</span>
         </div>
         <div class="toggle"></div>
       </div>
-
       <div class="field">
-        <label class="field-label">결제자 이름</label>
+        <label class="field-label">이름</label>
         <input class="input" value="김영희" placeholder="실명">
       </div>
-
       <div class="field">
         <label class="field-label">휴대폰</label>
         <input class="input" value="010-XXXX-XXXX" inputmode="tel">
       </div>
-
       <div class="field" style="margin-bottom:0;">
         <label class="field-label">학생과의 관계</label>
         <div class="radio-inline">
@@ -404,101 +139,80 @@
       </div>
     </div>
 
-    <!-- 결제 수단 -->
+    <!-- β: 결제 수단 UI → 무료 안내로 대체 -->
     <div class="section-block">
-      <h2>결제 수단</h2>
-      <div class="pay-grid">
-        <div class="pay-tile is-selected">
-          <span class="pay-logo pay-logo-kakao">K</span>
-          <span class="pay-name">카카오페이</span>
+      <h2>결제</h2>
+      <div class="free-trial-notice">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        <div class="ftn-text">
+          <strong>체험단 β 무료 운영 중</strong>
+          이번 상담은 결제 없이 진행됩니다. 유료 전환 시 별도 안내드립니다.
         </div>
-        <div class="pay-tile">
-          <span class="pay-logo pay-logo-naver">N</span>
-          <span class="pay-name">네이버페이</span>
-        </div>
-        <div class="pay-tile">
-          <span class="pay-logo pay-logo-toss">T</span>
-          <span class="pay-name">토스페이</span>
-        </div>
-        <div class="pay-tile">
-          <span class="pay-logo pay-logo-card">카드</span>
-          <span class="pay-name">신용/체크</span>
-        </div>
-      </div>
-
-      <div class="coupon-block">
-        <label class="coupon-label">쿠폰 코드</label>
-        <div class="coupon-input-row">
-          <input value="WELCOME5000" placeholder="쿠폰 코드를 입력하세요" inputmode="text">
-          <button class="apply-btn">적용</button>
-        </div>
-        <div class="coupon-applied">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-          <span class="name">친구 추천 감사 쿠폰 적용됨</span>
-          <span class="discount">-₩5,000</span>
-          <button class="remove" type="button">제거</button>
-        </div>
-        <p style="margin:8px 0 0;font:11px/1.5 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">
-          쿠폰은 운영팀이 발급해 1:1 문의 답변으로 코드를 전달드려요.
-        </p>
       </div>
     </div>
 
-    <!-- Total -->
     <div class="total-block">
-      <div class="total-row">
-        <span>상담료 (기준가)</span>
-        <span>₩29,900</span>
-      </div>
-      <div class="total-row">
-        <span>쿠폰 할인 <span style="font-size:11px;color:var(--color-text-weak);margin-left:4px;">친구 추천 감사</span></span>
-        <span style="color:var(--color-success);">-₩5,000</span>
-      </div>
+      <div class="total-row"><span>상담료 (기준가)</span><span style="text-decoration:line-through;color:var(--color-text-weak);">₩29,900</span></div>
+      <div class="total-row"><span>체험단 무료 할인</span><span style="color:var(--color-success);">-₩29,900</span></div>
       <div class="total-row grand">
         <span>최종 결제 금액</span>
-        <span class="amount">₩24,900</span>
+        <span><span class="grand-amount">₩0</span><span class="badge-free">β FREE</span></span>
       </div>
     </div>
 
-    <!-- Refund policy -->
     <div class="policy">
       <div class="policy-head">
-        <span>환불 정책</span>
+        <span>취소 안내</span>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
       </div>
       <ul class="policy-body">
-        <li>24시간 이전 취소 시 전액 환불</li>
-        <li>3시간 이전 취소 시 부분 환불</li>
-        <li>멘토 노쇼 시 전액 환불 + 패널티 적용</li>
+        <li>β 기간 무료 운영 — 환불 없음 (결제 미발생)</li>
+        <li>상담 24시간 이전: 예약 취소 가능</li>
+        <li>멘토 귀책 취소 / 노쇼: 패널티 적용</li>
       </ul>
     </div>
 
-    <!-- Consents (결제 시점 전용 약관 T13·T14) -->
+    <!-- T13 약관 동의 — β 기간 T13만 필수 -->
     <div class="consent-list">
-      <label class="consent-row is-checked">
-        <span class="checkbox"></span>
-        <span style="flex:1;"><span style="font-weight:600;color:var(--color-text-weak);font-size:11px;margin-right:6px;">T13</span>전자상거래법 고지사항 확인<span class="required">필수</span></span>
-        <span class="link">보기 ›</span>
-      </label>
-      <label class="consent-row is-checked">
-        <span class="checkbox"></span>
-        <span style="flex:1;"><span style="font-weight:600;color:var(--color-text-weak);font-size:11px;margin-right:6px;">T14</span>결제대행 서비스 약관 (토스페이먼츠)<span class="required">필수</span></span>
-        <span class="link">보기 ›</span>
-      </label>
-      <label class="consent-row is-checked">
-        <span class="checkbox"></span>
-        <span style="flex:1;">환불 정책 확인 <span style="font-size:11px;color:var(--color-text-weak);margin-left:4px;">· 24h/3h/노쇼 기준</span><span class="required">필수</span></span>
-        <span class="link">보기 ›</span>
-      </label>
+      <div class="consent-item is-checked">
+        <label class="consent-row">
+          <span class="checkbox"></span>
+          <span style="flex:1;font:var(--font-body);color:var(--color-text);letter-spacing:var(--tracking-tight);">
+            <span class="consent-code">T13</span>전자상거래법 고지사항 확인<span class="required">필수</span>
+          </span>
+        </label>
+        <button class="terms-toggle-btn is-open"
+          onclick="this.classList.toggle('is-open');this.nextElementSibling.classList.toggle('is-open');"
+          type="button">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          전문 보기
+        </button>
+        <div class="terms-body is-open">제1조 (사업자 정보)
+상호: 주식회사 아자스쿨 / 고객센터: 평일 10:00~18:00
+
+제2조 (서비스 내용)
+멘토링 서비스(비대면 화상 상담). Zoom(zoom.us) 또는 Google Meet(meet.google.com)을 통해 진행. "상담 입장" 버튼으로 입장.
+
+제3조 (가격 및 결제)
+예약 신청 시점 가격 고정. β 체험단 기간: ₩0 무료 운영(멘토 정산 미발생).
+
+제4조 (취소)
+β 무료 운영으로 환불 없음. 유료 전환 후: 24h 이상 전액 / 3~24h 50% / 3h 미만 0%.
+
+제5조 (미성년자)
+법정대리인 미동의 결제는 민법 제5조에 따라 취소 가능.
+
+제6조 (분쟁 해결)
+한국소비자원(1372) 조정 신청 가능.</div>
+      </div>
     </div>
 
-    <div style="padding:0 20px 8px;font:11px/1.5 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">
-      * T01-T04 등 회원가입 약관은 가입 시 이미 동의하셨습니다.
+    <div style="padding:12px 20px 8px;font:11px/1.6 var(--font-family);color:var(--color-text-weak);letter-spacing:var(--tracking-tight);">
+      * 회원가입 약관(T01~T04)은 가입 시 이미 동의 완료. T14(결제대행)는 유료 전환 시 별도 동의.
     </div>
 
-    <!-- Bottom CTA -->
     <div class="bottom-cta">
-      <button class="btn btn-primary btn-block" data-next="./booking-confirmed.html">₩24,900 결제하기</button>
+      <button class="btn btn-primary btn-block" data-next="./booking-confirmed.html">체험단 무료로 신청하기</button>
     </div>
 
   </main>

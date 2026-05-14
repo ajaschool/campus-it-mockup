@@ -13,222 +13,89 @@
   <link rel="stylesheet" href="../system/tokens.css">
   <link rel="stylesheet" href="../system/components.css">
   <style>
-    .success-wrap {
-      padding: 32px 20px 24px;
-      text-align: center;
-    }
+    /* 성공 섹션 */
+    .success-wrap { padding:32px 20px 24px; text-align:center; }
     .check-circle {
-      width: 72px; height: 72px;
-      border-radius: 50%;
-      background: var(--color-success-bg);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 20px;
+      width:72px; height:72px; border-radius:50%;
+      background:var(--color-success-bg);
+      display:inline-flex; align-items:center; justify-content:center;
+      margin:0 auto 20px;
     }
-    .check-circle svg { color: var(--color-success); }
-    .success-title {
-      font: 700 24px/1.25 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: -0.2px;
-      margin: 0 0 10px;
-    }
-    .success-sub {
-      font: var(--font-body);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-      line-height: 1.5;
-      margin: 0;
+    .check-circle svg { color:var(--color-success); }
+    .success-title { font:700 22px/1.25 var(--font-family); color:var(--color-text); letter-spacing:-0.2px; margin:0 0 10px; }
+    /* 카카오 문자 제거 → 이메일 안내로 교체 — a647dd7 */
+    .success-sub { font:var(--font-body); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); line-height:1.5; margin:0; }
+
+    /* 체험단 무료 배너 — ADR-008 */
+    .free-banner {
+      margin:0 20px 16px;
+      padding:12px 16px;
+      border-radius:var(--radius-md);
+      background:var(--color-success-bg);
+      font:var(--font-caption-strong);
+      color:var(--color-success);
+      letter-spacing:var(--tracking-tight);
+      text-align:center;
     }
 
-    .receipt {
-      margin: 4px 20px 16px;
-      padding: 20px;
-      background: var(--color-surface-subtle);
-      border-radius: var(--radius-lg);
-    }
-    .receipt .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font: var(--font-body);
-      letter-spacing: var(--tracking-tight);
-    }
-    .receipt .label { color: var(--color-text-weak); }
-    .receipt .value { font-weight: 500; color: var(--color-text); }
-    .receipt .info-row + .info-row { border-top: 1px solid var(--color-border); }
+    /* 영수증 */
+    .receipt { margin:4px 20px 16px; padding:20px; background:var(--color-surface-subtle); border-radius:var(--radius-lg); }
+    .receipt .info-row { display:flex; justify-content:space-between; padding:8px 0; font:var(--font-body); letter-spacing:var(--tracking-tight); }
+    .receipt .label { color:var(--color-text-weak); }
+    .receipt .value { font-weight:500; color:var(--color-text); text-align:right; max-width:60%; }
+    .receipt .info-row + .info-row { border-top:1px solid var(--color-border); }
 
-    .kakao-banner {
-      margin: 0 20px 20px;
-      padding: 16px;
-      border-radius: var(--radius-md);
-      background: #FEF3C7;
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    /* 플랫폼 안내 */
+    .platform-info {
+      margin:0 20px 16px;
+      padding:12px 16px;
+      border-radius:var(--radius-md);
+      background:var(--color-surface);
+      border:1px solid var(--color-border);
+      font:var(--font-caption);
+      color:var(--color-text-weak);
+      letter-spacing:var(--tracking-tight);
+      line-height:1.5;
     }
-    .kakao-icon {
-      width: 40px; height: 40px;
-      border-radius: var(--radius-md);
-      background: #FEE500;
-      display: inline-flex; align-items: center; justify-content: center;
-      flex: 0 0 40px;
-      font-weight: 700;
-      color: #391F1E;
+    .platform-info strong { color:var(--color-text); font-weight:600; }
+
+    /* CTA 두 버튼 */
+    .cta-two { display:flex; gap:10px; padding:0 20px 16px; }
+    .cta-two .btn { flex:1; }
+
+    /* 상담 입장 버튼 — CONFIRMED 상태에만 노출 */
+    .enter-section { padding:0 20px 8px; }
+    .btn-enter {
+      width:100%; height:52px;
+      border-radius:var(--radius-md);
+      background:var(--color-primary);
+      color:#fff;
+      font:600 16px/1 var(--font-family);
+      letter-spacing:var(--tracking-tight);
+      border:none; cursor:pointer;
+      display:flex; align-items:center; justify-content:center; gap:8px;
     }
-    .kakao-banner .text {
-      flex: 1;
-      font: var(--font-caption);
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      line-height: 1.5;
-    }
-    .kakao-banner .text strong {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 2px;
-    }
-    .kakao-banner .btn-sm {
-      height: 36px;
-      padding: 0 14px;
-      border-radius: var(--radius-md);
-      background: var(--color-text);
-      color: #ffffff;
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-      flex: 0 0 auto;
+    .btn-enter:disabled { opacity:0.5; cursor:not-allowed; }
+    .btn-enter-hint {
+      padding:6px 20px 20px;
+      font:var(--font-caption);
+      color:var(--color-text-weak);
+      letter-spacing:var(--tracking-tight);
+      text-align:center;
     }
 
-    .cta-two {
-      display: flex;
-      gap: 10px;
-      padding: 0 20px 20px;
-    }
-    .cta-two .btn { flex: 1; }
-
-    /* Divider with label */
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 4px 20px 16px;
-    }
-    .divider::before, .divider::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--color-border);
-    }
-    .divider span {
-      font: var(--font-caption-strong);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-    }
-
-    /* My bookings tabs */
-    .tabs {
-      display: flex;
-      gap: 16px;
-      padding: 0 20px;
-      border-bottom: 1px solid var(--color-border);
-    }
-    .tab-item {
-      padding: 12px 0;
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text-weak);
-      position: relative;
-    }
-    .tab-item.is-active {
-      color: var(--color-text);
-    }
-    .tab-item.is-active::after {
-      content: "";
-      position: absolute;
-      bottom: -1px;
-      left: 0; right: 0;
-      height: 2px;
-      background: var(--color-primary);
-    }
-
-    /* Booking card */
-    .booking-list {
-      display: flex; flex-direction: column; gap: 12px;
-      padding: 16px 20px 8px;
-    }
-    .booking-card {
-      padding: 16px;
-      background: var(--color-surface);
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-lg);
-    }
-    .booking-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .booking-status {
-      font-size: 11px;
-      font-weight: 600;
-      padding: 3px 8px;
-      border-radius: var(--radius-sm);
-      letter-spacing: var(--tracking-tight);
-    }
-    .status-confirmed { background: var(--color-success-bg); color: var(--color-success); }
-    .status-pending { background: var(--color-amber-bg); color: #7a4a00; }
-    .status-done { background: var(--color-surface-subtle); color: var(--color-text-weak); }
-    .booking-time {
-      font: var(--font-caption);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-    }
-    .booking-mentor {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-    .booking-mentor-thumb {
-      width: 36px; height: 36px;
-      border-radius: var(--radius-md);
-      flex: 0 0 36px;
-    }
-    .booking-mentor-name {
-      font: 600 14px/1.2 var(--font-family);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text);
-      margin: 0 0 2px;
-    }
-    .booking-mentor-school {
-      font: var(--font-caption);
-      color: var(--color-text-weak);
-      letter-spacing: var(--tracking-tight);
-    }
-    .booking-product {
-      font: var(--font-body);
-      font-weight: 500;
-      color: var(--color-text);
-      letter-spacing: var(--tracking-tight);
-      margin-bottom: 12px;
-    }
-    .booking-actions {
-      display: flex;
-      gap: 8px;
-      padding-top: 12px;
-      border-top: 1px solid var(--color-border);
-    }
-    .booking-actions .btn {
-      flex: 1;
-      height: 40px;
-      font: var(--font-caption-strong);
-    }
+    /* 링크 미등록 모달 */
+    .overlay { position:fixed; inset:0; background:rgba(0,0,0,.45); display:flex; align-items:flex-end; justify-content:center; z-index:200; }
+    .modal { background:var(--color-surface); border-radius:var(--radius-lg) var(--radius-lg) 0 0; padding:28px 24px 32px; width:100%; max-width:480px; }
+    .modal-title { font:700 17px/1.3 var(--font-family); color:var(--color-text); letter-spacing:var(--tracking-tight); margin:0 0 10px; }
+    .modal-body { font:var(--font-body); color:var(--color-text-weak); letter-spacing:var(--tracking-tight); line-height:1.6; margin:0 0 24px; }
+    .modal-actions { display:flex; gap:10px; }
+    .modal-actions .btn { flex:1; }
   </style>
 </head>
 <body>
   <main class="mobile-canvas">
 
-    <!-- App bar -->
     <header class="app-bar with-back">
       <button class="icon-btn" aria-label="닫기">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -237,92 +104,66 @@
       <span style="width:36px;"></span>
     </header>
 
-    <!-- Success -->
+    <!-- 성공 — 카카오 문자 제거, 이메일 안내로 교체 (a647dd7) -->
     <section class="success-wrap">
       <div class="check-circle">
         <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
       <h2 class="success-title">신청이 접수되었습니다</h2>
       <p class="success-sub">
-        김서연 멘토님 확인 후 24시간 내에<br>
-        최종 확정 알림이 카카오톡으로 발송됩니다.
+        멘토님 확인 후 예약이 확정되면<br>
+        이메일로 안내드려요.
       </p>
     </section>
 
-    <!-- Receipt -->
+    <!-- 체험단 무료 배너 — ADR-008 (FREE_TRIAL 일 때 노출) -->
+    <div class="free-banner">
+      체험단 무료 운영 기간 — 결제 없이 이용하실 수 있어요 🎉
+    </div>
+
+    <!-- 영수증 -->
     <div class="receipt">
-      <div class="info-row"><span class="label">예약 번호</span><span class="value">#AJ-2026-0427-015</span></div>
+      <div class="info-row"><span class="label">예약 번호</span><span class="value">#AJ-2026-0517-031</span></div>
       <div class="info-row"><span class="label">멘토</span><span class="value">김서연 · 서울대 경영</span></div>
-      <div class="info-row"><span class="label">일시</span><span class="value">4월 27일 (일) 오후 3:00 · 30분</span></div>
-      <div class="info-row"><span class="label">결제 금액</span><span class="value">₩29,900 <span style="color:var(--color-text-weak);font-weight:400;">· 카카오페이</span></span></div>
+      <div class="info-row"><span class="label">일시</span><span class="value">5월 17일 (토) 오후 2:00 · 60분</span></div>
+      <div class="info-row"><span class="label">결제</span><span class="value" style="color:var(--color-success);">₩0 · 체험단 무료 운영</span></div>
     </div>
 
-    <!-- Kakao channel -->
-    <div class="kakao-banner">
-      <span class="kakao-icon">K</span>
-      <div class="text">
-        <strong>카카오톡 알림 받기</strong>
-        '아자스쿨' 채널을 추가하면 확정·리마인드 알림을 놓치지 않아요.
-      </div>
-      <button class="btn-sm">채널 추가</button>
+    <!-- 플랫폼 안내 — 카카오 채널 OUT, Zoom/Meet 안내로 교체 (a647dd7) -->
+    <div class="platform-info">
+      <strong>Zoom</strong>으로 진행돼요. 상담 15분 전부터 입장 버튼이 활성화됩니다.
     </div>
 
-    <!-- CTAs -->
+    <!-- CTA: 홈으로 + 내 예약 보기 -->
     <div class="cta-two">
       <button class="btn btn-secondary">홈으로</button>
-      <button class="btn btn-primary">내 예약 보기</button>
+      <button class="btn btn-primary" data-next="/mypage">내 예약 보기</button>
     </div>
 
-    <!-- Divider -->
-    <div class="divider"><span>내 예약 미리보기</span></div>
-
-    <!-- Tabs -->
-    <div class="tabs">
-      <span class="tab-item">전체</span>
-      <span class="tab-item">대기중</span>
-      <span class="tab-item is-active">확정</span>
-      <span class="tab-item">완료</span>
-      <span class="tab-item">취소</span>
+    <!-- 상담 입장 버튼 — CONFIRMED 상태에서 노출, 15분 전 ~ 종료 30분 후 활성 -->
+    <div class="enter-section">
+      <button class="btn-enter" type="button">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        상담 입장
+      </button>
+      <p class="btn-enter-hint">상담 15분 전부터 입장 가능 · 종료 30분 후까지 유지</p>
     </div>
 
-    <!-- Booking list -->
-    <section class="booking-list">
-
-      <article class="booking-card">
-        <div class="booking-head">
-          <span class="booking-status status-confirmed">예약 확정</span>
-          <span class="booking-time">4월 27일 (일) 오후 3:00</span>
+    <!-- 링크 미등록 당일 모달 (오버레이) — 목업 표시용 -->
+    <!--
+    <div class="overlay">
+      <div class="modal">
+        <h3 class="modal-title">상담 링크가 아직 등록되지 않았어요</h3>
+        <p class="modal-body">
+          오늘 상담이 예정되어 있어요. 멘토에게 연락하거나 운영팀에 문의해주세요.
+        </p>
+        <div class="modal-actions">
+          <button class="btn btn-secondary">닫기</button>
+          <button class="btn btn-primary">운영팀 문의</button>
         </div>
-        <div class="booking-mentor">
-          <div class="booking-mentor-thumb" style="background:linear-gradient(135deg,#f2d8c1,#c89a78);"></div>
-          <div>
-            <p class="booking-mentor-name">김서연</p>
-            <p class="booking-mentor-school">서울대 경영학과</p>
-          </div>
-        </div>
-        <p class="booking-product">경영학과 진학 Q&amp;A 상담 · 30분</p>
-        <div class="booking-actions">
-          <button class="btn btn-primary">Zoom 링크 열기</button>
-          <button class="btn btn-secondary">일정 변경 요청</button>
-        </div>
-      </article>
-
-      <article class="booking-card">
-        <div class="booking-head">
-          <span class="booking-status status-pending">멘토 확인 대기</span>
-          <span class="booking-time">4월 30일 (수) 오전 10:00</span>
-        </div>
-        <div class="booking-mentor">
-          <div class="booking-mentor-thumb" style="background:linear-gradient(135deg,#d1dde9,#8aa3c1);"></div>
-          <div>
-            <p class="booking-mentor-name">박준호</p>
-            <p class="booking-mentor-school">연세대 의예과</p>
-          </div>
-        </div>
-        <p class="booking-product">의대 입시 준비 Q&amp;A · 30분</p>
-      </article>
-
-    </section>
+      </div>
+    </div>
+    -->
 
   </main>
 </body>

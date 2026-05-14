@@ -378,6 +378,53 @@
       font-family: "JetBrains Mono", ui-monospace, monospace;
       font-size: 12px;
     }
+
+    /* ── PC / 모바일 뷰포트 토글 ── */
+    .vp-divider {
+      width: 1px; height: 20px;
+      background: var(--color-border);
+      flex: 0 0 1px;
+    }
+    .vp-label {
+      font: 600 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      white-space: nowrap;
+    }
+    .vp-group {
+      display: inline-flex;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-full);
+      overflow: hidden;
+    }
+    .vp-btn {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 6px 12px;
+      background: var(--color-surface);
+      border: none;
+      font: 500 12px/1 var(--font-family);
+      color: var(--color-text-weak);
+      cursor: pointer;
+      transition: background 100ms, color 100ms;
+      white-space: nowrap;
+    }
+    .vp-btn + .vp-btn { border-left: 1px solid var(--color-border); }
+    .vp-btn.is-active { background: var(--color-text); color: var(--color-surface); }
+    .vp-btn svg { width: 13px; height: 13px; }
+
+    /* PC 모드: 모바일 카드 미리보기를 1280px 데스크탑으로 전환 */
+    .site.pc-mode .preview-wrap:not(.desktop) {
+      aspect-ratio: 16 / 10;
+    }
+    .site.pc-mode .preview-wrap:not(.desktop) iframe {
+      width: 1280px;
+      transform: translateX(-50%) scale(0.28);
+      height: calc(100% / 0.28);
+    }
+    .site.pc-mode .cards:not(.desktop) {
+      grid-template-columns: 1fr 1fr;
+    }
   </style>
 </head>
 <body data-shell="off">
@@ -410,7 +457,23 @@
         Warmth
       </button>
     </div>
-    <button type="button" class="theme-docs-btn" id="docsViewerBtn" aria-label="기획문서 보기">
+    <span class="vp-divider"></span>
+    <span class="vp-label">View</span>
+    <div class="vp-group" id="vpGroup">
+      <button class="vp-btn is-active" id="vpMobile" data-vp="mobile" title="모바일 미리보기 (390px)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/>
+        </svg>
+        모바일
+      </button>
+      <button class="vp-btn" id="vpDesktop" data-vp="desktop" title="PC 미리보기 (1280px)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        PC
+      </button>
+    </div>
+        <button type="button" class="theme-docs-btn" id="docsViewerBtn" aria-label="기획문서 보기">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
@@ -431,7 +494,7 @@
       </span>
       <h1 class="site-title">AjaMentor 목업 <span class="ver">v1.2</span></h1>
       <p class="site-sub">
-        PRD v1.2 (ADR-001/002 반영) 전 구간 37개 화면 · 5개 테마 실시간 전환 가능.
+        PRD v1.2 (ADR-008/009 반영) 전 구간 37개 화면 · 5테마 · PC/모바일 뷰포트 전환 가능.
         상단 Theme Dock에서 팔레트를 선택하면 모든 iframe이 해당 테마로 다시 로드됩니다.
       </p>
 
@@ -481,7 +544,7 @@
       <div class="cards">
         <a class="card" href="./auth/login.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/login.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A1 · 1단계</span><span class="card-title">로그인 · 소셜 선택</span><span class="card-desc">카카오·네이버·이메일 · 멘토 분기</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
         <a class="card" href="./auth/role.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/role.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A2 · 2단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">UPD</span></span><span class="card-title">역할 선택</span><span class="card-desc">카드 클릭 즉시 라우팅 · 다음 버튼 제거</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
-        <a class="card" href="./auth/terms-mentee.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-mentee.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3a · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (멘티)</span><span class="card-desc">T01-T04 필수 · T10-T12 선택 · 만 14세</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
+        <a class="card" href="./auth/terms-mentee.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-mentee.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3a · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (멘티)</span><span class="card-desc">T01-T04 필수 · T10-T12 선택 · T03 SoT</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
         <a class="card" href="./auth/terms-parent.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-parent.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3b · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (학부모)</span><span class="card-desc">T01-T04 필수 · T09는 자녀 등록 시점</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
         <a class="card" href="./auth/terms-mentor.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/terms-mentor.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A3c · 3단계 <span style="font-size:9px;padding:1px 6px;background:var(--color-amber);color:var(--color-text-on-primary);border-radius:3px;margin-left:4px;">NEW</span></span><span class="card-title">약관 동의 (멘토)</span><span class="card-desc">T01-T08 필수 · 운영·정산·과세 포함</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
         <a class="card" href="./auth/phone.html"><span class="pri-ribbon pri-mvp">MVP</span><div class="preview-wrap"><iframe data-src="./auth/phone.html" loading="lazy"></iframe></div><div class="card-body"><span class="card-num">A4 · 4단계</span><span class="card-title">휴대폰 본인인증</span><span class="card-desc">통신사 · 인증번호 · 생년 교차 확인</span><div class="card-tags"><span class="card-tag tag-auth">Auth</span></div></div></a>
@@ -681,6 +744,36 @@
             applyTheme(b.getAttribute('data-theme-key'));
           });
         });
+
+
+      /* ── PC / 모바일 뷰포트 토글 ── */
+      (function () {
+        var site = document.querySelector('.site');
+        var vpBtns = document.querySelectorAll('.vp-btn[data-vp]');
+
+        function setViewport(mode) {
+          vpBtns.forEach(function (b) {
+            b.classList.toggle('is-active', b.getAttribute('data-vp') === mode);
+          });
+          if (mode === 'desktop') {
+            site.classList.add('pc-mode');
+          } else {
+            site.classList.remove('pc-mode');
+          }
+          sessionStorage.setItem('aja_vp_mode', mode);
+        }
+
+        vpBtns.forEach(function (b) {
+          b.addEventListener('click', function () {
+            setViewport(b.getAttribute('data-vp'));
+          });
+        });
+
+        // 세션 복원
+        var saved = sessionStorage.getItem('aja_vp_mode');
+        if (saved) setViewport(saved);
+      })();
+
       });
     })();
   </script>

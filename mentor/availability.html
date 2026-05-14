@@ -13,28 +13,7 @@
   <link rel="stylesheet" href="../system/tokens.css">
   <link rel="stylesheet" href="../system/components.css">
   <style>
-    /* Tabs */
-    .sub-tabs {
-      display: flex;
-      gap: 8px;
-      padding: 8px 20px 0;
-    }
-    .sub-tab {
-      flex: 1;
-      height: 40px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      color: var(--color-text-weak);
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-    }
-    .sub-tab.is-active {
-      background: var(--color-text);
-      border-color: var(--color-text);
-      color: #ffffff;
-    }
-
+    /* ── 섹션 블록 ── */
     .block {
       margin: 16px 20px 0;
       padding: 20px;
@@ -52,186 +31,87 @@
       font: var(--font-caption);
       color: var(--color-text-weak);
       letter-spacing: var(--tracking-tight);
-      margin: 0 0 14px;
+      margin: 0 0 16px;
+      line-height: 1.5;
     }
 
-    /* Weekly schedule */
-    .week-list {
-      display: flex;
-      flex-direction: column;
+    /* ── 1시간 단위 그리드 — ADR-009 (8bc2caf) ── */
+    /*
+      UI: 시간(행) × 요일(열) 셀 그리드.
+      HOUR_SLOTS: 09:00~21:00 1시간 단위 (13개)
+      탭으로 슬롯 on/off 토글
+    */
+    .grid-wrap {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
-    .day-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 14px;
-      padding: 14px 0;
+    .grid-header {
+      display: grid;
+      grid-template-columns: 52px repeat(7, 1fr);
+      gap: 3px;
+      margin-bottom: 3px;
     }
-    .day-row + .day-row {
-      border-top: 1px solid var(--color-border);
-    }
-    .day-name {
-      flex: 0 0 40px;
-      font: 600 14px/1.2 var(--font-family);
-      color: var(--color-text);
+    .grid-corner { /* 왼쪽 상단 빈 셀 */ }
+    .grid-day-label {
+      text-align: center;
+      font: 600 12px/1 var(--font-family);
+      color: var(--color-text-weak);
       letter-spacing: var(--tracking-tight);
-      padding-top: 10px;
+      padding: 6px 0;
     }
-    .day-name.is-off { color: var(--color-text-weak); }
-    .day-slots {
-      flex: 1;
+    .grid-row {
+      display: grid;
+      grid-template-columns: 52px repeat(7, 1fr);
+      gap: 3px;
+      margin-bottom: 3px;
+    }
+    .grid-time-label {
+      font: 500 11px/1 var(--font-family);
+      color: var(--color-text-weak);
+      letter-spacing: var(--tracking-tight);
       display: flex;
-      flex-direction: column;
-      gap: 6px;
+      align-items: center;
+      padding-right: 6px;
     }
-    .time-chip {
+    .grid-cell {
+      height: 34px;
+      border-radius: 4px;
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-subtle);
+      cursor: pointer;
+      transition: background 120ms, border-color 120ms;
+    }
+    .grid-cell:hover {
+      border-color: var(--color-primary);
+      background: #eef3fb;
+    }
+    .grid-cell.is-active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+    }
+    /* 토요일 컬럼 */
+    .grid-cell.sat, .grid-day-label.sat { color: var(--color-primary); }
+    .grid-cell.sat.is-active { background: var(--color-primary); }
+    /* 일요일 컬럼 */
+    .grid-cell.sun, .grid-day-label.sun { color: var(--color-error, #c0392b); }
+
+    /* ── 정책 안내 칩 ── */
+    .policy-chip {
       display: inline-flex;
       align-items: center;
       gap: 6px;
+      margin-top: 14px;
       padding: 8px 12px;
       border-radius: var(--radius-md);
       background: #eef3fb;
-      color: var(--color-primary);
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-    }
-    .time-chip .del {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--color-primary);
-      opacity: 0.6;
-      margin-left: 2px;
-    }
-    .day-empty {
       font: var(--font-caption);
-      color: var(--color-text-weak);
-      padding-top: 10px;
-    }
-    .day-add {
-      font: var(--font-caption-strong);
       color: var(--color-primary);
       letter-spacing: var(--tracking-tight);
-      flex: 0 0 auto;
-      padding-top: 10px;
+      line-height: 1.4;
     }
+    .policy-chip svg { flex: 0 0 14px; }
 
-    /* Expanded time editor */
-    .expander {
-      padding: 16px;
-      margin: 8px 0 4px;
-      border: 1px solid var(--color-primary);
-      background: #eef3fb;
-      border-radius: var(--radius-md);
-    }
-    .expander-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 12px;
-    }
-    .expander-head h4 {
-      font: 600 14px/1.2 var(--font-family);
-      color: var(--color-primary);
-      letter-spacing: var(--tracking-tight);
-      margin: 0;
-    }
-    .expander-head .delete {
-      color: var(--color-error);
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-    }
-    .time-range {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-    .time-select {
-      flex: 1;
-      position: relative;
-    }
-    .time-select select {
-      width: 100%;
-      padding: 10px 14px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      font: var(--font-body);
-      letter-spacing: var(--tracking-tight);
-      color: var(--color-text);
-      appearance: none;
-      padding-right: 32px;
-    }
-    .time-select::after {
-      content: "";
-      position: absolute;
-      right: 14px; top: 50%;
-      width: 6px; height: 6px;
-      border-right: 1.5px solid var(--color-text-weak);
-      border-bottom: 1.5px solid var(--color-text-weak);
-      transform: translateY(-75%) rotate(45deg);
-      pointer-events: none;
-    }
-    .time-range .sep {
-      color: var(--color-text-weak);
-      font-weight: 500;
-    }
-    .slot-preview {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-    }
-    .slot-preview span {
-      padding: 4px 8px;
-      border-radius: var(--radius-sm);
-      background: var(--color-success-bg);
-      color: var(--color-success);
-      font: 500 11px/1 var(--font-family);
-      letter-spacing: var(--tracking-tight);
-    }
-
-    /* Segmented */
-    .segmented { display: flex; gap: 6px; }
-    .segmented button {
-      flex: 1;
-      height: 40px;
-      border: 1px solid var(--color-border);
-      border-radius: var(--radius-md);
-      background: var(--color-surface);
-      color: var(--color-text);
-      font: var(--font-caption-strong);
-      letter-spacing: var(--tracking-tight);
-    }
-    .segmented button.is-selected {
-      background: var(--color-primary);
-      border-color: var(--color-primary);
-      color: #ffffff;
-    }
-
-    /* Stepper */
-    .stepper {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      justify-content: flex-start;
-    }
-    .stepper-btn {
-      width: 40px; height: 40px;
-      border-radius: var(--radius-md);
-      border: 1px solid var(--color-border);
-      background: var(--color-surface);
-      font: 600 18px/1 var(--font-family);
-      color: var(--color-text);
-    }
-    .stepper-value {
-      min-width: 60px;
-      text-align: center;
-      font: 600 18px/1 var(--font-family);
-      color: var(--color-text);
-      letter-spacing: -0.2px;
-    }
-
-    /* Summary card */
+    /* ── 요약 카드 ── */
     .summary-card {
       margin: 16px 20px 0;
       padding: 16px 18px;
@@ -245,26 +125,23 @@
       width: 40px; height: 40px;
       border-radius: 50%;
       background: var(--color-primary);
-      color: #ffffff;
+      color: #fff;
       display: inline-flex; align-items: center; justify-content: center;
       flex: 0 0 40px;
     }
-    .summary-card .text {
+    .summary-text {
       font: var(--font-body);
       color: var(--color-text);
       letter-spacing: var(--tracking-tight);
       line-height: 1.5;
+      margin: 0;
     }
-    .summary-card .text strong {
-      font-weight: 600;
-      color: var(--color-primary);
-    }
+    .summary-text strong { font-weight: 700; color: var(--color-primary); }
   </style>
 </head>
 <body>
   <main class="mobile-canvas">
 
-    <!-- App bar -->
     <header class="app-bar with-back">
       <button class="icon-btn" aria-label="뒤로">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
@@ -275,170 +152,197 @@
       </h1>
       <span style="width:36px;"></span>
     </header>
+    <div class="progress"><div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div></div>
 
-    <!-- Progress -->
-    <div class="progress">
-      <div class="progress-bar"><div class="progress-bar-fill" style="width:100%;"></div></div>
-    </div>
-
-    <!-- Sub tabs -->
-    <div class="sub-tabs">
-      <button class="sub-tab is-active">주간 반복 설정</button>
-      <button class="sub-tab">특정 날짜 개별</button>
-    </div>
-
-    <!-- Weekly schedule -->
+    <!--
+      요일 × 시간 그리드 — ADR-009 / 8bc2caf
+      1시간 단위 강제 (분=00만 허용). HOUR_SLOTS: 09:00~21:00.
+      이전 UI(범위 셀렉터 + 30분 단위)에서 그리드 토글 방식으로 완전 교체.
+    -->
     <section class="block">
-      <h2 class="block-title">요일별 가능 시간</h2>
-      <p class="block-sub">매주 반복되는 기본 시간대입니다.</p>
+      <h2 class="block-title">요일 × 시간 선택</h2>
+      <p class="block-sub">상담 가능한 셀을 탭해 선택하세요. <strong>1시간 단위</strong>로 설정됩니다.</p>
 
-      <div class="week-list">
-        <div class="day-row">
-          <span class="day-name">월</span>
-          <div class="day-slots">
-            <span class="time-chip">
-              19:00 — 22:00
-              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-            </span>
-          </div>
-          <button class="day-add">+ 추가</button>
+      <div class="grid-wrap">
+        <!-- 헤더 행 (요일) -->
+        <div class="grid-header">
+          <div class="grid-corner"></div>
+          <div class="grid-day-label">월</div>
+          <div class="grid-day-label">화</div>
+          <div class="grid-day-label">수</div>
+          <div class="grid-day-label">목</div>
+          <div class="grid-day-label">금</div>
+          <div class="grid-day-label sat">토</div>
+          <div class="grid-day-label sun">일</div>
         </div>
 
-        <div class="day-row">
-          <span class="day-name is-off">화</span>
-          <div class="day-slots">
-            <span class="day-empty">휴무</span>
-          </div>
-          <button class="day-add">+ 추가</button>
+        <!-- 09:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">09:00</div>
+          <button class="grid-cell" aria-label="월 09:00"></button>
+          <button class="grid-cell" aria-label="화 09:00"></button>
+          <button class="grid-cell" aria-label="수 09:00"></button>
+          <button class="grid-cell" aria-label="목 09:00"></button>
+          <button class="grid-cell" aria-label="금 09:00"></button>
+          <button class="grid-cell sat is-active" aria-label="토 09:00" aria-pressed="true"></button>
+          <button class="grid-cell sun" aria-label="일 09:00"></button>
         </div>
-
-        <div class="day-row" style="flex-direction:column;align-items:stretch;">
-          <div style="display:flex;gap:14px;align-items:flex-start;">
-            <span class="day-name">수</span>
-            <div class="day-slots" style="flex:1;">
-              <span class="time-chip" style="background:var(--color-primary);color:#ffffff;">
-                19:00 — 22:00
-                <span class="del" style="color:#ffffff;opacity:0.9;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-              </span>
-            </div>
-            <button class="day-add">+ 추가</button>
-          </div>
-
-          <!-- Expanded editor (for current edit) -->
-          <div class="expander">
-            <div class="expander-head">
-              <h4>수요일 · 시간대 1</h4>
-              <button class="delete">삭제</button>
-            </div>
-            <div class="time-range">
-              <div class="time-select">
-                <select>
-                  <option>18:00</option>
-                  <option>18:30</option>
-                  <option selected>19:00</option>
-                  <option>19:30</option>
-                </select>
-              </div>
-              <span class="sep">~</span>
-              <div class="time-select">
-                <select>
-                  <option>21:00</option>
-                  <option>21:30</option>
-                  <option selected>22:00</option>
-                  <option>22:30</option>
-                </select>
-              </div>
-            </div>
-            <div class="slot-preview">
-              <span>19:00</span>
-              <span>19:30</span>
-              <span>20:00</span>
-              <span>20:30</span>
-              <span>21:00</span>
-              <span>21:30</span>
-            </div>
-          </div>
+        <!-- 10:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">10:00</div>
+          <button class="grid-cell" aria-label="월 10:00"></button>
+          <button class="grid-cell" aria-label="화 10:00"></button>
+          <button class="grid-cell" aria-label="수 10:00"></button>
+          <button class="grid-cell" aria-label="목 10:00"></button>
+          <button class="grid-cell" aria-label="금 10:00"></button>
+          <button class="grid-cell sat is-active" aria-label="토 10:00" aria-pressed="true"></button>
+          <button class="grid-cell sun" aria-label="일 10:00"></button>
         </div>
-
-        <div class="day-row">
-          <span class="day-name is-off">목</span>
-          <div class="day-slots"><span class="day-empty">휴무</span></div>
-          <button class="day-add">+ 추가</button>
+        <!-- 11:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">11:00</div>
+          <button class="grid-cell" aria-label="월 11:00"></button>
+          <button class="grid-cell" aria-label="화 11:00"></button>
+          <button class="grid-cell" aria-label="수 11:00"></button>
+          <button class="grid-cell" aria-label="목 11:00"></button>
+          <button class="grid-cell" aria-label="금 11:00"></button>
+          <button class="grid-cell sat" aria-label="토 11:00"></button>
+          <button class="grid-cell sun" aria-label="일 11:00"></button>
         </div>
-
-        <div class="day-row">
-          <span class="day-name">금</span>
-          <div class="day-slots">
-            <span class="time-chip">
-              19:00 — 22:00
-              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-            </span>
-          </div>
-          <button class="day-add">+ 추가</button>
+        <!-- 12:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">12:00</div>
+          <button class="grid-cell" aria-label="월 12:00"></button>
+          <button class="grid-cell" aria-label="화 12:00"></button>
+          <button class="grid-cell" aria-label="수 12:00"></button>
+          <button class="grid-cell" aria-label="목 12:00"></button>
+          <button class="grid-cell" aria-label="금 12:00"></button>
+          <button class="grid-cell sat" aria-label="토 12:00"></button>
+          <button class="grid-cell sun" aria-label="일 12:00"></button>
         </div>
-
-        <div class="day-row">
-          <span class="day-name">토</span>
-          <div class="day-slots">
-            <span class="time-chip">
-              10:00 — 12:00
-              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-            </span>
-            <span class="time-chip">
-              14:00 — 18:00
-              <span class="del"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
-            </span>
-          </div>
-          <button class="day-add">+ 추가</button>
+        <!-- 13:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">13:00</div>
+          <button class="grid-cell" aria-label="월 13:00"></button>
+          <button class="grid-cell" aria-label="화 13:00"></button>
+          <button class="grid-cell" aria-label="수 13:00"></button>
+          <button class="grid-cell" aria-label="목 13:00"></button>
+          <button class="grid-cell" aria-label="금 13:00"></button>
+          <button class="grid-cell sat" aria-label="토 13:00"></button>
+          <button class="grid-cell sun" aria-label="일 13:00"></button>
         </div>
-
-        <div class="day-row">
-          <span class="day-name is-off">일</span>
-          <div class="day-slots"><span class="day-empty">휴무</span></div>
-          <button class="day-add">+ 추가</button>
+        <!-- 14:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">14:00</div>
+          <button class="grid-cell" aria-label="월 14:00"></button>
+          <button class="grid-cell" aria-label="화 14:00"></button>
+          <button class="grid-cell" aria-label="수 14:00"></button>
+          <button class="grid-cell" aria-label="목 14:00"></button>
+          <button class="grid-cell" aria-label="금 14:00"></button>
+          <button class="grid-cell sat is-active" aria-label="토 14:00" aria-pressed="true"></button>
+          <button class="grid-cell sun" aria-label="일 14:00"></button>
         </div>
+        <!-- 15:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">15:00</div>
+          <button class="grid-cell" aria-label="월 15:00"></button>
+          <button class="grid-cell" aria-label="화 15:00"></button>
+          <button class="grid-cell" aria-label="수 15:00"></button>
+          <button class="grid-cell" aria-label="목 15:00"></button>
+          <button class="grid-cell" aria-label="금 15:00"></button>
+          <button class="grid-cell sat is-active" aria-label="토 15:00" aria-pressed="true"></button>
+          <button class="grid-cell sun" aria-label="일 15:00"></button>
+        </div>
+        <!-- 16:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">16:00</div>
+          <button class="grid-cell" aria-label="월 16:00"></button>
+          <button class="grid-cell" aria-label="화 16:00"></button>
+          <button class="grid-cell" aria-label="수 16:00"></button>
+          <button class="grid-cell" aria-label="목 16:00"></button>
+          <button class="grid-cell" aria-label="금 16:00"></button>
+          <button class="grid-cell sat" aria-label="토 16:00"></button>
+          <button class="grid-cell sun" aria-label="일 16:00"></button>
+        </div>
+        <!-- 17:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">17:00</div>
+          <button class="grid-cell" aria-label="월 17:00"></button>
+          <button class="grid-cell" aria-label="화 17:00"></button>
+          <button class="grid-cell" aria-label="수 17:00"></button>
+          <button class="grid-cell" aria-label="목 17:00"></button>
+          <button class="grid-cell" aria-label="금 17:00"></button>
+          <button class="grid-cell sat" aria-label="토 17:00"></button>
+          <button class="grid-cell sun" aria-label="일 17:00"></button>
+        </div>
+        <!-- 18:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">18:00</div>
+          <button class="grid-cell" aria-label="월 18:00"></button>
+          <button class="grid-cell" aria-label="화 18:00"></button>
+          <button class="grid-cell" aria-label="수 18:00"></button>
+          <button class="grid-cell" aria-label="목 18:00"></button>
+          <button class="grid-cell" aria-label="금 18:00"></button>
+          <button class="grid-cell sat" aria-label="토 18:00"></button>
+          <button class="grid-cell sun" aria-label="일 18:00"></button>
+        </div>
+        <!-- 19:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">19:00</div>
+          <button class="grid-cell is-active" aria-label="월 19:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="화 19:00"></button>
+          <button class="grid-cell is-active" aria-label="수 19:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="목 19:00"></button>
+          <button class="grid-cell is-active" aria-label="금 19:00" aria-pressed="true"></button>
+          <button class="grid-cell sat" aria-label="토 19:00"></button>
+          <button class="grid-cell sun" aria-label="일 19:00"></button>
+        </div>
+        <!-- 20:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">20:00</div>
+          <button class="grid-cell is-active" aria-label="월 20:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="화 20:00"></button>
+          <button class="grid-cell is-active" aria-label="수 20:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="목 20:00"></button>
+          <button class="grid-cell is-active" aria-label="금 20:00" aria-pressed="true"></button>
+          <button class="grid-cell sat" aria-label="토 20:00"></button>
+          <button class="grid-cell sun" aria-label="일 20:00"></button>
+        </div>
+        <!-- 21:00 -->
+        <div class="grid-row">
+          <div class="grid-time-label">21:00</div>
+          <button class="grid-cell is-active" aria-label="월 21:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="화 21:00"></button>
+          <button class="grid-cell is-active" aria-label="수 21:00" aria-pressed="true"></button>
+          <button class="grid-cell" aria-label="목 21:00"></button>
+          <button class="grid-cell is-active" aria-label="금 21:00" aria-pressed="true"></button>
+          <button class="grid-cell sat" aria-label="토 21:00"></button>
+          <button class="grid-cell sun" aria-label="일 21:00"></button>
+        </div>
+      </div>
+
+      <!-- ADR-009: 1시간 단위 + 멘티 D+3 정책 안내 -->
+      <div class="policy-chip">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>1시간 단위로만 설정 가능 · 멘티는 D+3(3일 후) 이후 슬롯만 신청 가능</span>
       </div>
     </section>
 
-    <!-- 예약 리드타임 -->
-    <section class="block">
-      <h2 class="block-title">예약 리드타임</h2>
-      <p class="block-sub">최소 며칠 전까지 신청을 받을지 설정하세요.</p>
-      <div class="segmented">
-        <button>1일 전</button>
-        <button class="is-selected">2일 전</button>
-        <button>3일 전</button>
-        <button>7일 전</button>
-      </div>
-    </section>
-
-    <!-- 하루 최대 건수 -->
-    <section class="block">
-      <h2 class="block-title">하루 최대 상담 건수</h2>
-      <p class="block-sub">상담에 지치지 않도록 하루 한도를 설정합니다.</p>
-      <div class="stepper">
-        <button class="stepper-btn">−</button>
-        <span class="stepper-value">3건</span>
-        <button class="stepper-btn">+</button>
-      </div>
-    </section>
-
-    <!-- Summary -->
+    <!-- 요약 -->
     <div class="summary-card">
       <div class="summary-icon">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </div>
-      <p class="text">
-        주간 <strong>15시간</strong> 오픈 · 이번 주 예약 가능 슬롯 <strong>28개</strong>
+      <p class="summary-text">
+        총 <strong>11개</strong> 슬롯 선택됨 · 이번 주 예약 가능
       </p>
     </div>
 
     <div style="height:16px;"></div>
 
-    <!-- Bottom CTA -->
     <div class="bottom-cta">
       <button class="btn btn-secondary">뒤로</button>
-      <button class="btn btn-primary" style="flex:1;" data-next="./dashboard.html">저장하고 완료</button>
+      <button class="btn btn-primary" style="flex:1;" data-next="./dashboard.html">저장</button>
     </div>
 
   </main>
